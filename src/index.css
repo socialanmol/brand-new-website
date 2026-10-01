@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import 'tailwindcss';
+
+html, body, #root {
+  height: 100%;
+}
+
+:root {
+  /* Brand colours — pulled from myanmolylogo.png */
+  --navy:       #1A3B9F;
+  --navy-dark:  #0D1E52;
+  --navy-deep:  #091540;
+  --lime:       #8DC63F;
+  --lime-dark:  #6AA32A;
+  --lime-light: #EFF8E2;
+  --blue-tint:  #EEF2FB;
+  --white:      #FFFFFF;
+  --ink:        #111827;
+  --ink-mid:    #374151;
+  --ink-soft:   #6B7280;
+  --border:     rgba(26,59,159,.12);
+  --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-xl: 28px; --r-2xl: 36px;
+  --fd: 'Montserrat', sans-serif;
+  --fs: 'Montserrat', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--fs);
+  background: #fff;
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overflow-x: hidden;
+}
+body::-webkit-scrollbar { display: none; }
+a { text-decoration: none; color: inherit; }
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 22s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Scrollbar shown on hover for internal panels */
+.scroll-y::-webkit-scrollbar { width: 4px; }
+.scroll-y::-webkit-scrollbar-thumb { background: rgba(26,59,159,.25); border-radius: 4px; }

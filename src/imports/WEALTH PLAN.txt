@@ -1,0 +1,704 @@
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Nunito+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --teal:     #1A4A2A;
+  --teal-dim: rgba(26,74,42,0.10);
+  --teal-glo: rgba(26,74,42,0.06);
+  --blue:     #C9A55A;
+  --ink:      #111827;
+  --ink80:    rgba(17,24,39,0.80);
+  --ink50:    rgba(17,24,39,0.50);
+  --ink20:    rgba(17,24,39,0.20);
+  --ink10:    rgba(17,24,39,0.08);
+  --ink06:    rgba(17,24,39,0.05);
+  --border:   rgba(17,24,39,0.10);
+  --bord-t:   rgba(26,74,42,0.28);
+  --red:      #C1543A;
+  --green:    #C9A55A;
+  --shadow:   0 4px 24px rgba(0,0,0,0.07);
+  --shadow2:  0 2px 12px rgba(0,0,0,0.05);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito Sans',sans-serif;background:#fff;color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+/* BG */
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-mesh::before{content:'';position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(26,74,42,0.05) 0%,transparent 65%);top:-300px;left:-250px;animation:f1 18s ease-in-out infinite}
+.bg-mesh::after{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(79,142,247,0.04) 0%,transparent 65%);bottom:-200px;right:-200px;animation:f2 14s ease-in-out infinite}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,0,0,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.025) 1px,transparent 1px);background-size:64px 64px}
+@keyframes f1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,40px) scale(1.1)}}
+@keyframes f2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-40px,-50px) scale(1.08)}}
+
+/* HERO */
+.hero{position:relative;z-index:5;text-align:center;padding:72px 24px 56px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--teal-dim);border:1px solid var(--bord-t);border-radius:100px;padding:7px 20px;font-size:11px;font-weight:700;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:24px}
+.hero-badge::before{content:'';width:7px;height:7px;background:var(--teal);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.8)}}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(42px,8vw,80px);font-weight:700;line-height:1.0;letter-spacing:-0.03em;color:var(--ink);margin-bottom:16px}
+.hero h1 .acc{color:var(--teal)}
+.hero p{font-size:16px;font-weight:300;color:var(--ink50);max-width:460px;margin:0 auto;line-height:1.75}
+
+/* LAYOUT */
+.wrap{position:relative;z-index:5;max-width:1200px;margin:0 auto;padding:0 24px 72px}
+.grid{display:grid;grid-template-columns:356px 1fr;gap:24px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+/* CARD */
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;transition:border-color 0.2s}
+.card:hover{border-color:var(--bord-t)}
+.card-hdr{padding:18px 22px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.card-ico{width:30px;height:30px;border-radius:8px;background:var(--teal-dim);border:1px solid var(--bord-t);display:flex;align-items:center;justify-content:center;font-size:13px}
+.card-ttl{font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--ink80)}
+.card-body{padding:20px 22px 22px}
+
+/* FIELDS */
+.field{margin-bottom:15px}
+.field label{display:block;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink50);margin-bottom:7px}
+.iw{position:relative}
+.pfx{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--teal);font-weight:700;pointer-events:none}
+input[type="number"]{width:100%;padding:12px 13px 12px 32px;background:#f8fafb;border:1px solid var(--border);border-radius:10px;font-family:'Nunito Sans',sans-serif;font-size:16px;font-weight:500;color:var(--ink);outline:none;transition:border-color 0.2s,background 0.2s;-moz-appearance:textfield}
+input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none}
+input[type="number"]:focus{border-color:var(--teal);background:#f0faf9}
+
+/* RANGE */
+.rf{margin-bottom:15px}
+.rf-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+.rf-row label{font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink50)}
+.rv{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--teal)}
+.rt{position:relative;height:4px;background:var(--ink10);border-radius:99px}
+.rf-fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--teal),var(--blue));border-radius:99px;pointer-events:none}
+input[type="range"]{-webkit-appearance:none;position:absolute;top:50%;transform:translateY(-50%);left:0;width:100%;height:4px;background:transparent;outline:none;cursor:pointer;margin:0}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;height:19px;border-radius:50%;background:#fff;border:3px solid var(--teal);box-shadow:0 0 10px rgba(26,74,42,0.35);transition:transform 0.15s}
+input[type="range"]:hover::-webkit-slider-thumb{transform:scale(1.2)}
+
+/* BTN */
+.btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--teal),#009688);color:#fff;border:none;border-radius:10px;font-family:'Playfair Display',serif;font-size:13px;font-weight:700;letter-spacing:0.04em;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;margin-top:10px;box-shadow:0 4px 20px rgba(26,74,42,0.28)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,74,42,0.42)}
+.btn:active{transform:translateY(0)}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+@media(max-width:600px){.stats-row{grid-template-columns:1fr}}
+.stat{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 14px;text-align:center;box-shadow:var(--shadow2);transition:border-color 0.2s}
+.stat:hover{border-color:var(--bord-t)}
+.stat-lbl{font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink50);margin-bottom:9px}
+.stat-val{font-family:'Playfair Display',serif;font-size:clamp(15px,2vw,21px);font-weight:700;color:var(--ink);line-height:1}
+.stat-val.pos{color:var(--green)}
+.stat-val.neg{color:var(--red)}
+
+/* CHART */
+.chart-h{position:relative;height:276px}
+.leg-row{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px}
+.leg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink50)}
+.leg-dot{width:8px;height:8px;border-radius:50%}
+
+/* INSIGHT CARDS */
+.insights{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+@media(max-width:600px){.insights{grid-template-columns:1fr}}
+.ic{background:#f8fafb;border:1px solid var(--border);border-radius:12px;padding:17px;transition:border-color 0.2s}
+.ic:hover{border-color:var(--bord-t)}
+.ic-lbl{font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink50);margin-bottom:7px}
+.ic-val{font-family:'Playfair Display',serif;font-size:25px;font-weight:700;color:var(--teal);line-height:1;margin-bottom:4px}
+.ic-desc{font-size:12px;color:var(--ink50);font-weight:300;line-height:1.5}
+
+/* SECTION COMMON */
+.section{position:relative;z-index:5;max-width:1200px;margin:0 auto;padding:0 24px 80px}
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--bord-t),transparent);margin-bottom:44px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--teal);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--bord-t),transparent);max-width:180px}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,44px);font-weight:700;letter-spacing:-0.02em;color:var(--ink);margin-bottom:7px}
+.sec-sub{font-size:15px;color:var(--ink50);font-weight:300;line-height:1.65;margin-bottom:28px}
+
+/* TABS */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.tab{padding:6px 16px;border-radius:100px;border:1px solid var(--border);background:#f8fafb;font-size:12px;font-weight:600;color:var(--ink50);cursor:pointer;transition:all 0.2s;user-select:none}
+.tab:hover,.tab.active{background:var(--teal-dim);border-color:var(--bord-t);color:var(--teal)}
+
+/* SILENT TAX — PICKER + RESULT */
+.inf-picker{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:600px){.inf-picker{grid-template-columns:1fr}}
+.inf-field label{display:block;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink50);margin-bottom:7px}
+.inf-field select{width:100%;padding:12px 14px;background:#f8fafb;border:1px solid var(--border);border-radius:10px;font-family:'Nunito Sans',sans-serif;font-size:14px;font-weight:600;color:var(--ink);outline:none;cursor:pointer;transition:border-color 0.2s,background 0.2s}
+.inf-field select:focus{border-color:var(--teal);background:#f0faf9}
+.inf-result{background:#fff;border:1px solid var(--border);border-radius:16px;padding:32px 28px;text-align:center;box-shadow:var(--shadow)}
+.inf-result-icon{font-size:36px;margin-bottom:10px}
+.inf-result-name{font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink50);margin-bottom:22px}
+.inf-result-row{display:flex;align-items:center;justify-content:center;gap:24px}
+.inf-result-lbl{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink50);margin-bottom:4px}
+.inf-result-now{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--ink)}
+.inf-result-arrow{font-size:20px;color:var(--teal)}
+.inf-result-future{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:var(--red)}
+.inf-result-mult{display:inline-block;margin-top:18px;background:rgba(193,84,58,0.1);color:var(--red);font-size:12px;font-weight:700;padding:6px 16px;border-radius:100px}
+
+/* HISTORICAL */
+.hist-pills{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px}
+.hist-pill{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow2);transition:all 0.2s;cursor:pointer;flex:1;min-width:130px}
+.hist-pill:hover,.hist-pill.active{border-color:var(--bord-t);box-shadow:0 4px 18px rgba(26,74,42,0.12)}
+.hist-pill.active .hp-ico{background:var(--teal-dim);border-color:var(--bord-t)}
+.hp-ico{width:34px;height:34px;border-radius:8px;background:#f5f7fa;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:all 0.2s}
+.hp-nm{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink50);margin-bottom:2px}
+.hp-change{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--red)}
+
+/* THEN & NOW GRID */
+.tn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:13px;margin-bottom:24px}
+.tn-card{background:#fff;border:1px solid var(--border);border-radius:13px;padding:18px;box-shadow:var(--shadow2);transition:all 0.2s}
+.tn-card:hover{border-color:var(--bord-t);transform:translateY(-3px);box-shadow:0 8px 26px rgba(26,74,42,0.1)}
+.tn-head{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.tn-ico{font-size:20px}
+.tn-nm{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink50);line-height:1.3}
+.tn-prices{display:grid;grid-template-columns:1fr auto 1fr;gap:4px;align-items:center;margin-bottom:11px}
+.tn-col{text-align:center}
+.tn-col.r{text-align:right}
+.tn-yr{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink50);margin-bottom:2px}
+.tn-old{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--ink80)}
+.tn-new{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--ink)}
+.tn-arr{color:var(--red);font-size:15px;text-align:center}
+.tn-bar-wrap{height:5px;background:#f0f0f0;border-radius:99px;overflow:hidden;margin-bottom:7px}
+.tn-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--red))}
+.tn-cagr{font-size:11px;font-weight:600;color:var(--ink50);text-align:right}
+.tn-cagr span{color:var(--red)}
+
+.hist-note{font-size:11px;color:var(--ink50);font-weight:300;line-height:1.6;padding-top:12px;border-top:1px solid var(--border)}
+
+/* FOOTER */
+footer{position:relative;z-index:5;text-align:center;padding:28px 24px 44px;border-top:1px solid var(--border);font-size:12px;color:var(--ink50);font-weight:300;line-height:1.8}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.hero{animation:fadeUp 0.5s 0.1s ease both}
+.wrap{animation:fadeUp 0.5s 0.2s ease both}
+</style>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Financial Visualiser</div>
+  <h1>Wealth<span class="acc">Path</span></h1>
+  <p>See exactly how your money grows — and how much inflation silently eats away at it over time.</p>
+</div>
+
+<!-- CALCULATOR -->
+<div class="wrap">
+  <div class="grid">
+
+    <!-- Controls -->
+    <aside>
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-ico">⚙️</div>
+          <span class="card-ttl">Your Parameters</span>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <label>Initial Investment</label>
+            <div class="iw"><span class="pfx">₹</span><input type="number" id="principal" value="500000" min="0" step="10000"/></div>
+          </div>
+          <div class="field">
+            <label>Monthly Contribution</label>
+            <div class="iw"><span class="pfx">₹</span><input type="number" id="monthly" value="10000" min="0" step="500"/></div>
+          </div>
+          <div class="rf">
+            <div class="rf-row"><label>Annual Growth Rate</label><span class="rv" id="growthDisplay">12%</span></div>
+            <div class="rt"><div class="rf-fill" id="growthFill" style="width:37.9%"></div><input type="range" id="growth" min="1" max="30" step="0.5" value="12"/></div>
+          </div>
+          <div class="rf">
+            <div class="rf-row"><label>Annual Inflation Rate</label><span class="rv" id="inflationDisplay">6%</span></div>
+            <div class="rt"><div class="rf-fill" id="inflationFill" style="width:26.3%"></div><input type="range" id="inflation" min="1" max="20" step="0.5" value="6"/></div>
+          </div>
+          <div class="rf">
+            <div class="rf-row"><label>Time Horizon</label><span class="rv" id="yearsDisplay">20 yrs</span></div>
+            <div class="rt"><div class="rf-fill" id="yearsFill" style="width:38.8%"></div><input type="range" id="years" min="1" max="50" step="1" value="20"/></div>
+          </div>
+          <button class="btn" onclick="calculate()">→ &nbsp;Project My Wealth</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Results -->
+    <div>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-lbl">Final Balance</div><div class="stat-val" id="finalBalance">—</div></div>
+        <div class="stat"><div class="stat-lbl">Real Purchasing Power</div><div class="stat-val pos" id="realPower">—</div></div>
+        <div class="stat"><div class="stat-lbl">Inflation Erosion</div><div class="stat-val neg" id="erosion">—</div></div>
+      </div>
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-hdr"><div class="card-ico">📈</div><span class="card-ttl">Wealth Projection</span></div>
+        <div class="card-body">
+          <div class="leg-row">
+            <div class="leg"><div class="leg-dot" style="background:#1A4A2A"></div>Nominal Wealth</div>
+            <div class="leg"><div class="leg-dot" style="background:#C9A55A"></div>Real Value</div>
+            <div class="leg"><div class="leg-dot" style="background:rgba(17,24,39,0.25)"></div>Total Deposited</div>
+          </div>
+          <div class="chart-h"><canvas id="wealthChart"></canvas></div>
+        </div>
+      </div>
+      <div class="insights">
+        <div class="ic"><div class="ic-lbl">Total Invested</div><div class="ic-val" id="totalInvested">—</div><div class="ic-desc">Principal + all contributions</div></div>
+        <div class="ic"><div class="ic-lbl">Total Profit</div><div class="ic-val" id="totalProfit">—</div><div class="ic-desc">Gains above your invested amount</div></div>
+        <div class="ic"><div class="ic-lbl">Return on Investment</div><div class="ic-val" id="roi">—</div><div class="ic-desc">Nominal ROI over your horizon</div></div>
+        <div class="ic"><div class="ic-lbl">Real Growth Rate</div><div class="ic-val" id="realGrowth">—</div><div class="ic-desc">Inflation-adjusted annual CAGR</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SILENT TAX -->
+<div class="section">
+  <div class="sep"></div>
+  <div class="eyebrow">The Silent Tax</div>
+  <div class="sec-title">How Inflation Eats Your Wallet</div>
+  <div class="sec-sub">Pick a category and an item to see exactly what it will cost you down the line.</div>
+
+  <div style="display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:22px">
+    <span style="display:inline-flex;align-items:center;gap:7px;background:var(--teal-glo);border:1px solid var(--bord-t);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:600;color:var(--teal);letter-spacing:0.06em"><span style="width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block;flex-shrink:0"></span>Last updated: March 2026</span>
+  </div>
+
+  <div class="inf-picker">
+    <div class="inf-field">
+      <label>1. Choose a category</label>
+      <select id="catPick" onchange="populateInfItems()">
+        <option value="food">🍽 Food &amp; Drink</option>
+        <option value="health">💊 Health</option>
+        <option value="transport">🚗 Transport</option>
+        <option value="lifestyle">🎬 Lifestyle</option>
+        <option value="education">📚 Education</option>
+        <option value="household">🏠 Household</option>
+        <option value="utilities">⚡ Utilities</option>
+      </select>
+    </div>
+    <div class="inf-field">
+      <label>2. Choose an item</label>
+      <select id="itemPick" onchange="renderInfResult()"></select>
+    </div>
+  </div>
+
+  <div class="inf-result">
+    <div class="inf-result-icon" id="infResIcon"></div>
+    <div class="inf-result-name" id="infResName"></div>
+    <div class="inf-result-row">
+      <div>
+        <div class="inf-result-lbl">Today (2026)</div>
+        <div class="inf-result-now" id="infResNow"></div>
+      </div>
+      <div class="inf-result-arrow">→</div>
+      <div>
+        <div class="inf-result-lbl" style="color:var(--red)">In <span id="stYrs">20</span> yrs</div>
+        <div class="inf-result-future" id="infResFuture"></div>
+      </div>
+    </div>
+    <div class="inf-result-mult" id="infResMult"></div>
+    <p style="font-size:12px;color:var(--ink50);font-weight:300;margin-top:16px">Prices verified for Bangalore, India. Based on <strong id="stRate">6%</strong> annual inflation over your chosen time horizon above.</p>
+  </div>
+</div>
+
+<!-- HISTORICAL PERSPECTIVE -->
+<div class="section">
+  <div class="sep"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px">
+    <div class="eyebrow" style="margin-bottom:0">Historical Perspective</div>
+    <span style="display:inline-flex;align-items:center;gap:7px;background:#f0faf9;border:1px solid var(--bord-t);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:600;color:var(--teal);letter-spacing:0.06em"><span style="width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block;flex-shrink:0"></span>Last updated: March 2026</span>
+  </div>
+  <div class="sec-title">How Prices Have Already Risen</div>
+  <div class="sec-sub">Real price data across key Indian commodities from 2000 to today — this is the inflation you have already lived through.</div>
+
+  <!-- Item selector pills -->
+  <div class="hist-pills" id="histPills"></div>
+
+  <!-- Line chart -->
+  <div class="card" style="margin-bottom:24px">
+    <div class="card-hdr"><div class="card-ico">📊</div><span class="card-ttl" id="histChartTitle">Price History</span></div>
+    <div class="card-body">
+      <div style="position:relative;height:300px"><canvas id="histChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Then & Now cards -->
+  <div class="tn-grid" id="tnGrid"></div>
+
+  <p class="hist-note">Sources: PPAC (Petroleum Planning &amp; Analysis Cell), Amul/Nandini public records, IOC historical LPG data, RBI CPI indices, MCX/GoodReturns gold data, Numbeo India (Bangalore). Prices are approximate national/Bangalore averages for illustration.</p>
+</div>
+
+<footer>
+  <div>Projections are illustrative and do not constitute financial advice. Past performance ≠ future results.</div>
+</footer>
+
+<script>
+// ════════════════════════════════════════════════════
+//  DATA
+// ════════════════════════════════════════════════════
+
+const ALL_ITEMS = [
+  // Food & Drink
+  {icon:'☕',name:'Café Coffee',           cat:'food',      price:210},
+  {icon:'🍵',name:'Street Chai',           cat:'food',      price:15},
+  {icon:'🥛',name:'Milk (1 L)',            cat:'food',      price:50},
+  {icon:'🍳',name:'Eggs (dozen)',          cat:'food',      price:90},
+  {icon:'🍚',name:'Basmati Rice (1 kg)',  cat:'food',      price:68},
+  {icon:'🫙',name:'Cooking Oil (1 L)',    cat:'food',      price:140},
+  {icon:'🍞',name:'Bread (loaf)',          cat:'food',      price:48},
+  {icon:'🧅',name:'Onions (1 kg)',         cat:'food',      price:36},
+  {icon:'🍅',name:'Tomatoes (1 kg)',       cat:'food',      price:34},
+  {icon:'🍔',name:'QSR Burger',            cat:'food',      price:220},
+  {icon:'🍕',name:'Pizza (medium)',        cat:'food',      price:450},
+  {icon:'🥗',name:'Restaurant Meal (2)',   cat:'food',      price:1500},
+  {icon:'🧃',name:'Packaged Juice (1 L)', cat:'food',      price:90},
+  {icon:'🍦',name:'Ice Cream Scoop',      cat:'food',      price:80},
+  // Health
+  {icon:'💊',name:'Paracetamol Strip',    cat:'health',    price:25},
+  {icon:'🩺',name:'GP Consultation',      cat:'health',    price:500},
+  {icon:'🔬',name:'Blood Test (basic)',   cat:'health',    price:700},
+  {icon:'💉',name:'Flu Vaccine',          cat:'health',    price:650},
+  {icon:'🦷',name:'Dental Cleaning',      cat:'health',    price:1500},
+  {icon:'👓',name:'Eyeglasses Frame',    cat:'health',    price:2000},
+  {icon:'🏥',name:'Day Surgery (avg)',    cat:'health',    price:50000},
+  {icon:'🧴',name:'Sunscreen SPF50',      cat:'health',    price:400},
+  {icon:'🩻',name:'X-Ray Scan',          cat:'health',    price:500},
+  {icon:'🧬',name:'Health Insurance (yr)',cat:'health',   price:12000},
+  // Transport
+  {icon:'🛵',name:'Auto Ride (5 km)',     cat:'transport', price:90},
+  {icon:'🚕',name:'Cab Ride (10 km)',     cat:'transport', price:220},
+  {icon:'🚌',name:'City Bus Pass (mo)',  cat:'transport', price:1250},
+  {icon:'🚇',name:'Metro Single Fare',   cat:'transport', price:50},
+  {icon:'✈️',name:'Flight BLR–DEL',      cat:'transport', price:5500},
+  {icon:'⛽',name:'Petrol (1 L)',         cat:'transport', price:103},
+  {icon:'🚙',name:'Car Service Basic',   cat:'transport', price:3500},
+  {icon:'🅿️',name:'Parking (per day)',  cat:'transport', price:100},
+  {icon:'🚂',name:'Train Ticket (2AC)',  cat:'transport', price:2200},
+  // Lifestyle
+  {icon:'🎬',name:'Movie Ticket (PVR)',  cat:'lifestyle', price:400},
+  {icon:'🎮',name:'Video Game (new)',     cat:'lifestyle', price:4999},
+  {icon:'📱',name:'Mid-range Phone',     cat:'lifestyle', price:22000},
+  {icon:'✂️',name:'Salon Haircut',       cat:'lifestyle', price:400},
+  {icon:'👟',name:'Running Shoes',       cat:'lifestyle', price:4600},
+  {icon:'💅',name:'Manicure',            cat:'lifestyle', price:500},
+  {icon:'🎵',name:'Concert Ticket',      cat:'lifestyle', price:2500},
+  {icon:'🧘',name:'Gym Membership (mo)', cat:'lifestyle', price:1600},
+  {icon:'📷',name:'DSLR Camera (entry)', cat:'lifestyle', price:48000},
+  {icon:'🏖️',name:'Weekend Getaway',    cat:'lifestyle', price:9000},
+  // Education
+  {icon:'📚',name:'College Textbook',    cat:'education', price:600},
+  {icon:'🎓',name:'Online Course',       cat:'education', price:5000},
+  {icon:'🏫',name:'School Fees (yr)',    cat:'education', price:90000},
+  {icon:'✏️',name:'Tuition (monthly)',  cat:'education', price:3000},
+  {icon:'💻',name:'Student Laptop',      cat:'education', price:48000},
+  {icon:'📝',name:'Stationery Kit',      cat:'education', price:300},
+  {icon:'🎨',name:'Art Supplies Kit',    cat:'education', price:900},
+  {icon:'🔭',name:'Science Kit',         cat:'education', price:2000},
+  // Household
+  {icon:'🏠',name:'Rent 2BHK BLR (mo)', cat:'household', price:28000},
+  {icon:'🛋️',name:'Sofa (mid-range)',   cat:'household', price:32000},
+  {icon:'🧹',name:'Maid (monthly)',      cat:'household', price:5000},
+  {icon:'🪣',name:'Water Can (20 L)',    cat:'household', price:50},
+  {icon:'🧺',name:'Washing Powder 1 kg',cat:'household', price:130},
+  {icon:'🛁',name:'Plumber Visit',       cat:'household', price:500},
+  {icon:'🪴',name:'Room Painting',       cat:'household', price:10000},
+  {icon:'🔧',name:'Electrician Call',    cat:'household', price:400},
+  {icon:'🛏️',name:'Mattress (queen)',   cat:'household', price:20000},
+  // Utilities
+  {icon:'⚡',name:'Electricity 200 u',   cat:'utilities', price:900},
+  {icon:'📡',name:'Broadband 100Mbps',   cat:'utilities', price:800},
+  {icon:'📺',name:'OTT Bundle (3 apps)', cat:'utilities', price:700},
+  {icon:'📱',name:'Mobile Recharge',     cat:'utilities', price:299},
+  {icon:'🍿',name:'DTH Monthly',         cat:'utilities', price:400},
+  {icon:'🚿',name:'Water Bill (mo)',     cat:'utilities', price:200},
+  {icon:'🔥',name:'LPG Cylinder',        cat:'utilities', price:916},
+  {icon:'🌐',name:'Domain + Hosting',   cat:'utilities', price:5000},
+];
+
+// Historical data — verified sources, India/Bangalore
+const HIST_DATA = [
+  {
+    id:'petrol', icon:'⛽', name:'Petrol (1L)', unit:'₹/litre', color:'#C1543A',
+    years: [2000,2003,2005,2008,2010,2013,2015,2017,2019,2021,2023,2026],
+    prices:[  22,  34,  40,  50,  47,  72,  62,  68,  72, 100, 102, 103],
+  },
+  {
+    id:'lpg', icon:'🔥', name:'LPG Cylinder', unit:'₹/14.2kg', color:'#B8631A',
+    years: [2000,2003,2005,2008,2010,2013,2015,2017,2019,2021,2023,2026],
+    prices:[ 155, 230, 295, 302, 345, 410, 568, 720, 700, 834, 903, 916],
+  },
+  {
+    id:'milk', icon:'🥛', name:'Milk (1L)', unit:'₹/litre', color:'#3D6B8C',
+    years: [2000,2003,2005,2008,2010,2013,2015,2017,2019,2021,2023,2026],
+    prices:[  12,  14,  18,  22,  26,  36,  40,  44,  48,  50,  56,  50],
+  },
+  {
+    id:'rice', icon:'🍚', name:'Rice (1kg)', unit:'₹/kg', color:'#1A5C30',
+    years: [2000,2003,2005,2008,2010,2013,2015,2017,2019,2021,2023,2026],
+    prices:[  18,  20,  22,  28,  32,  45,  50,  55,  60,  62,  68,  68],
+  },
+  {
+    id:'onion', icon:'🧅', name:'Onions (1kg)', unit:'₹/kg', color:'#534AB7',
+    years: [2000,2003,2005,2008,2010,2013,2015,2017,2019,2021,2023,2026],
+    prices:[   8,  10,  10,  14,  20,  30,  18,  22,  80,  25,  40,  36],
+  },
+  {
+    id:'gold', icon:'🥇', name:'Gold (10g)', unit:'₹/10g', color:'#C9A55A',
+    years: [2000,  2003,  2005,  2008,  2010,  2013,  2015,  2017,  2019,  2021,  2023,  2026],
+    prices:[4400,  5600,  7000, 12500, 18500, 29600, 26900, 29800, 35220, 46000, 58000, 86000],
+  },
+  {
+    id:'rent', icon:'🏠', name:'2BHK Rent BLR', unit:'₹/month', color:'#1F3A5F',
+    years: [2000, 2003, 2005, 2008,  2010,  2013,  2015,  2017,  2019,  2021,  2023,  2026],
+    prices:[3000, 4000, 5000, 8000, 10000, 15000, 16000, 18000, 20000, 22000, 25000, 28000],
+  },
+  {
+    id:'movie', icon:'🎬', name:'Movie Ticket', unit:'₹/ticket', color:'#993556',
+    years: [2000,2003,2005,2008,2010,2013,2015,2017,2019,2021,2023,2026],
+    prices:[  30,  40,  50,  80, 100, 150, 180, 200, 250, 280, 350, 400],
+  },
+];
+
+// ════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════
+let currentInf = 6;
+let currentYrs = 20;
+let wealthChart = null;
+let histChart   = null;
+let activeHist  = 'petrol';
+
+// ════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════
+const fmt = n => {
+  if (n >= 1e7) return '₹' + (n/1e7).toFixed(2) + ' Cr';
+  if (n >= 1e5) return '₹' + (n/1e5).toFixed(2) + ' L';
+  return '₹' + Math.round(n).toLocaleString('en-IN');
+};
+const fmtPct = n => n.toFixed(1) + '%';
+const fillPct = (rid, fid, mn, mx) => {
+  const v = parseFloat(document.getElementById(rid).value);
+  document.getElementById(fid).style.width = ((v-mn)/(mx-mn)*100) + '%';
+};
+
+// ════════════════════════════════════════════════════
+//  SLIDER LISTENERS
+// ════════════════════════════════════════════════════
+document.getElementById('growth').addEventListener('input', function() {
+  document.getElementById('growthDisplay').textContent = this.value + '%';
+  fillPct('growth','growthFill',1,30);
+  calculate();
+});
+document.getElementById('inflation').addEventListener('input', function() {
+  document.getElementById('inflationDisplay').textContent = this.value + '%';
+  fillPct('inflation','inflationFill',1,20);
+  calculate();
+});
+document.getElementById('years').addEventListener('input', function() {
+  document.getElementById('yearsDisplay').textContent = this.value + ' yrs';
+  fillPct('years','yearsFill',1,50);
+  calculate();
+});
+['principal','monthly'].forEach(id => document.getElementById(id).addEventListener('input', calculate));
+
+// ════════════════════════════════════════════════════
+//  WEALTH CALCULATOR
+// ════════════════════════════════════════════════════
+function calculate() {
+  const P   = parseFloat(document.getElementById('principal').value)  || 0;
+  const m   = parseFloat(document.getElementById('monthly').value)    || 0;
+  const g   = parseFloat(document.getElementById('growth').value)    / 100;
+  const inf = parseFloat(document.getElementById('inflation').value) / 100;
+  const Y   = parseInt(document.getElementById('years').value);
+
+  currentInf = inf * 100;
+  currentYrs = Y;
+
+  const labels=[], nomData=[], realData=[], depData=[];
+  let nom=P, real=P;
+  for (let yr=0; yr<=Y; yr++) {
+    labels.push(yr===0 ? 'Now' : 'Yr '+yr);
+    nomData.push(Math.round(nom));
+    realData.push(Math.round(real));
+    depData.push(Math.round(P + m*12*yr));
+    nom  = nom*(1+g) + m*12;
+    real = real*(1+g)/(1+inf) + m*12/(1+inf);
+  }
+
+  const fn=nomData[Y], fr=realData[Y], dep=P+m*12*Y;
+  const prof=fn-dep, roi=dep>0?(prof/dep)*100:0;
+  const rg=((1+g)/(1+inf)-1)*100;
+
+  document.getElementById('finalBalance').textContent  = fmt(fn);
+  document.getElementById('realPower').textContent     = fmt(fr);
+  document.getElementById('erosion').textContent       = fmt(fn-fr);
+  document.getElementById('totalInvested').textContent = fmt(dep);
+  document.getElementById('totalProfit').textContent   = fmt(prof);
+  document.getElementById('roi').textContent           = fmtPct(roi);
+  document.getElementById('realGrowth').textContent    = fmtPct(rg);
+
+  const ctx = document.getElementById('wealthChart').getContext('2d');
+  if (wealthChart) wealthChart.destroy();
+  wealthChart = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'Nominal Wealth', data:nomData, borderColor:'#1A4A2A', backgroundColor:'rgba(26,74,42,0.08)', borderWidth:2.5, pointRadius:0, pointHoverRadius:5, fill:true, tension:0.4},
+        {label:'Real Value',     data:realData, borderColor:'#C9A55A', backgroundColor:'rgba(201,165,90,0.05)', borderWidth:2, pointRadius:0, pointHoverRadius:5, fill:true, tension:0.4, borderDash:[6,3]},
+        {label:'Deposited',      data:depData, borderColor:'rgba(17,24,39,0.22)', backgroundColor:'transparent', borderWidth:1.5, pointRadius:0, fill:false, tension:0, borderDash:[3,4]},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#fff', titleColor:'#111827', bodyColor:'#6b7280',
+          borderColor:'rgba(0,0,0,0.1)', borderWidth:1, padding:12,
+          titleFont:{family:'Playfair Display',size:13,weight:'700'},
+          bodyFont:{family:'Nunito Sans',size:12},
+          callbacks:{label:c=>' '+c.dataset.label+': '+fmt(c.raw)}
+        }
+      },
+      scales:{
+        x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{family:'Nunito Sans',size:10},color:'#9ca3af',maxTicksLimit:10}},
+        y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{family:'Nunito Sans',size:10},color:'#9ca3af',callback:v=>fmt(v)}}
+      }
+    }
+  });
+
+  document.getElementById('stYrs').textContent  = Y;
+  document.getElementById('stRate').textContent = (inf*100).toFixed(1)+'%';
+  renderInfResult();
+}
+
+// ════════════════════════════════════════════════════
+//  SILENT TAX — two-dropdown flow
+// ════════════════════════════════════════════════════
+function populateInfItems() {
+  const cat = document.getElementById('catPick').value;
+  const items = ALL_ITEMS.filter(i => i.cat === cat);
+  document.getElementById('itemPick').innerHTML = items.map((it, i) =>
+    `<option value="${i}">${it.icon} ${it.name} — ₹${it.price.toLocaleString('en-IN')}</option>`
+  ).join('');
+  renderInfResult();
+}
+
+function renderInfResult() {
+  const cat = document.getElementById('catPick').value;
+  const items = ALL_ITEMS.filter(i => i.cat === cat);
+  const idx = parseInt(document.getElementById('itemPick').value) || 0;
+  const it = items[idx];
+  if (!it) return;
+  const inf = currentInf/100, yrs = currentYrs;
+  const future = Math.round(it.price * Math.pow(1+inf, yrs));
+  const mult = (future/it.price).toFixed(1);
+
+  document.getElementById('infResIcon').textContent  = it.icon;
+  document.getElementById('infResName').textContent  = it.name;
+  document.getElementById('infResNow').textContent   = '₹' + it.price.toLocaleString('en-IN');
+  document.getElementById('infResFuture').textContent= '₹' + future.toLocaleString('en-IN');
+  document.getElementById('infResMult').textContent  = mult + '× costlier';
+}
+
+// ════════════════════════════════════════════════════
+//  HISTORICAL PERSPECTIVE
+// ════════════════════════════════════════════════════
+function initHistorical() {
+  // Build pills
+  document.getElementById('histPills').innerHTML = HIST_DATA.map(d => {
+    const mult = (d.prices[d.prices.length-1] / d.prices[0]).toFixed(1);
+    return `<div class="hist-pill ${d.id===activeHist?'active':''}" onclick="selectHist('${d.id}')">
+      <div class="hp-ico">${d.icon}</div>
+      <div>
+        <div class="hp-nm">${d.name}</div>
+        <div class="hp-change">${mult}× since 2000</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  renderHistChart(activeHist);
+  renderThenNow();
+}
+
+function selectHist(id) {
+  activeHist = id;
+  document.querySelectorAll('.hist-pill').forEach(p => {
+    p.classList.toggle('active', p.getAttribute('onclick') === `selectHist('${id}')`);
+  });
+  renderHistChart(id);
+}
+
+function renderHistChart(id) {
+  const d = HIST_DATA.find(x=>x.id===id);
+  document.getElementById('histChartTitle').textContent = d.name + ' — Price History (India)';
+  const ctx = document.getElementById('histChart').getContext('2d');
+  if (histChart) histChart.destroy();
+  histChart = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: d.years.map(String),
+      datasets:[{
+        label: d.unit,
+        data: d.prices,
+        borderColor: d.color,
+        backgroundColor: d.color+'1a',
+        borderWidth: 2.5,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        pointBackgroundColor: d.color,
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        fill: true,
+        tension: 0.35,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#fff', titleColor:'#111827', bodyColor:'#6b7280',
+          borderColor:'rgba(0,0,0,0.1)', borderWidth:1, padding:12,
+          titleFont:{family:'Playfair Display',size:13,weight:'700'},
+          bodyFont:{family:'Nunito Sans',size:12},
+          callbacks:{label:c=>' ₹'+c.raw.toLocaleString('en-IN')}
+        }
+      },
+      scales:{
+        x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{family:'Nunito Sans',size:11},color:'#9ca3af'}},
+        y:{
+          grid:{color:'rgba(0,0,0,0.04)'},
+          ticks:{font:{family:'Nunito Sans',size:11},color:'#9ca3af',callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'k':v)}
+        }
+      }
+    }
+  });
+}
+
+function renderThenNow() {
+  document.getElementById('tnGrid').innerHTML = HIST_DATA.map(d => {
+    const old = d.prices[0], now = d.prices[d.prices.length-1];
+    const mult = (now/old);
+    const yrs = d.years[d.years.length-1] - d.years[0];
+    const cagr = ((Math.pow(mult, 1/yrs)-1)*100).toFixed(1);
+    const barW = Math.min(100, (mult/20)*100);
+    return `<div class="tn-card">
+      <div class="tn-head"><span class="tn-ico">${d.icon}</span><span class="tn-nm">${d.name}</span></div>
+      <div class="tn-prices">
+        <div class="tn-col"><div class="tn-yr">Year 2000</div><div class="tn-old">₹${old.toLocaleString('en-IN')}</div></div>
+        <div class="tn-arr">→</div>
+        <div class="tn-col r"><div class="tn-yr" style="color:var(--red);opacity:0.7">Today 2026</div><div class="tn-new">₹${now.toLocaleString('en-IN')}</div></div>
+      </div>
+      <div class="tn-bar-wrap"><div class="tn-bar" style="width:${barW}%"></div></div>
+      <div class="tn-cagr">${mult.toFixed(1)}× costlier &nbsp;·&nbsp; CAGR <span>${cagr}%</span>/yr</div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════
+calculate();
+initHistorical();
+populateInfItems();
+</script>

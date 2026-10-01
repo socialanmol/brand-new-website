@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Health Insurance — MyAnmol</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #1A4A2A;
+  --dark:      #0D2E18;
+  --dark2:     #0A2814;
+  --gold:      #C9A55A;
+  --goldf:     #DFC07A;
+  --terra:     #C1543A;
+  --r-sm: 8px; --r-md: 16px; --r-lg: 24px; --r-xl: 32px;
+  --fd: 'Playfair Display', serif;
+  --fs: 'Nunito Sans', sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;width:100%;overflow-x:hidden;scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar{display:none}
+body{font-family:var(--fs);background:#FFFFFF;color:#101A12;line-height:1.6;-webkit-font-smoothing:antialiased;width:100%;overflow-x:hidden;scrollbar-width:none;-ms-overflow-style:none}
+body::-webkit-scrollbar{display:none}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:1000px;margin:0 auto;padding:0 40px}
+
+.over{font-family:var(--fs);font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#8A6030}
+h1{font-family:var(--fd);font-size:clamp(32px,4.4vw,50px);font-weight:700;letter-spacing:-.02em;color:#FFFFFF}
+h2{font-family:var(--fd);font-size:clamp(22px,2.8vw,28px);font-weight:700;letter-spacing:-.02em;color:#111410;margin-bottom:14px}
+h3{font-family:var(--fd);font-size:17px;font-weight:700;color:#111410;margin-bottom:8px}
+.lead{font-size:16px;line-height:1.8;color:rgba(255,255,255,.8);font-weight:300}
+p.body-text{font-size:15.5px;line-height:1.85;color:#445048;font-weight:300}
+
+.btn-gold{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--fs);font-size:14.5px;font-weight:800;color:#0D2E18;background:#C9A55A;padding:14px 30px;border-radius:100px;border:none;cursor:pointer;transition:all .25s ease}
+.btn-gold:hover{background:#DFC07A;transform:translateY(-2px);box-shadow:0 10px 24px rgba(201,165,90,.3)}
+
+/* HERO */
+#hi-hero{background:linear-gradient(135deg,var(--dark) 0%,var(--bg) 100%);padding:72px 0 60px;text-align:center;position:relative;overflow:hidden}
+.hi-glow{position:absolute;top:10%;left:50%;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,var(--gold),transparent 65%);filter:blur(70px);transform:translate(-50%,-50%);opacity:.2;pointer-events:none}
+.hero-inner{position:relative;z-index:1;max-width:620px;margin:0 auto}
+.hero-icon{width:72px;height:72px;border-radius:20px;background:rgba(201,165,90,.14);border:1px solid rgba(201,165,90,.35);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 22px}
+.hero-inner .over{display:block;margin-bottom:12px}
+.hero-inner h1{margin-bottom:14px}
+
+/* WHAT IS IT */
+#hi-what{padding:56px 0}
+.what-card{background:#F4F8F5;border:1px solid rgba(26,74,42,.12);border-radius:var(--r-lg);padding:32px 34px}
+.what-card p{font-size:15.5px;line-height:1.9;color:#2C3A30;font-weight:300}
+
+/* SECTION SHELL */
+.hi-section{padding:16px 0 56px}
+.hi-section-head{margin-bottom:28px}
+
+/* COMPARISON TABLE */
+#hi-compare{padding:16px 0 56px;background:#F4F8F5}
+.hi-table-wrap{overflow-x:auto;border-radius:var(--r-lg);border:1px solid rgba(0,0,0,.08);box-shadow:0 10px 30px rgba(13,46,24,.05)}
+table.hi-table{width:100%;border-collapse:collapse;background:#FFFFFF;min-width:560px}
+table.hi-table th{background:#0D2E18;color:#FFFFFF;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:14px 18px;text-align:left}
+table.hi-table th.highlight-col{background:#1A4A2A;color:var(--goldf)}
+table.hi-table td{padding:13px 18px;font-size:14px;color:#445048;border-bottom:1px solid rgba(0,0,0,.06)}
+table.hi-table tr:last-child td{border-bottom:none}
+table.hi-table td:first-child{font-weight:600;color:#111410}
+table.hi-table td.highlight-col{background:rgba(201,165,90,.06);color:#1A4A2A;font-weight:600}
+
+/* WHY IT BELONGS */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.why-card{background:#FFFFFF;border:1px solid rgba(0,0,0,.07);border-radius:var(--r-lg);padding:24px;display:flex;gap:16px;align-items:flex-start;box-shadow:0 10px 30px rgba(13,46,24,.05)}
+.why-icon{width:40px;height:40px;border-radius:50%;background:rgba(201,165,90,.14);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.why-card h3{font-size:15.5px;margin-bottom:6px}
+.why-card p{font-size:13.5px;color:#445048;line-height:1.7;font-weight:300}
+
+/* COVERAGE CALCULATOR */
+#hi-calc{padding:16px 0 64px;background:#F4F8F5}
+.calc-head{text-align:center;max-width:600px;margin:0 auto 36px}
+.calc-head .over{display:block;margin-bottom:12px}
+.calc-head p{font-size:14.5px;color:#8A9E90;margin-top:10px;line-height:1.7}
+.calc-box{max-width:760px;margin:0 auto;background:#FFFFFF;border:1px solid rgba(0,0,0,.07);border-radius:var(--r-xl);padding:36px;box-shadow:0 20px 50px rgba(13,46,24,.08)}
+.calc-fields{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:8px}
+.calc-field label{display:block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#8A9E90;margin-bottom:8px}
+.calc-field .val-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.calc-field .val{font-family:var(--fd);font-size:20px;font-weight:700;color:#1A4A2A}
+.calc-field input[type="range"]{width:100%;accent-color:#1A4A2A;height:4px}
+.calc-field .range-ends{display:flex;justify-content:space-between;font-size:10.5px;color:#8A9E90;margin-top:4px}
+
+.calc-result{margin-top:28px;background:linear-gradient(135deg,#0D2E18,#1A4A2A);border-radius:var(--r-lg);padding:28px 30px;text-align:center}
+.calc-result-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:8px}
+.calc-result-num{font-family:var(--fd);font-size:clamp(30px,5vw,42px);font-weight:700;color:var(--goldf)}
+.calc-result-note{font-size:12.5px;color:rgba(255,255,255,.6);margin-top:10px;line-height:1.6;max-width:460px;margin-left:auto;margin-right:auto}
+
+/* RIDERS */
+.riders-note{background:#FFF8EE;border:1px dashed rgba(184,99,26,.35);border-radius:var(--r-md);padding:14px 18px;margin-bottom:24px;font-size:13px;color:#8A5A2A;line-height:1.7}
+.rider-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.rider-card{background:#F4F8F5;border:1px solid rgba(26,74,42,.1);border-radius:var(--r-lg);padding:22px}
+.rider-card h3{font-size:15px;margin-bottom:8px}
+.rider-card p{font-size:13px;color:#445048;line-height:1.7;font-weight:300}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:0;max-width:680px}
+.check-row{display:flex;gap:16px;padding:18px 0;border-bottom:1px solid rgba(0,0,0,.08);align-items:flex-start}
+.check-row:last-child{border-bottom:none}
+.check-mark{width:26px;height:26px;border-radius:50%;background:rgba(26,74,42,.1);color:#1A4A2A;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.check-row h3{font-size:15px;margin-bottom:4px}
+.check-row p{font-size:13.5px;color:#445048;line-height:1.7;font-weight:300}
+
+/* MYTHS */
+#hi-myths{padding:16px 0 56px;background:#F4F8F5}
+.myth-list{display:flex;flex-direction:column;gap:14px;max-width:760px}
+.myth-card{background:#FFFFFF;border:1px solid rgba(0,0,0,.07);border-radius:var(--r-lg);padding:22px 26px;box-shadow:0 8px 24px rgba(13,46,24,.05)}
+.myth-tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#C1543A;background:rgba(193,84,58,.1);padding:4px 12px;border-radius:100px;margin-bottom:10px}
+.myth-card .myth-q{font-family:var(--fd);font-size:16px;font-style:italic;color:#111410;margin-bottom:8px}
+.myth-card .myth-a{font-size:14px;color:#445048;line-height:1.75;font-weight:300}
+
+/* CTA */
+#hi-cta{padding:64px 0;background:var(--dark);text-align:center}
+.cta-inner{max-width:500px;margin:0 auto}
+.cta-inner h2{color:#FFFFFF;margin-bottom:12px}
+.cta-inner p{font-size:15px;color:rgba(255,255,255,.75);line-height:1.75;font-weight:300;margin-bottom:28px}
+
+@media(max-width:700px){.why-grid,.calc-fields,.rider-grid{grid-template-columns:1fr}}
+@media(max-width:600px){
+  .wrap{padding:0 20px}
+  #hi-hero{padding:52px 0 44px}
+  .what-card{padding:24px}
+  .calc-box{padding:26px 22px}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section id="hi-hero">
+  <div class="hi-glow"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-icon">🏥</div>
+      <span class="over">Insurance</span>
+      <h1>Health Insurance</h1>
+      <p class="lead">Because a medical emergency shouldn't become a financial one.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS IT -->
+<section id="hi-what">
+  <div class="wrap">
+    <div class="what-card">
+      <p>Health insurance is a policy that covers hospitalization and medical expenses in exchange for a premium. Instead of paying out of pocket during a health emergency, your insurer settles the bill — directly with the hospital, or by reimbursing you. It protects your savings from being wiped out by a single medical event, rather than building wealth like an investment product.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section id="hi-compare">
+  <div class="wrap">
+    <div class="hi-section-head">
+      <span class="over" style="color:#8A6030">The Comparison</span>
+      <h2>Types of Health Insurance</h2>
+      <p class="body-text">Which structure actually fits your household.</p>
+    </div>
+    <div class="hi-table-wrap">
+      <table class="hi-table">
+        <thead>
+          <tr>
+            <th>What You Get</th>
+            <th class="highlight-col">Family Floater</th>
+            <th>Individual Plan</th>
+            <th>Top-Up / Super Top-Up</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Who's covered</td>
+            <td class="highlight-col">Entire family, one shared sum insured</td>
+            <td>One person only</td>
+            <td>Adds on top of an existing base policy</td>
+          </tr>
+          <tr>
+            <td>Premium</td>
+            <td class="highlight-col">Usually cheaper per person</td>
+            <td>Based on that person's age &amp; health alone</td>
+            <td>Lowest — only kicks in above a threshold</td>
+          </tr>
+          <tr>
+            <td>How claims work</td>
+            <td class="highlight-col">Sum insured shared across whoever falls ill</td>
+            <td>Full sum insured available for that one person</td>
+            <td>Pays only above the deductible amount</td>
+          </tr>
+          <tr>
+            <td>Best suited for</td>
+            <td class="highlight-col">Young families wanting one simple policy</td>
+            <td>Senior parents, or anyone with distinct health needs</td>
+            <td>Boosting cover affordably without a new base plan</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- WHY IT BELONGS -->
+<section class="hi-section">
+  <div class="wrap">
+    <div class="hi-section-head">
+      <span class="over" style="color:#8A6030">Why It Matters</span>
+      <h2>Why health insurance belongs in your plan</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card"><div class="why-icon">💳</div><div><h3>Cashless Treatment</h3><p>Get treated at network hospitals without paying upfront — your insurer settles directly with the hospital.</p></div></div>
+      <div class="why-card"><div class="why-icon">📈</div><div><h3>Protection From Medical Inflation</h3><p>Healthcare costs in India rise roughly 14% a year — a good policy keeps that inflation off your own balance sheet.</p></div></div>
+      <div class="why-card"><div class="why-icon">📋</div><div><h3>Tax Benefits</h3><p>Premiums qualify for deduction under Section 80D, on top of the actual protection you're buying.</p></div></div>
+      <div class="why-card"><div class="why-icon">🩺</div><div><h3>More Than Just the Hospital Stay</h3><p>Covers pre- and post-hospitalization expenses too — consultations, tests, and medicines before and after admission.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COVERAGE CALCULATOR -->
+<section id="hi-calc">
+  <div class="wrap">
+    <div class="calc-head">
+      <span class="over" style="color:#8A6030">Quick Check</span>
+      <h2>How much health cover do I need?</h2>
+      <p>A simple estimate based on where you live, your family size, and your age.</p>
+    </div>
+
+    <div class="calc-box">
+      <div class="calc-fields">
+        <div class="calc-field">
+          <label>City Tier</label>
+          <div class="val-row"><span></span><span class="val" id="cityVal">Metro</span></div>
+          <input type="range" id="citySlider" min="1" max="3" value="3" step="1" oninput="calc()">
+          <div class="range-ends"><span>Tier 3</span><span>Metro</span></div>
+        </div>
+        <div class="calc-field">
+          <label>Age of Eldest Member</label>
+          <div class="val-row"><span></span><span class="val" id="ageVal">35 yrs</span></div>
+          <input type="range" id="ageSlider" min="18" max="70" value="35" step="1" oninput="calc()">
+          <div class="range-ends"><span>18</span><span>70</span></div>
+        </div>
+        <div class="calc-field">
+          <label>Family Members to Cover</label>
+          <div class="val-row"><span></span><span class="val" id="familyVal">3</span></div>
+          <input type="range" id="familySlider" min="1" max="6" value="3" step="1" oninput="calc()">
+          <div class="range-ends"><span>1</span><span>6+</span></div>
+        </div>
+        <div class="calc-field">
+          <label>Existing Health Cover</label>
+          <div class="val-row"><span></span><span class="val" id="existVal">₹5 L</span></div>
+          <input type="range" id="existSlider" min="0" max="5000000" value="500000" step="100000" oninput="calc()">
+          <div class="range-ends"><span>₹0</span><span>₹50L+</span></div>
+        </div>
+      </div>
+
+      <div class="calc-result">
+        <div class="calc-result-label">Recommended Sum Insured</div>
+        <div class="calc-result-num" id="resultNum">₹14 L</div>
+        <div class="calc-result-note" id="resultNote">Based on your city's healthcare costs, family size, and age — talk to an advisor to fine-tune this further.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RIDERS -->
+<section class="hi-section">
+  <div class="wrap">
+    <div class="hi-section-head">
+      <span class="over" style="color:#8A6030">Add-Ons</span>
+      <h2>Riders worth considering</h2>
+    </div>
+    <div class="riders-note">These are common industry-standard riders shown for reference — we'll confirm exactly which ones MyAnmol offers before this goes live.</div>
+    <div class="rider-grid">
+      <div class="rider-card"><h3>Critical Illness Rider</h3><p>Pays a lump sum on diagnosis of a covered illness like cancer or a heart condition, on top of your base cover.</p></div>
+      <div class="rider-card"><h3>Maternity Cover</h3><p>Covers delivery and newborn care expenses, usually after a waiting period of 2–4 years.</p></div>
+      <div class="rider-card"><h3>Personal Accident Cover</h3><p>An additional payout for accidental injury or disability, beyond standard hospitalization cover.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CHECKLIST -->
+<section class="hi-section">
+  <div class="wrap">
+    <div class="hi-section-head">
+      <span class="over" style="color:#8A6030">Before You Buy</span>
+      <h2>What to check before you buy</h2>
+    </div>
+    <div class="checklist">
+      <div class="check-row"><div class="check-mark">✓</div><div><h3>Network Hospitals</h3><p>Check that hospitals near you are included, so you can actually use cashless treatment when it matters.</p></div></div>
+      <div class="check-row"><div class="check-mark">✓</div><div><h3>Waiting Period</h3><p>Most policies have a waiting period for pre-existing conditions — understand exactly how long before you're fully covered.</p></div></div>
+      <div class="check-row"><div class="check-mark">✓</div><div><h3>Room Rent Sub-Limits</h3><p>Some policies cap the room rent they'll cover, which can reduce your payout even within the sum insured.</p></div></div>
+      <div class="check-row"><div class="check-mark">✓</div><div><h3>Claim Settlement Ratio &amp; No-Claim Bonus</h3><p>A strong settlement track record, plus a bonus that increases your cover each claim-free year.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MYTHS -->
+<section id="hi-myths">
+  <div class="wrap">
+    <div class="hi-section-head">
+      <span class="over" style="color:#8A6030">Set the Record Straight</span>
+      <h2>Common myths about health insurance</h2>
+    </div>
+    <div class="myth-list">
+      <div class="myth-card">
+        <span class="myth-tag">Myth</span>
+        <div class="myth-q">"My employer's group cover is enough."</div>
+        <div class="myth-a">Group cover usually ends the day you leave the job, and the sum insured is often too low to handle a serious illness — a personal policy fills that gap.</div>
+      </div>
+      <div class="myth-card">
+        <span class="myth-tag">Myth</span>
+        <div class="myth-q">"I'm young and healthy, I don't need it."</div>
+        <div class="myth-a">Premiums are lowest and waiting periods start earliest when you buy young — plus you're covered before any health issue can be called "pre-existing."</div>
+      </div>
+      <div class="myth-card">
+        <span class="myth-tag">Myth</span>
+        <div class="myth-q">"Health insurance covers everything."</div>
+        <div class="myth-a">Most policies exclude certain treatments, have waiting periods, and cap room rent — reading the fine print matters as much as buying the policy.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="hi-cta">
+  <div class="wrap">
+    <div class="cta-inner">
+      <h2>Not sure how much health cover you need?</h2>
+      <p>Talk to a MyAnmol advisor to build a health insurance plan that actually fits your family's needs.</p>
+      <a href="https://www.myanmol.com/contact" target="_blank" rel="noopener noreferrer" class="btn-gold">Speak to an Advisor →</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function fmtINR(n) {
+  if (n >= 10000000) return '₹' + (n/10000000).toFixed(2).replace(/\.00$/,'') + ' Cr';
+  if (n >= 100000) return '₹' + (n/100000).toFixed(1).replace(/\.0$/,'') + ' L';
+  return '₹' + n.toLocaleString('en-IN');
+}
+
+function calc() {
+  const cityTier = parseInt(document.getElementById('citySlider').value);
+  const age = parseInt(document.getElementById('ageSlider').value);
+  const family = parseInt(document.getElementById('familySlider').value);
+  const existing = parseInt(document.getElementById('existSlider').value);
+
+  const cityLabels = {1:'Tier 3', 2:'Tier 2', 3:'Metro'};
+  document.getElementById('cityVal').textContent = cityLabels[cityTier];
+  document.getElementById('ageVal').textContent = age + ' yrs';
+  document.getElementById('familyVal').textContent = family;
+  document.getElementById('existVal').textContent = fmtINR(existing);
+
+  const baseByTier = {1: 500000, 2: 700000, 3: 1000000};
+  const base = baseByTier[cityTier];
+
+  let ageMultiplier;
+  if (age < 35) ageMultiplier = 1;
+  else if (age < 50) ageMultiplier = 1.3;
+  else ageMultiplier = 1.6;
+
+  const familyMultiplier = 1 + (family - 1) * 0.35;
+
+  const totalNeed = Math.round((base * ageMultiplier * familyMultiplier) / 100000) * 100000;
+  const recommended = Math.max(0, totalNeed - existing);
+
+  document.getElementById('resultNum').textContent = recommended === 0 ? 'You look well covered' : fmtINR(recommended);
+  document.getElementById('resultNote').textContent = recommended === 0
+    ? 'Your existing cover already meets this estimate — an advisor can confirm it aligns with your actual needs.'
+    : `Based on ${cityLabels[cityTier]} healthcare costs, ${family} member${family>1?'s':''} to cover, and your age bracket — minus your existing cover.`;
+}
+
+calc();
+</script>
+
+</body>
+</html>
