@@ -16,6 +16,7 @@ import adithya from "@/imports/adithya.png";
 import adhi from "@/imports/adhisheshan.png";
 import silky from "@/imports/silky.png";
 import vidyadheesha from "@/imports/vidyadheesha.png";
+import monika from "@/imports/monika-gupta.png";
 
 interface TeamMember {
   name: string;
@@ -114,7 +115,7 @@ const ADVISORY_TEAM: TeamMember[] = [
     name: "Monika Gupta",
     role: "Mutual Funds",
     department: "Financial Planner & Fund Analyst",
-    monogram: "MG",
+    image: monika,
     bio: "Monika is part of the Wealth Management team, working across financial planning, mutual fund research, fund analysis, and investment research. He contributes to research-driven analysis, evaluating risk-return dynamics and investment opportunities to support long-term wealth creation strategies.",
   },
   {
@@ -151,6 +152,13 @@ const ADVISORY_TEAM: TeamMember[] = [
     department: "Team Member",
     monogram: "VK",
     bio: "Part of the MyAnmol team, supporting the organisation's mission to make financial services more accessible and client-focused.",
+  },
+  {
+    name: "Vaibhavi Vishwanath",
+    role: "Wealth Management Officer-Client Advisory",
+    department: "Mutual Funds",
+    monogram: "V",
+    bio: "Vaibhavi a talented women, having great powers to overcome any obstacles in her life at MyAnmol.",
   },
 ];
 
@@ -340,7 +348,7 @@ export default function OurTeam() {
                     member.monogram
                   )}
                 </div>
-                <div className="p-5 flex-1 flex flex-col">
+                <div className="p-5">
                   <span className="inline-block self-start text-[9px] font-extrabold uppercase tracking-[.14em] text-[#6AA32A] bg-[#EFF8E2] px-2.5 py-1 rounded-full mb-2">
                     {member.department}
                   </span>
@@ -351,7 +359,7 @@ export default function OurTeam() {
                     {member.role}
                   </p>
                   <div className="w-6 h-0.5 bg-[#8DC63F] mb-3" />
-                  <p className="text-xs sm:text-[13px] text-[#4B5563] font-light leading-relaxed mt-auto">
+                  <p className="text-xs sm:text-[13px] text-[#4B5563] font-light leading-relaxed">
                     {member.bio}
                   </p>
                 </div>
