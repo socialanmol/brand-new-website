@@ -8,7 +8,7 @@ import yashma from "@/imports/yashma.jpg";
 import devansh from "@/imports/devansh.jpg";
 import madhu from "@/imports/madhu.png";
 import raghavendra from "@/imports/raghavendra.png";
-import vinod from "@/imports/vinod_n_s.png";
+import vinod from "@/imports/vinod-n-s.png";
 import indhumathi from "@/imports/indhumathi_g.png";
 import pratap from "@/imports/pratap_behura.png";
 import prachi from "@/imports/prachi_bajaj.png";
@@ -17,6 +17,7 @@ import adhi from "@/imports/adhisheshan.png";
 import silky from "@/imports/silky.png";
 import vidyadheesha from "@/imports/vidyadheesha.png";
 import monika from "@/imports/monika-gupta.png";
+import vinaya from "@/imports/vinaya-kumari.png";
 
 interface TeamMember {
   name: string;
@@ -150,7 +151,7 @@ const ADVISORY_TEAM: TeamMember[] = [
     name: "Vinaya Kumari",
     role: "Team Member",
     department: "Team Member",
-    monogram: "VK",
+    image: vinaya,
     bio: "Part of the MyAnmol team, supporting the organisation's mission to make financial services more accessible and client-focused.",
   },
   {
