@@ -1,10 +1,13 @@
-import { defineConfig, type Connect, type HtmlTagDescriptor, type Plugin } from 'vite'
+import { defineConfig, type HtmlTagDescriptor, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 
-import siteConfiguration from './.figma/make/site.json'
-import { GET as getGoogleReviews } from './src/app/api/google-reviews/route.ts'
+const siteConfigurationPath = path.resolve(__dirname, '.figma/make/site.json')
+const siteConfiguration = existsSync(siteConfigurationPath)
+  ? JSON.parse(readFileSync(siteConfigurationPath, 'utf8'))
+  : {}
 
 // Vite config — https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -24,7 +27,6 @@ export default defineConfig(({ mode }) => {
       figmaErrorOverlayReplay(),
       figmaReactRefreshBoundaryFallback(),
       figmaMakeKitPlugin({ storiesGlob: '/src/**/*.stories.{ts,tsx,js,jsx}' }),
-      googleReviewsApiPlugin(),
     ],
     resolve: {
       alias: {
@@ -35,40 +37,20 @@ export default defineConfig(({ mode }) => {
       host: process.env.FIGMA_DEV_SERVER_HOST || '0.0.0.0',
       port: parseInt(process.env.PORT || '8443'),
       strictPort: true,
+      proxy: {
+        '/api': `http://127.0.0.1:${process.env.API_PORT || '8787'}`,
+      },
       watch: { ignored: ['**/.figma/**'] },
     },
     preview: {
       host: process.env.FIGMA_DEV_SERVER_HOST || '0.0.0.0',
       port: parseInt(process.env.PORT || '8443'),
+      proxy: {
+        '/api': `http://127.0.0.1:${process.env.API_PORT || '8787'}`,
+      },
     },
   }
 })
-
-function googleReviewsApiPlugin(): Plugin {
-  const handler: Connect.NextHandleFunction = (req, res, next) => {
-    if (req.url?.split('?')[0] !== '/api/google-reviews') return next()
-
-    void getGoogleReviews()
-      .then(async (response) => {
-        res.statusCode = response.status
-        response.headers.forEach((value, key) => res.setHeader(key, value))
-        res.end(await response.text())
-      })
-      .catch((error: unknown) => {
-        next(error instanceof Error ? error : new Error(String(error)))
-      })
-  }
-
-  return {
-    name: 'google-reviews-api',
-    configureServer(server) {
-      server.middlewares.use(handler)
-    },
-    configurePreviewServer(server) {
-      server.middlewares.use(handler)
-    },
-  }
-}
 
 type FigmaSiteConfiguration = {
   title?: string

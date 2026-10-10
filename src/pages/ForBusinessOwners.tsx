@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 const FAQS_DATA = [
   {
@@ -41,6 +41,7 @@ const FAQS_DATA = [
 ];
 
 export default function ForBusinessOwners() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
@@ -59,12 +60,13 @@ export default function ForBusinessOwners() {
           </p>
 
           <div className="flex flex-wrap gap-4 mb-12">
-            <a
-              href="#book"
+            <button
+              type="button"
+              onClick={openGetStarted}
               className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-xl shadow-lg transition-all"
             >
               Book a consultation
-            </a>
+            </button>
             <a
               href="#ledger"
               className="border border-white/30 hover:bg-white/10 text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-all"
@@ -285,7 +287,7 @@ export default function ForBusinessOwners() {
               href="tel:+919742826665"
               className="border border-white/30 hover:bg-white/10 text-white font-bold text-sm px-8 py-3.5 rounded-full transition-all"
             >
-              Call our Jayanagar office — 97428 26665
+              Call us now!
             </a>
           </div>
         </div>

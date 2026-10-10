@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useOutletContext } from "react-router";
 
 const FAQS_DATA = [
   {
@@ -40,6 +41,7 @@ const FAQS_DATA = [
 ];
 
 export default function ForArmedForces() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
@@ -58,12 +60,13 @@ export default function ForArmedForces() {
           </p>
 
           <div className="flex flex-wrap gap-4 mb-12">
-            <a
-              href="#book"
+            <button
+              type="button"
+              onClick={openGetStarted}
               className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-xl shadow-lg transition-all"
             >
               Book a consultation
-            </a>
+            </button>
             <a
               href="#ledger"
               className="border border-white/30 hover:bg-white/10 text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-all"

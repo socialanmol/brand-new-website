@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:api": "node --experimental-strip-types server.mjs",
     "build": "vite build",
     "preview": "vite preview",
+    "start:api": "node --experimental-strip-types server.mjs",
     "format": "oxfmt"
   },
   "dependencies": {

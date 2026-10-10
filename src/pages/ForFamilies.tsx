@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 const SECTIONS = [
   {
@@ -55,6 +55,7 @@ const SECTIONS = [
 ];
 
 export default function ForFamilies() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   const [activeTab, setActiveTab] = useState(0);
   const [openAccordion, setOpenAccordion] = useState<string>("sec-0-item-0");
 
@@ -158,12 +159,13 @@ export default function ForFamilies() {
           <p className="font-[var(--fd)] text-xl sm:text-2xl italic leading-relaxed mb-8 text-white/90">
             "The best time to build your future was yesterday. The next best time is now."
           </p>
-          <Link
-            to="/wp/review"
+          <button
+            type="button"
+            onClick={openGetStarted}
             className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-full shadow-lg transition-all"
           >
             Talk to an Advisor →
-          </Link>
+          </button>
         </div>
       </section>
     </div>

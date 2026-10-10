@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
+import { BookingModal } from "./BookAReview";
 
 export default function Teachers() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   // Blackboard Intro Modal State
   const [showModal, setShowModal] = useState(true);
   const [teacherName, setTeacherName] = useState("");
@@ -34,6 +37,7 @@ export default function Teachers() {
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen">
+      <BookingModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
       {/* ── BLACKBOARD INTRO GATE MODAL ── */}
       {showModal && (
         <div
@@ -156,12 +160,13 @@ export default function Teachers() {
             <p className="text-sm sm:text-base text-white/75 font-light leading-relaxed mb-8">
               This page sets out the syllabus: where your income actually goes, what inflation quietly takes from it, and what a systematic plan does over a teaching career.
             </p>
-            <a
-              href="tel:+919742826665"
+            <button
+              type="button"
+              onClick={openGetStarted}
               className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all shadow-lg hover:shadow-xl"
             >
               Book a consultation →
-            </a>
+            </button>
           </div>
         </div>
       </section>
@@ -757,14 +762,15 @@ export default function Teachers() {
               href="tel:+919742826665"
               className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full shadow-lg transition-all"
             >
-              Call +91 97428 26665
+              Call us now!
             </a>
-            <Link
-              to="/wp/review"
+            <button
+              type="button"
+              onClick={() => setIsBookingModalOpen(true)}
               className="border border-white/20 bg-white/10 hover:bg-white/15 text-white font-bold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all"
             >
               Request a Time Slot
-            </Link>
+            </button>
           </div>
         </div>
       </section>

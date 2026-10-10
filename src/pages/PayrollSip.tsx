@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 export default function PayrollSip() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   // Mini Calculator State
   const [sip, setSip] = useState(5000);
   const [yrs, setYrs] = useState(10);
@@ -127,12 +128,13 @@ export default function PayrollSip() {
             </div>
 
             <div className="flex flex-wrap gap-4">
-              <Link
-                to="/wp/review"
+              <button
+                type="button"
+                onClick={openGetStarted}
                 className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-full shadow-lg transition-all"
               >
                 Partner With Us →
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -447,12 +449,13 @@ export default function PayrollSip() {
           <p className="text-base text-white/75 font-light mb-8 max-w-lg mx-auto">
             Schedule a consultation with our institutional wealth team.
           </p>
-          <Link
-            to="/wp/review"
+          <button
+            type="button"
+            onClick={openGetStarted}
             className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-base px-10 py-4 rounded-full shadow-xl transition-all inline-block"
           >
             Partner With Us →
-          </Link>
+          </button>
         </div>
       </section>
     </div>

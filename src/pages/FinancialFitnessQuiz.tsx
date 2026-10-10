@@ -114,6 +114,7 @@ export default function FinancialFitnessQuiz() {
           <Link
             to="/wp/review"
             className="inline-flex items-center gap-2 bg-[#1A3B9F] hover:bg-[#0D1E52] text-white font-bold text-sm px-6 py-3 rounded-full transition-all shrink-0"
+            style={{ color: "#FFFFFF" }}
           >
             Book a Free Review →
           </Link>

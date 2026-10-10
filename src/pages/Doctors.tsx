@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
+import { BookingModal } from "./BookAReview";
 
 export default function Doctors() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   // Prescription Pad Modal State
   const [showModal, setShowModal] = useState(true);
   const [doctorName, setDoctorName] = useState("");
@@ -41,6 +44,7 @@ export default function Doctors() {
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen">
+      <BookingModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
       {/* ── PRESCRIPTION PAD INTRO MODAL ── */}
       {showModal && (
         <div
@@ -162,12 +166,13 @@ export default function Doctors() {
             <p className="text-sm sm:text-base text-white/75 font-light leading-relaxed mb-8">
               This page sets out the alternative: the same method you already use on patients, applied to a balance sheet. Asset allocation, evidence over prediction, and a holding period long enough to matter.
             </p>
-            <a
-              href="tel:+919742826665"
+            <button
+              type="button"
+              onClick={openGetStarted}
               className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all shadow-lg hover:shadow-xl"
             >
               Book a consultation →
-            </a>
+            </button>
           </div>
         </div>
       </section>
@@ -620,14 +625,15 @@ export default function Doctors() {
               href="tel:+919742826665"
               className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full shadow-lg transition-all"
             >
-              Call +91 97428 26665
+              Call us now!
             </a>
-            <Link
-              to="/wp/review"
+            <button
+              type="button"
+              onClick={() => setIsBookingModalOpen(true)}
               className="border border-white/20 bg-white/10 hover:bg-white/15 text-white font-bold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all"
             >
               Request a Review Session
-            </Link>
+            </button>
           </div>
           <p className="mt-8 text-xs text-white/45">
             Anmol Share Broking Pvt. Ltd. · AMFI ARN 114893 · Save, Insure, Invest.

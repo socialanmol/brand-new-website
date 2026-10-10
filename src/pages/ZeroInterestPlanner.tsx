@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef } from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 /* ------------------------------------------------------------------ Calculation Helpers */
 
@@ -72,6 +72,7 @@ function fmtINR(n: number) {
 /* ------------------------------------------------------------------ Component */
 
 export default function ZeroInterestPlanner() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   // Inputs
   const [loanAmount, setLoanAmount] = useState<number>(5000000);
   const [interestRate, setInterestRate] = useState<number>(8.5);
@@ -275,18 +276,13 @@ export default function ZeroInterestPlanner() {
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
-            <a
-              href="#planner"
-              className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full shadow-lg transition-all"
-            >
-              Calculate My Wealth Plan ↓
-            </a>
-            <Link
-              to="/wp/review"
+            <button
+              type="button"
+              onClick={openGetStarted}
               className="border border-white/20 bg-white/10 hover:bg-white/15 text-white font-bold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all"
             >
               Book an Advisory Call
-            </Link>
+            </button>
           </div>
         </div>
       </section>

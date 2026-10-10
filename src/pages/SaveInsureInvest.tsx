@@ -44,19 +44,13 @@ export default function SaveInsureInvest() {
             Most people do these in the wrong order. They start investing before they have a cushion, and buy protection only after something goes wrong. The sequence matters more than the products.
           </p>
 
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-wrap sm:flex-nowrap gap-3 justify-center">
             <Link
               to="/wp/review"
-              className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full shadow-lg transition-all"
+              className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-4 sm:px-5 py-3.5 rounded-full shadow-lg transition-all whitespace-nowrap"
             >
               Book a Strategy Review →
             </Link>
-            <a
-              href="#si-save"
-              className="border border-white/20 bg-white/10 hover:bg-white/15 text-white font-bold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all"
-            >
-              Explore the Sequence ↓
-            </a>
           </div>
         </div>
       </section>
@@ -368,23 +362,23 @@ export default function SaveInsureInvest() {
 
       {/* CTA SECTION */}
       <section className="py-16 sm:py-20 bg-gradient-to-br from-[#091540] to-[#0D1E52] text-white text-center">
-        <div className="max-w-xl mx-auto px-6">
+        <div className="max-w-2xl mx-auto px-6">
           <h2 className="font-[var(--fd)] text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
             See where your money plan stands
           </h2>
           <p className="text-sm sm:text-base text-white/80 font-light mb-8 leading-relaxed">
             A short 45-minute review will show you which of the three steps is furthest behind. Zero sales pressure, no cost, no obligations.
           </p>
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-nowrap gap-3 justify-center">
             <Link
               to="/wp/review"
-              className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full shadow-lg transition-all"
+              className="flex-1 min-w-0 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-xs sm:text-base text-center px-2 sm:px-5 py-3.5 rounded-full shadow-lg transition-all"
             >
               Book a Strategy Review →
             </Link>
             <Link
               to="/fw/quiz"
-              className="border border-white/20 bg-white/10 hover:bg-white/15 text-white font-bold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all"
+              className="flex-1 min-w-0 border border-white/20 bg-white/10 hover:bg-white/15 text-white font-bold text-xs sm:text-base text-center px-2 sm:px-5 py-3.5 rounded-full transition-all"
             >
               Take Financial Fitness Quiz
             </Link>

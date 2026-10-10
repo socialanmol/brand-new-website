@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 interface StrategySpec {
   label: string;
@@ -114,6 +114,7 @@ const FAQS = [
 ];
 
 export default function SpecializedInvestmentFunds() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
@@ -138,12 +139,13 @@ export default function SpecializedInvestmentFunds() {
               A new SEBI-regulated investment category bridging mutual funds and PMS/AIFs — offering advanced strategies starting at ₹10 lakh.
             </p>
 
-            <Link
-              to="/wp/review"
+            <button
+              type="button"
+              onClick={openGetStarted}
               className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
             >
               ✦ Begin Your SIF Journey Today
-            </Link>
+            </button>
             <p className="text-xs text-white/50 mt-3 font-light">
               Offered by leading AMCs (availability may vary)
             </p>

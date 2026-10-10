@@ -1,5 +1,5 @@
 ﻿import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 type N = {
   eyebrow: string; title: string; sub: string; cta: string; href?: string;
@@ -313,10 +313,11 @@ const PACKAGES: [string, string, string, string[], string][] = [
 
 function NicheCTA({ n }: { n: N }) {
   const cls = `inline-block font-extrabold text-xs px-8 py-3.5 rounded-xl ${n.dark ? "bg-[#8DC63F] text-[#091540]" : "bg-[#1A3B9F] text-white"}`;
+  const style = { color: n.dark ? "#091540" : "#FFFFFF" };
   return n.href ? (
-    <a href={n.href} target="_blank" rel="noreferrer" className={cls}>{n.cta}</a>
+    <a href={n.href} target="_blank" rel="noreferrer" className={cls} style={style}>{n.cta}</a>
   ) : (
-    <Link to="/contact" className={cls}>{n.cta}</Link>
+    <Link to="/contact" className={cls} style={style}>{n.cta}</Link>
   );
 }
 
@@ -441,6 +442,7 @@ function NichePage({ id }: { id: string }) {
 }
 
 export default function FinancialWellnessThemed() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   const [activeNiche, setActiveNiche] = useState<string>("hr");
 
   return (
@@ -467,12 +469,14 @@ export default function FinancialWellnessThemed() {
           </p>
 
           <div className="flex justify-center">
-            <Link
-              to="/wp/review"
+            <button
+              type="button"
+              onClick={openGetStarted}
               className="bg-[#1A3B9F] hover:bg-[#0D1E52] text-white font-extrabold text-sm px-8 py-4 rounded-xl shadow-lg transition-all"
+              style={{ color: "#FFFFFF" }}
             >
               Book a Free Session
-            </Link>
+            </button>
           </div>
         </div>
       </section>

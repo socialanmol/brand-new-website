@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 const QUIZ_QUESTIONS = [
   { q: "Where do you currently live?", opts: ["UAE / Gulf", "USA / Canada", "UK / Europe", "Singapore / Australia"] },
@@ -8,6 +8,7 @@ const QUIZ_QUESTIONS = [
 ];
 
 export default function ForNri() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   const [quizStep, setQuizStep] = useState(0);
   const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
   const [quizFinished, setQuizFinished] = useState(false);
@@ -108,12 +109,13 @@ export default function ForNri() {
             </p>
 
             <div className="flex flex-wrap gap-4 mb-10">
-              <Link
-                to="/wp/review"
+              <button
+                type="button"
+                onClick={openGetStarted}
                 className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-xl shadow-lg transition-all"
               >
                 Get your free plan →
-              </Link>
+              </button>
               <a
                 href="#nri-products"
                 className="border border-white/30 hover:bg-white/10 text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-all"

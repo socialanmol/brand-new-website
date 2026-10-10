@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 export default function GiftCity() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   const [audience, setAudience] = useState<"resident" | "nri">("resident");
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -86,12 +87,13 @@ export default function GiftCity() {
             )}
 
             <div className="flex flex-wrap gap-4">
-              <Link
-                to="/wp/review"
+              <button
+                type="button"
+                onClick={openGetStarted}
                 className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-full shadow-lg transition-all"
               >
                 Schedule a Consultation →
-              </Link>
+              </button>
               <a
                 href="#what"
                 className="border border-white/30 hover:border-[#8DC63F] bg-transparent hover:bg-[#8DC63F]/15 text-white font-medium text-sm px-8 py-3.5 rounded-full transition-all"
@@ -352,12 +354,13 @@ export default function GiftCity() {
             Speak with Anmol's GIFT City specialists today. We'll walk you through your options, answer every question, and help you invest globally with confidence.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link
-              to="/wp/review"
+            <button
+              type="button"
+              onClick={openGetStarted}
               className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-full shadow-lg transition-all"
             >
               Schedule a Consultation →
-            </Link>
+            </button>
           </div>
         </div>
       </section>

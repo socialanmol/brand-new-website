@@ -121,7 +121,10 @@ const NAV: NavEntry[] = [
 
 const INTERESTS = [
   'Insurance', 'Mutual Funds', 'Financial Planning', 'Wealth Management',
-  'SIF / PMS / AIF', 'NRI Services', 'Tools & Calculators', 'Other',
+  'SIF / PMS / AIF', 'NRI Services', 'Wealth & Estate Planning',
+  'Real Estate Advisory', 'Gold & Silver Commodities', 'Travel Solutions',
+  'Tax Services', 'Fixed Deposits', 'Equity Trading', 'Tax Filing',
+  'Gift City and Global Investments', 'Other',
 ];
 
 export function GetStartedModal({ onClose }: { onClose: () => void }) {
@@ -551,12 +554,12 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
 
           {/* Right buttons — fixed width, no shrink */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-            <Link to="/insights/seminars"
+            <Link to="/contact"
               className="hidden lg:inline-flex"
-              style={{ fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 800, color: '#091540', background: '#8DC63F', padding: '7px 13px', borderRadius: 100, textDecoration: 'none', whiteSpace: 'nowrap', transition: 'all .2s' }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#9ED64A'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = '#8DC63F'; }}>
-              Unlock your Finance Certificate
+              style={{ fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.72)', padding: '6px 12px', borderRadius: 7, border: '1px solid rgba(255,255,255,.15)', textDecoration: 'none', whiteSpace: 'nowrap', transition: 'all .15s' }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.35)'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,.72)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.15)'; }}>
+              Contact Us
             </Link>
             <Link to="/investment-services"
               className="hidden lg:inline-flex"
@@ -597,10 +600,10 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
               <MobileEntry key={entry.label} entry={entry} onClose={() => setMobileOpen(false)} />
             ))}
             <div style={{ padding: '14px 20px 40px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <Link to="/insights/seminars"
+              <Link to="/contact"
                 onClick={() => setMobileOpen(false)}
-                style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 800, color: '#091540', background: '#8DC63F', padding: '13px', borderRadius: 10, textAlign: 'center', textDecoration: 'none' }}>
-                Unlock your Finance Certificate
+                style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>
+                Contact Us
               </Link>
               <Link to="/investment-services"
                 style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>

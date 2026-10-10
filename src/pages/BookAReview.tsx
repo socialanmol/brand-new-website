@@ -6,7 +6,7 @@ interface BookingModalProps {
   onClose: () => void;
 }
 
-function BookingModal({ isOpen, onClose }: BookingModalProps) {
+export function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [timeZone, setTimeZone] = useState("Detecting your time zone…");
   const [mode, setMode] = useState<"online" | "office">("online");
   const [submitted, setSubmitted] = useState(false);
@@ -516,7 +516,7 @@ export default function BookAReview() {
               href="tel:+919742826665"
               className="border border-white/20 bg-white/10 hover:bg-white/15 text-white font-bold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all"
             >
-              Call 97428 26665
+              Call us now!
             </a>
           </div>
           <p className="mt-8 text-xs text-white/45">

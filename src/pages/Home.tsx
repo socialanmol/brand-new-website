@@ -3,10 +3,12 @@
 // Change colours in one place: the CSS variables at the top of `css`. Heading font: --hf.
 // Search "TODO" for links and copy that need your input. Header/WhatsApp button live in layout.tsx.
 import React, { useEffect, useState } from "react";
+import { useOutletContext } from "react-router";
 import GoogleReviewsBadge from "./googlereviewsbadge";
 
 const SCORE = "/financial-score"; // TODO
-const CALCS = "/tools-calculators"; // TODO
+const FINANCIAL_FITNESS_QUIZ = "/fw/quiz";
+const CALCS = "/tools";
 
 const scoreBars: [string, number][] = [["Emergency", 72], ["Insurance", 41], ["Investments", 63], ["Retirement", 28], ["Goals", 45]];
 
@@ -149,6 +151,7 @@ const fmt = (v: number) => (v >= 1e7 ? `₹${(v / 1e7).toFixed(2)} Cr` : `₹${(
 const Bar = ({ v }: { v: number }) => <div className="bar"><i style={{ width: `${v}%` }} /></div>;
 
 export default function HomePage() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   const [s, setS] = useState(0);
   const [amt, setAmt] = useState(5000);
   useEffect(() => {
@@ -173,7 +176,7 @@ export default function HomePage() {
             <h1>Your money deserves a <em>plan, not a product.</em></h1>
             <p className="m" style={{ margin: "20px 0 28px", maxWidth: 520 }}>{"MyAnmol brings structure to your financial life — savings, insurance and investments mapped to your goals, not generic products. Wherever you're starting from, we help you build a plan that actually works for your life."}</p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <a className="btn" href={SCORE}>Check Your Financial Score →</a>
+              <a className="btn" href={FINANCIAL_FITNESS_QUIZ}>Check Your Financial Score →</a>
             </div>
           </div>
           <div className="c dk" style={{ background: "var(--navy)", padding: 28 }} aria-label="Sample financial wellness score">
@@ -187,7 +190,7 @@ export default function HomePage() {
             ))}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap", marginTop: 18 }}>
               <div><b>What&apos;s your score?</b><div className="m" style={{ fontSize: 12 }}>Free · 2 minutes · No login</div></div>
-              <a className="btn p" href={SCORE}>Check My Score →</a>
+              <a className="btn p" href={FINANCIAL_FITNESS_QUIZ}>Check My Score →</a>
             </div>
           </div>
         </div>
@@ -242,7 +245,7 @@ export default function HomePage() {
           <p className="m" style={{ fontSize: 13, margin: 0 }}>buys today — at 6% average inflation.</p>
           <div className="prog"><i /></div>
           <p className="m" style={{ fontSize: 13, fontStyle: "italic" }}>{"That's roughly the price of a decent car — gone, without a single transaction."}</p>
-          <a className="btn p" href={SCORE}>I want to know how much I need →</a>
+          <button className="btn p" type="button" onClick={openGetStarted}>I want to know how much I need →</button>
           <p className="m" style={{ fontSize: 12, marginBottom: 0 }}>Not right now? Scroll down to keep exploring ↓</p>
         </div>
       </section>
@@ -313,7 +316,7 @@ export default function HomePage() {
           <div className="c" style={{ textAlign: "center" }}>
             <h3 style={{ color: "var(--lime)", marginBottom: 10 }}>Check Your Score</h3>
             <p className="m" style={{ fontSize: 14 }}>Five dimensions. Two minutes. A clear picture of your financial health and exactly where to focus next.</p>
-            <a className="btn wh" href={SCORE}>Check My Score →</a>
+            <a className="btn wh" href={FINANCIAL_FITNESS_QUIZ}>Check My Score →</a>
             <p style={{ fontSize: 13, marginBottom: 0 }}>✓ Free &nbsp;✓ 2 minutes &nbsp;✓ No login</p>
           </div>
         </div>
@@ -376,7 +379,11 @@ export default function HomePage() {
               <div className="c" key={t} style={{ borderTop: `3px solid ${col}` }}>
                 <span className="ic">{i}</span><h3>{t}</h3>
                 <p className="m" style={{ fontSize: 14 }}>{d}</p>
-                <a className="btn" href="#" style={{ background: col, borderColor: col, color: "#fff", fontSize: 13, padding: "10px 16px" }}>{cta}</a>
+                {t === "None of these" ? (
+                  <button className="btn" type="button" onClick={openGetStarted} style={{ background: col, borderColor: col, color: "#fff", fontSize: 13, padding: "10px 16px" }}>{cta}</button>
+                ) : (
+                  <a className="btn" href={t === "Doctors" ? "/solutions/doc" : t === "Women" ? "/she-is-anmol" : t === "NRIs" ? "/solutions/nri" : t === "Armed Forces" ? "/solutions/armed-forces" : t === "Gen Z" ? "/solutions/genz" : "#"} style={{ background: col, borderColor: col, color: "#fff", fontSize: 13, padding: "10px 16px" }}>{cta}</a>
+                )}
               </div>
             ))}
           </div>

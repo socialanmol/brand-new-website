@@ -1,7 +1,8 @@
 import React from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 export default function SheIsAnmol() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   return (
     <div className="font-[var(--fs)] bg-[#FFF5F8] text-[#17211B] antialiased min-h-screen overflow-x-hidden">
       {/* ── HERO SECTION ── */}
@@ -28,12 +29,13 @@ export default function SheIsAnmol() {
           </p>
 
           <div className="flex flex-wrap gap-4 mb-8">
-            <Link
-              to="/wp/review"
+            <button
+              type="button"
+              onClick={openGetStarted}
               className="bg-[#E8547A] hover:bg-[#C43D66] text-white font-medium text-base px-8 py-3.5 rounded transition-all inline-flex items-center gap-2 shadow-lg hover:-translate-y-0.5"
             >
               Begin Your Journey ↗
-            </Link>
+            </button>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -396,12 +398,13 @@ export default function SheIsAnmol() {
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link
-              to="/wp/review"
+            <button
+              type="button"
+              onClick={openGetStarted}
               className="bg-[#E8547A] hover:bg-[#C43D66] text-white font-medium text-base px-10 py-4 rounded shadow-xl transition-all inline-flex items-center gap-2"
             >
               Book Free Consultation ↗
-            </Link>
+            </button>
           </div>
         </div>
       </section>

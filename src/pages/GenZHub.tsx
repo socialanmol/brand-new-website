@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 import scienceOfScalingImage from "../imports/The Science of Scaling.png";
 
 const JARGON_TERMS = [
@@ -57,6 +57,7 @@ const STORIES_DATA = [
 ];
 
 export default function GenZHub() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   const [monthly, setMonthly] = useState<number>(500);
   const [years, setYears] = useState<number>(5);
   const [rate, setRate] = useState<number>(12);
@@ -100,7 +101,7 @@ export default function GenZHub() {
   return (
     <div className="font-[var(--fs)] bg-[#091540] text-white antialiased min-h-screen overflow-x-hidden">
       {/* ── HERO SECTION ── */}
-      <section className="relative min-h-[90vh] flex flex-col items-center justify-center text-center px-6 py-20 overflow-hidden bg-gradient-to-br from-[#091540] via-[#0D1E52] to-[#1A3B9F]">
+      <section className="relative flex flex-col items-center justify-center text-center px-6 py-12 sm:py-16 overflow-hidden bg-gradient-to-br from-[#091540] via-[#0D1E52] to-[#1A3B9F]">
         <div className="absolute w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(141,198,63,0.18)_0%,transparent_65%)] filter blur-3xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl mx-auto">
@@ -572,12 +573,13 @@ export default function GenZHub() {
           <p className="text-sm sm:text-base text-white/75 font-light mb-10 max-w-lg mx-auto leading-relaxed">
             Book a strictly zero-pressure conversation. We'll audit your setup, map your goals, and hand you a plan you actually understand.
           </p>
-          <Link
-            to="/wp/review"
+          <button
+            type="button"
+            onClick={openGetStarted}
             className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-base px-10 py-4 rounded-2xl shadow-xl hover:scale-105 transition-all inline-block"
           >
             Get Portfolio Recommendations Now →
-          </Link>
+          </button>
         </div>
       </section>
     </div>
