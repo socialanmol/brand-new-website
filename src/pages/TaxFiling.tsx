@@ -1,7 +1,8 @@
 import React from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 export default function TaxFiling() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen">
       {/* HERO */}
@@ -99,12 +100,13 @@ export default function TaxFiling() {
           <p className="text-sm sm:text-base text-white/80 font-light mb-8">
             Talk to a MyAnmol advisor to get your taxes filed accurately, on time, every time.
           </p>
-          <Link
-            to="/wp/review"
+          <button
+            type="button"
+            onClick={openGetStarted}
             className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-full shadow-lg transition-all"
           >
             Talk to an Advisor →
-          </Link>
+          </button>
         </div>
       </section>
     </div>

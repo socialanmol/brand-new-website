@@ -1,7 +1,9 @@
 import React from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 export default function EquityTrading() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
+
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen">
       {/* HERO */}
@@ -99,12 +101,13 @@ export default function EquityTrading() {
           <p className="text-sm sm:text-base text-white/80 font-light mb-8">
             Talk to a MyAnmol advisor about building a stock portfolio that fits your goals and risk appetite.
           </p>
-          <Link
-            to="/wp/review"
-            className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-full shadow-lg transition-all"
+          <button
+            type="button"
+            onClick={openGetStarted}
+            className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-full shadow-lg transition-all cursor-pointer"
           >
             Talk to an Advisor →
-          </Link>
+          </button>
         </div>
       </section>
     </div>

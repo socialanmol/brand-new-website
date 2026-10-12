@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useOutletContext } from "react-router";
 
 function fmtINR(n: number): string {
   if (n >= 10000000) return "₹" + (n / 10000000).toFixed(2).replace(/\.00$/, "") + " Cr";
@@ -7,6 +8,7 @@ function fmtINR(n: number): string {
 }
 
 export default function LifeInsurance() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   const [age, setAge] = useState(30);
   const [income, setIncome] = useState(1000000);
   const [deps, setDeps] = useState(2);
@@ -276,12 +278,13 @@ export default function LifeInsurance() {
           <p className="text-white/75 text-sm sm:text-base leading-relaxed mb-6 font-light">
             Talk to a MyAnmol advisor to review your existing policies and build a life insurance plan that actually fits.
           </p>
-          <a
-            href="/get-started"
-            className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+          <button
+            type="button"
+            onClick={openGetStarted}
+            className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
           >
             Speak to an Advisor →
-          </a>
+          </button>
         </div>
       </section>
     </div>

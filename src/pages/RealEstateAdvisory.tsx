@@ -1,7 +1,9 @@
 import React from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 export default function RealEstateAdvisory() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
+
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen">
       <section className="relative overflow-hidden bg-gradient-to-br from-[#091540] via-[#0D1E52] to-[#1A3B9F] py-20 text-center text-white px-6">
@@ -44,12 +46,13 @@ export default function RealEstateAdvisory() {
           <p className="text-sm sm:text-base text-white/80 font-light mb-8">
             Talk to our real estate consultants about intelligent property allocation.
           </p>
-          <Link
-            to="/wp/review"
-            className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-full shadow-lg transition-all"
+          <button
+            type="button"
+            onClick={openGetStarted}
+            className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm px-8 py-3.5 rounded-full shadow-lg transition-all cursor-pointer"
           >
             Schedule a Consultation →
-          </Link>
+          </button>
         </div>
       </section>
     </div>

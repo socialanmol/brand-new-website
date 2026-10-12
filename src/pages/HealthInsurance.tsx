@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useOutletContext } from 'react-router';
 
 const navy = '#1A3B9F';
 const navyDark = '#0D1E52';
@@ -88,6 +89,8 @@ function CoverageCalc() {
 }
 
 export default function HealthInsurance() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
+
   return (
     <div style={{ fontFamily: 'var(--fs)' }}>
 
@@ -274,10 +277,10 @@ export default function HealthInsurance() {
           <p style={{ fontSize: 15.5, color: 'rgba(255,255,255,.72)', lineHeight: 1.75, fontWeight: 300, marginBottom: 28 }}>
             Talk to a MyAnmol advisor to build a health insurance plan that actually fits your family's needs.
           </p>
-          <a href="/get-started" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'var(--fs)', fontSize: 15, fontWeight: 800, color: navyDeep, background: lime, padding: '14px 32px', borderRadius: 100, transition: 'all .2s' }}
+          <button type="button" onClick={openGetStarted} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'var(--fs)', fontSize: 15, fontWeight: 800, color: navyDeep, background: lime, padding: '14px 32px', borderRadius: 100, transition: 'all .2s', border: 'none', cursor: 'pointer' }}
             className="hover:scale-105 hover:shadow-xl">
             Speak to an Advisor →
-          </a>
+          </button>
         </div>
       </section>
     </div>

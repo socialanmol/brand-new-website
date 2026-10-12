@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
-import { Link } from "react-router";
+import { Link, useOutletContext } from "react-router";
 
 export default function TermInsurance() {
+  const { openGetStarted } = useOutletContext<{ openGetStarted: () => void }>();
   const storyRef = useRef<HTMLElement>(null);
   const contactRef = useRef<HTMLElement>(null);
 
@@ -104,7 +105,7 @@ export default function TermInsurance() {
                 </button>
                 <button
                   type="button"
-                  onClick={scrollToContact}
+                  onClick={openGetStarted}
                   className="border border-white/20 bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base px-7 py-3.5 rounded-full transition-all cursor-pointer"
                 >
                   Talk to an Advisor
@@ -305,14 +306,13 @@ export default function TermInsurance() {
           <p className="text-white/80 text-sm sm:text-base leading-relaxed mb-8 font-light">
             Protect your family's future with the right term insurance plan. Our experts will help you compare policies, understand benefits, and choose the best coverage based on your financial goals.
           </p>
-          <a
-            href="https://wa.me/919742826665"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+          <button
+            type="button"
+            onClick={openGetStarted}
+            className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
           >
             Speak With an Advisor
-          </a>
+          </button>
           <p className="mt-8 text-xs text-white/50">
             Anmol Share Broking Pvt. Ltd. · AMFI ARN 114893 · IRDAI Licensed Advisory
           </p>
