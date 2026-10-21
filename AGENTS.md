@@ -9,6 +9,14 @@ A Vite development server is **already running** on `$PORT` (default 8443). You 
 - Preview URL: The user can access the running app through the preview panel
 - Hot reload: Changes to source files are reflected immediately
 
+The Google Reviews API listens on `$API_PORT` (default 8787). Vite proxies `/api` to it. Start it with `pnpm dev:api` when it is not already running. `GOOGLE_PLACES_API_KEY` and `GOOGLE_PLACE_ID` are optional; without them, `GET /api/google-reviews` returns sample reviews.
+
+## Toolchain
+
+`.mise.toml` pins Node.js 22 and pnpm 10.34.3. Activate that pnpm with `corepack prepare pnpm@10.34.3 --activate`, then install with `pnpm install --frozen-lockfile`. Photos and logos are Git LFS objects; run `git lfs pull` after checkout so image files are not pointer text.
+
+Cloud Agents run on Linux, so import paths must match filename case exactly.
+
 ## Project Structure
 
 This is the canonical project structure. Start with task-relevant files below. Only follow imports or inspect other files when required, when a documented path is missing, or when the repository contradicts this guide.
