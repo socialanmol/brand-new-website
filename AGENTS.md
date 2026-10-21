@@ -9,14 +9,14 @@ A Vite development server is **already running** on `$PORT` (default 8443). You 
 - Preview URL: The user can access the running app through the preview panel
 - Hot reload: Changes to source files are reflected immediately
 
-The API listens on `$API_PORT` (default 8787) via `pnpm dev:api`. Vite proxies `/api` to it. It stores Get Started leads, contact messages, Google sign-in sessions, and first-party page timing in MySQL (`MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE`).
+The API listens on `127.0.0.1:$API_PORT` (default 8787) via `pnpm dev:api`. Vite proxies `/api` to it. It stores Get Started leads, contact messages, Google sign-in sessions, and first-party page timing in MySQL (`MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE`).
 
 Put Google credentials in environment secrets, never in chat or source:
 
 - `GOOGLE_PLACES_API_KEY` and `GOOGLE_PLACE_ID` turn on live reviews. Without them, `GET /api/google-reviews` returns sample reviews.
 - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` turn on header Google sign-in. The OAuth redirect URI is `$APP_ORIGIN/api/auth/google/callback` (`APP_ORIGIN` defaults to `http://127.0.0.1:8443`).
 
-Page timing uses the first-party `ma_vid` cookie. Aggregates are at `GET /api/analytics/summary`. Start local MariaDB with `sudo service mariadb start`, then `MYSQL_PASSWORD=... bash scripts/prepare-mysql.sh` once to create the database user.
+Page timing uses the first-party `ma_vid` cookie. `GET /api/analytics/summary` returns page totals only to a signed-in Google user listed in `ADMIN_EMAILS`. Form writes reject cross-site requests. Start local MariaDB with `sudo service mariadb start`, then `MYSQL_PASSWORD=... bash scripts/prepare-mysql.sh` once to create the database user.
 
 ## Toolchain
 

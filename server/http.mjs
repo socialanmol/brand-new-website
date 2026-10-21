@@ -1,4 +1,4 @@
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 
 export class HttpError extends Error {
   constructor(status, message) {
@@ -70,6 +70,11 @@ export function redirect(response, location) {
 }
 
 export function readJson(request, limit = 20_000) {
+  const type = String(request.headers["content-type"] || "");
+  if (!type.toLowerCase().startsWith("application/json")) {
+    request.resume();
+    return Promise.reject(new HttpError(415, "Send JSON."));
+  }
   return new Promise((resolve, reject) => {
     const chunks = [];
     let size = 0;
@@ -103,7 +108,14 @@ export function readJson(request, limit = 20_000) {
 }
 
 export function text(value, max) {
-  return String(value ?? "").trim().slice(0, max);
+  return String(value ?? "").replace(/[\u0000-\u001F\u007F]/g, "").trim().slice(0, max);
+}
+
+export function tokensEqual(left, right) {
+  const a = Buffer.from(String(left));
+  const b = Buffer.from(String(right));
+  if (a.length === 0 || a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
 }
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

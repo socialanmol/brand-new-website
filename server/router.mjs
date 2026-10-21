@@ -1,4 +1,7 @@
+import { createHash } from "node:crypto";
 import { getPool, pingDatabase } from "./db.mjs";
+import { acceptedGoogleProfile } from "./google-profile.mjs";
+import { assertSameOrigin, rateLimit } from "./guard.mjs";
 import {
   HttpError,
   appOrigin,
@@ -14,6 +17,7 @@ import {
   setCookie,
   sha256,
   text,
+  tokensEqual,
 } from "./http.mjs";
 
 const INTERESTS = new Set([
@@ -60,7 +64,7 @@ export async function handleRequest(request, response) {
   if (method === "POST" && /^\/api\/analytics\/views\/\d+$/.test(path)) {
     return updateView(request, response, path.split("/").pop());
   }
-  if (method === "GET" && path === "/api/analytics/summary") return analyticsSummary(response);
+  if (method === "GET" && path === "/api/analytics/summary") return analyticsSummary(request, response);
 
   json(response, 404, { error: "Not found" });
 }
@@ -82,6 +86,8 @@ async function googleReviews(response) {
 }
 
 async function createLead(request, response) {
+  assertSameOrigin(request);
+  rateLimit(request, "lead", 10, 10 * 60 * 1000);
   const body = await readJson(request);
   const name = requireName(body.name);
   const phone = requirePhone(body.phone);
@@ -99,13 +105,16 @@ async function createLead(request, response) {
 }
 
 async function createContact(request, response) {
+  assertSameOrigin(request);
+  rateLimit(request, "contact", 10, 10 * 60 * 1000);
   const body = await readJson(request);
   const name = requireName(body.name);
   const email = requireEmail(body.email);
   const phone = requirePhone(body.phone);
   const message = text(body.message, 4000);
   if (message.length < 2) throw new HttpError(400, "Enter a message.");
-  const source = text(body.source, 64) || "contact-page";
+  const sourceInput = text(body.source, 64);
+  const source = /^[a-z0-9-]{1,64}$/.test(sourceInput) ? sourceInput : "contact-page";
 
   const [result] = await query(
     `INSERT INTO contact_messages (name, email, phone, message, source) VALUES (?, ?, ?, ?, ?)`,
@@ -123,18 +132,23 @@ function authConfig(response) {
 }
 
 function startGoogle(request, response) {
+  assertSameOrigin(request);
+  rateLimit(request, "auth", 30, 10 * 60 * 1000);
   if (!googleConfigured()) {
     redirect(response, `${appOrigin()}/?auth=unavailable`);
     return;
   }
   const state = randomToken();
-  setCookie(response, OAUTH_COOKIE, state, { maxAge: 600 });
+  const verifier = randomToken();
+  setCookie(response, OAUTH_COOKIE, `${state}.${verifier}`, { maxAge: 600 });
   const params = new URLSearchParams({
     client_id: process.env.GOOGLE_CLIENT_ID,
     redirect_uri: googleRedirectUri(),
     response_type: "code",
     scope: "openid email profile",
     state,
+    code_challenge: createHash("sha256").update(verifier).digest("base64url"),
+    code_challenge_method: "S256",
     prompt: "select_account",
   });
   redirect(response, `https://accounts.google.com/o/oauth2/v2/auth?${params}`);
@@ -142,65 +156,74 @@ function startGoogle(request, response) {
 
 async function finishGoogle(request, response, url) {
   const cookies = readCookies(request);
-  const state = url.searchParams.get("state");
-  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state") || "";
+  const code = url.searchParams.get("code") || "";
   clearCookie(response, OAUTH_COOKIE);
-  if (!code || !state || state !== cookies[OAUTH_COOKIE]) {
+  const stored = cookies[OAUTH_COOKIE] || "";
+  const splitAt = stored.indexOf(".");
+  const storedState = splitAt === -1 ? "" : stored.slice(0, splitAt);
+  const verifier = splitAt === -1 ? "" : stored.slice(splitAt + 1);
+  if (!code || code.length > 512 || !tokensEqual(state, storedState) || !/^[a-f0-9]{64}$/.test(verifier)) {
     redirect(response, `${appOrigin()}/?auth=failed`);
     return;
   }
 
-  const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      code,
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      redirect_uri: googleRedirectUri(),
-      grant_type: "authorization_code",
-    }),
-    signal: AbortSignal.timeout(8000),
-  });
-  if (!tokenResponse.ok) {
-    redirect(response, `${appOrigin()}/?auth=failed`);
-    return;
-  }
-  const token = await tokenResponse.json();
-  const infoResponse = await fetch(
-    `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(token.id_token || "")}`,
-    { signal: AbortSignal.timeout(8000) },
-  );
-  if (!infoResponse.ok) {
-    redirect(response, `${appOrigin()}/?auth=failed`);
-    return;
-  }
-  const profile = await infoResponse.json();
-  const issuer = profile.iss;
-  const trustedIssuer = issuer === "accounts.google.com" || issuer === "https://accounts.google.com";
-  if (!trustedIssuer || profile.aud !== process.env.GOOGLE_CLIENT_ID || !profile.sub || !profile.email) {
-    redirect(response, `${appOrigin()}/?auth=failed`);
-    return;
-  }
+  try {
+    const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code,
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: googleRedirectUri(),
+        grant_type: "authorization_code",
+        code_verifier: verifier,
+      }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!tokenResponse.ok) {
+      redirect(response, `${appOrigin()}/?auth=failed`);
+      return;
+    }
+    const token = await tokenResponse.json();
+    const infoResponse = await fetch("https://oauth2.googleapis.com/tokeninfo", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ id_token: token.id_token || "" }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!infoResponse.ok) {
+      redirect(response, `${appOrigin()}/?auth=failed`);
+      return;
+    }
+    const profile = acceptedGoogleProfile(await infoResponse.json(), process.env.GOOGLE_CLIENT_ID);
+    if (!profile) {
+      redirect(response, `${appOrigin()}/?auth=failed`);
+      return;
+    }
 
-  const name = text(profile.name, 190) || profile.email;
-  const picture = text(profile.picture, 500) || null;
-  await query(
-    `INSERT INTO users (google_sub, email, name, picture, last_login_at)
-     VALUES (?, ?, ?, ?, UTC_TIMESTAMP())
-     ON DUPLICATE KEY UPDATE email = VALUES(email), name = VALUES(name), picture = VALUES(picture), last_login_at = UTC_TIMESTAMP()`,
-    [text(profile.sub, 64), requireEmail(profile.email), name, picture],
-  );
-  const [users] = await query(`SELECT id FROM users WHERE google_sub = ?`, [text(profile.sub, 64)]);
-  const session = randomToken();
-  const expires = new Date(Date.now() + TWO_WEEKS * 1000);
-  await query(`INSERT INTO sessions (user_id, token_hash, expires_at) VALUES (?, ?, ?)`, [
-    users[0].id,
-    sha256(session),
-    expires,
-  ]);
-  setCookie(response, SESSION_COOKIE, session, { maxAge: TWO_WEEKS });
-  redirect(response, `${appOrigin()}/`);
+    await query(`DELETE FROM sessions WHERE expires_at <= UTC_TIMESTAMP()`);
+    await query(
+      `INSERT INTO users (google_sub, email, name, picture, last_login_at)
+       VALUES (?, ?, ?, ?, UTC_TIMESTAMP())
+       ON DUPLICATE KEY UPDATE email = VALUES(email), name = VALUES(name), picture = VALUES(picture), last_login_at = UTC_TIMESTAMP()`,
+      [profile.sub, profile.email, profile.name, profile.picture],
+    );
+    const [users] = await query(`SELECT id FROM users WHERE google_sub = ?`, [profile.sub]);
+    const session = randomToken();
+    const expires = new Date(Date.now() + TWO_WEEKS * 1000);
+    await query(`INSERT INTO sessions (user_id, token_hash, expires_at) VALUES (?, ?, ?)`, [
+      users[0].id,
+      sha256(session),
+      expires,
+    ]);
+    setCookie(response, SESSION_COOKIE, session, { maxAge: TWO_WEEKS });
+    redirect(response, `${appOrigin()}/`);
+  } catch (error) {
+    console.error("Google sign-in failed:", error instanceof HttpError ? error.message : error.code || error.message);
+    if (!response.headersSent) redirect(response, `${appOrigin()}/?auth=failed`);
+  }
 }
 
 async function currentUser(request, response) {
@@ -209,6 +232,8 @@ async function currentUser(request, response) {
 }
 
 async function logout(request, response) {
+  assertSameOrigin(request);
+  rateLimit(request, "logout", 30, 10 * 60 * 1000);
   const cookies = readCookies(request);
   if (cookies[SESSION_COOKIE]) {
     await query(`DELETE FROM sessions WHERE token_hash = ?`, [sha256(cookies[SESSION_COOKIE])]).catch(() => {});
@@ -231,6 +256,8 @@ async function findUser(request) {
 }
 
 async function startView(request, response) {
+  assertSameOrigin(request);
+  rateLimit(request, "view", 90, 10 * 60 * 1000);
   const body = await readJson(request);
   const path = safePath(body.path);
   if (!path) throw new HttpError(400, "Enter a site path.");
@@ -249,12 +276,14 @@ async function startView(request, response) {
   const [visitors] = await query(`SELECT id FROM visitors WHERE visitor_key = ?`, [visitorKey]);
   const [result] = await query(
     `INSERT INTO page_views (visitor_id, path, title, referrer) VALUES (?, ?, ?, ?)`,
-    [visitors[0].id, path, text(body.title, 255) || null, text(body.referrer, 255) || null],
+    [visitors[0].id, path, text(body.title, 255) || null, safeReferrer(body.referrer)],
   );
   json(response, 201, { viewId: result.insertId });
 }
 
 async function updateView(request, response, viewId) {
+  assertSameOrigin(request);
+  rateLimit(request, "duration", 400, 10 * 60 * 1000);
   const cookies = readCookies(request);
   if (!cookies[VISITOR_COOKIE]) throw new HttpError(401, "Missing visitor cookie.");
   const body = await readJson(request);
@@ -272,7 +301,18 @@ async function updateView(request, response, viewId) {
   json(response, 200, { ok: true });
 }
 
-async function analyticsSummary(response) {
+async function analyticsSummary(request, response) {
+  const user = await findUser(request);
+  if (!user) throw new HttpError(401, "Sign in to view analytics.");
+  const allowed = new Set(
+    (process.env.ADMIN_EMAILS || "")
+      .split(",")
+      .map((email) => email.trim().toLowerCase())
+      .filter(Boolean),
+  );
+  if (!allowed.has(String(user.email || "").toLowerCase())) {
+    throw new HttpError(403, "You do not have access to analytics.");
+  }
   const [pages] = await query(
     `SELECT path,
             COUNT(*) AS views,
@@ -303,8 +343,20 @@ function googleRedirectUri() {
 
 function safePath(value) {
   const path = text(value, 255);
-  if (!path.startsWith("/") || path.startsWith("//") || path.includes("\\")) return "";
+  if (!path.startsWith("/") || path.startsWith("//") || path.includes("\\") || path.includes("?")) return "";
   return path;
+}
+
+function safeReferrer(value) {
+  const raw = text(value, 500);
+  if (!raw) return null;
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+    return text(`${url.origin}${url.pathname}`, 255) || null;
+  } catch {
+    return null;
+  }
 }
 
 async function query(sql, params) {

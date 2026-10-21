@@ -16,16 +16,20 @@ try {
 }
 
 const server = createServer(async (request, response) => {
+  response.setHeader("X-Content-Type-Options", "nosniff");
+  response.setHeader("Referrer-Policy", "no-referrer");
+  response.setHeader("X-Frame-Options", "DENY");
+  response.setHeader("Cross-Origin-Resource-Policy", "same-origin");
   try {
     await handleRequest(request, response);
   } catch (error) {
     if (response.headersSent) return;
     const status = error instanceof HttpError ? error.status : 500;
-    if (status === 500) console.error("Request failed:", error);
+    if (status === 500) console.error("Request failed:", error instanceof Error ? error.message : "unknown");
     json(response, status, { error: status === 500 ? "Request failed" : error.message });
   }
 });
 
-server.listen(port, "0.0.0.0", () => {
-  console.log(`API listening on port ${port}`);
+server.listen(port, "127.0.0.1", () => {
+  console.log(`API listening on 127.0.0.1:${port}`);
 });

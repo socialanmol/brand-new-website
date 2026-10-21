@@ -9,7 +9,8 @@ const STATEMENTS = [
     city VARCHAR(120) NULL,
     interest VARCHAR(120) NULL,
     source_path VARCHAR(255) NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_leads_created (created_at)
   )`,
   `CREATE TABLE IF NOT EXISTS contact_messages (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -18,16 +19,18 @@ const STATEMENTS = [
     phone VARCHAR(20) NOT NULL,
     message TEXT NOT NULL,
     source VARCHAR(64) NOT NULL DEFAULT 'contact-page',
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_contact_created (created_at)
   )`,
   `CREATE TABLE IF NOT EXISTS users (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    google_sub VARCHAR(64) NOT NULL UNIQUE,
+    google_sub VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(190) NOT NULL,
     name VARCHAR(190) NOT NULL,
     picture VARCHAR(500) NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_login_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    last_login_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_users_email (email)
   )`,
   `CREATE TABLE IF NOT EXISTS sessions (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -35,6 +38,7 @@ const STATEMENTS = [
     token_hash CHAR(64) NOT NULL UNIQUE,
     expires_at DATETIME NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_sessions_expires (expires_at),
     CONSTRAINT fk_sessions_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
   )`,
   `CREATE TABLE IF NOT EXISTS visitors (
@@ -81,6 +85,24 @@ export async function migrate() {
   for (const statement of STATEMENTS) {
     await db.query(statement);
   }
+  await db.query("ALTER TABLE users MODIFY google_sub VARCHAR(255) NOT NULL");
+  await ensureIndex(db, "leads", "idx_leads_created", "created_at");
+  await ensureIndex(db, "contact_messages", "idx_contact_created", "created_at");
+  await ensureIndex(db, "sessions", "idx_sessions_expires", "expires_at");
+  await ensureIndex(db, "users", "idx_users_email", "email");
+  await db.query("DELETE FROM sessions WHERE expires_at <= UTC_TIMESTAMP()");
+}
+
+async function ensureIndex(db, table, name, column) {
+  const [rows] = await db.query(
+    `SELECT 1 AS present
+     FROM information_schema.statistics
+     WHERE table_schema = DATABASE() AND table_name = ? AND index_name = ?
+     LIMIT 1`,
+    [table, name],
+  );
+  if (rows.length) return;
+  await db.query(`ALTER TABLE \`${table}\` ADD INDEX \`${name}\` (\`${column}\`)`);
 }
 
 export async function pingDatabase() {
