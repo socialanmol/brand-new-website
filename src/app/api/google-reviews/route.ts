@@ -15,7 +15,7 @@ export async function GET() {
 
   if (!key || !placeId) {
     return Response.json(SAMPLE_GOOGLE_REVIEWS, {
-      headers: { "Cache-Control": `public, max-age=${revalidate}` },
+      headers: { "Cache-Control": "no-store" },
     });
   }
 
@@ -49,6 +49,6 @@ export async function GET() {
     reviews,
     isSample: false,
   }, {
-    headers: { "Cache-Control": `public, max-age=${revalidate}` },
+    headers: { "Cache-Control": "no-store" },
   });
 }
