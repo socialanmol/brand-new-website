@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import Header, { GetStartedModal } from '../components/Header';
 import Footer from '../components/Footer';
+import PageAnalytics from '../components/PageAnalytics';
 import WhatsAppFloat from '../pages/whatsappfloat';
 
 export default function Root() {
@@ -20,6 +21,7 @@ export default function Root() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header onGetStarted={() => setShowModal(true)} />
+      <PageAnalytics />
       <main style={{ flex: 1 }}>
         <Outlet context={{ openGetStarted: () => setShowModal(true) }} />
       </main>

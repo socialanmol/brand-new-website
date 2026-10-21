@@ -1,28 +1,31 @@
 import { createServer } from "node:http";
+import { migrate } from "./server/db.mjs";
+import { HttpError, json } from "./server/http.mjs";
+import { loadEnv } from "./server/load-env.mjs";
+import { handleRequest } from "./server/router.mjs";
+
+loadEnv();
 
 const port = Number(process.env.API_PORT || 8787);
-const { GET } = await import("./src/app/api/google-reviews/route.ts");
+
+try {
+  await migrate();
+  console.log("MySQL schema is ready");
+} catch (error) {
+  console.error("MySQL schema setup failed:", error.message);
+}
 
 const server = createServer(async (request, response) => {
-  const { pathname } = new URL(request.url || "/", "http://localhost");
-
-  if (request.method !== "GET" || pathname !== "/api/google-reviews") {
-    response.writeHead(404, { "Content-Type": "application/json; charset=utf-8" });
-    response.end(JSON.stringify({ error: "Not found" }));
-    return;
-  }
-
   try {
-    const result = await GET();
-    response.writeHead(result.status, Object.fromEntries(result.headers));
-    response.end(await result.text());
+    await handleRequest(request, response);
   } catch (error) {
-    console.error("Google Reviews request failed:", error);
-    response.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
-    response.end(JSON.stringify({ error: "Google Reviews request failed" }));
+    if (response.headersSent) return;
+    const status = error instanceof HttpError ? error.status : 500;
+    if (status === 500) console.error("Request failed:", error);
+    json(response, status, { error: status === 500 ? "Request failed" : error.message });
   }
 });
 
 server.listen(port, "0.0.0.0", () => {
-  console.log(`Google Reviews API listening on port ${port}`);
+  console.log(`API listening on port ${port}`);
 });
