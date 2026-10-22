@@ -47,7 +47,7 @@ export async function renderCalculatorPdf(report: CalculatorReport, investorName
   const name = cleanName(investorName);
   const date = new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
   drawForecast(pdf.addPage([PAGE_WIDTH, PAGE_HEIGHT]), fonts, logo, report, name, date);
-  drawAdvisory(pdf.addPage([PAGE_WIDTH, PAGE_HEIGHT]), fonts, logo, report, name);
+  drawAdvisory(pdf.addPage([PAGE_WIDTH, PAGE_HEIGHT]), fonts, logo, report, name, date);
   return pdf.save();
 }
 
@@ -65,20 +65,33 @@ async function loadAssets(): Promise<Assets> {
 }
 
 function drawForecast(page: PDFPage, fonts: Fonts, logo: PDFImage | undefined, report: CalculatorReport, name: string, date: string) {
-  paintHeader(page, fonts, logo, date);
+  paintHeader(page, fonts, logo, "");
   let y = PAGE_HEIGHT - 92;
-  page.drawText(report.eyebrow.toUpperCase(), { x: MARGIN, y, size: 8, font: fonts.bold, color: LIME_INK });
-  y -= 24;
-  page.drawText(fit(report.heading, fonts.bold, 22, 360), { x: MARGIN, y, size: 22, font: fonts.bold, color: NAVY });
-  page.drawText(date, { x: PAGE_WIDTH - MARGIN - fonts.regular.widthOfTextAtSize(date, 9), y: y + 4, size: 9, font: fonts.regular, color: MUTED });
-  y -= 16;
-  page.drawText(`Prepared for ${name}`, { x: MARGIN, y, size: 10, font: fonts.regular, color: MUTED });
-
+  page.drawText(fit(report.heading, fonts.bold, 20, 340), { x: MARGIN, y: y + 4, size: 20, font: fonts.bold, color: NAVY });
+  const dateLine = `Date: ${date}`;
+  page.drawText(dateLine, {
+    x: PAGE_WIDTH - MARGIN - fonts.regular.widthOfTextAtSize(dateLine, 8),
+    y: y + 8,
+    size: 8,
+    font: fonts.regular,
+    color: MUTED,
+  });
+  const frequencyLine = `Frequency: ${report.frequency}`;
+  page.drawText(fit(frequencyLine, fonts.regular, 8, 210), {
+    x: PAGE_WIDTH - MARGIN - Math.min(210, fonts.regular.widthOfTextAtSize(frequencyLine, 8)),
+    y: y - 6,
+    size: 8,
+    font: fonts.regular,
+    color: MUTED,
+  });
   y -= 22;
+  page.drawText(report.eyebrow.toUpperCase(), { x: MARGIN, y, size: 8, font: fonts.bold, color: LIME_INK });
+
+  y -= 28;
   const meta = [
-    ["Frequency", report.frequency],
-    ["Objective", report.objective],
-    ["Risk", report.risk],
+    ["Client name", name],
+    ["Target objective", report.objective],
+    ["Risk profile", report.risk],
     ["Prepared by", "MYANMOL"],
   ];
   page.drawRectangle({ x: MARGIN, y: y - 36, width: contentWidth(), height: 48, color: PAPER, borderColor: LINE, borderWidth: 1 });
@@ -101,51 +114,43 @@ function drawForecast(page: PDFPage, fonts: Fonts, logo: PDFImage | undefined, r
   y -= 74;
   page.drawRectangle({ x: MARGIN, y: y - 52, width: contentWidth(), height: 68, color: NAVY });
   page.drawText(report.heroLabel.toUpperCase(), { x: MARGIN + 16, y: y - 4, size: 8, font: fonts.bold, color: LIME });
-  page.drawText(fit(inr(report.heroValue), fonts.bold, 22, contentWidth() - 40), {
+  const multiple = report.showMultiplier && report.primaryValue > 0 ? `${(report.heroValue / report.primaryValue).toFixed(2)}x` : "";
+  page.drawText(fit(inr(report.heroValue), fonts.bold, 22, contentWidth() - (multiple ? 130 : 40)), {
     x: MARGIN + 16,
     y: y - 32,
     size: 22,
     font: fonts.bold,
     color: WHITE,
   });
+  if (multiple) {
+    const multipleWidth = fonts.bold.widthOfTextAtSize(multiple, 16);
+    page.drawText(multiple, { x: PAGE_WIDTH - MARGIN - 16 - multipleWidth, y: y - 24, size: 16, font: fonts.bold, color: LIME });
+    const badge = "GROWTH MULTIPLIER";
+    page.drawText(badge, {
+      x: PAGE_WIDTH - MARGIN - 16 - fonts.bold.widthOfTextAtSize(badge, 6),
+      y: y - 38,
+      size: 6,
+      font: fonts.bold,
+      color: WHITE,
+    });
+  }
 
   y -= 78;
   const total = Math.abs(report.primaryValue) + Math.abs(report.secondaryValue);
   const primaryShare = total > 0 ? Math.abs(report.primaryValue) / total : 0;
-  page.drawText(report.primaryLabel, { x: MARGIN, y, size: 8, font: fonts.bold, color: MUTED });
-  page.drawText(report.secondaryLabel, {
-    x: PAGE_WIDTH - MARGIN - fonts.bold.widthOfTextAtSize(report.secondaryLabel, 8),
+  const primaryLine = `${report.primaryLabel}: ${inr(report.primaryValue)} (${(primaryShare * 100).toFixed(1)}%)`;
+  const secondaryLine = `${report.secondaryLabel}: ${inr(report.secondaryValue)} (${((1 - primaryShare) * 100).toFixed(1)}%)`;
+  page.drawText(fit(primaryLine, fonts.bold, 9, 280), { x: MARGIN, y, size: 9, font: fonts.bold, color: NAVY });
+  page.drawText(fit(secondaryLine, fonts.bold, 9, 250), {
+    x: PAGE_WIDTH - MARGIN - Math.min(250, fonts.bold.widthOfTextAtSize(secondaryLine, 9)),
     y,
-    size: 8,
-    font: fonts.bold,
-    color: MUTED,
-  });
-  y -= 16;
-  page.drawText(inr(report.primaryValue), { x: MARGIN, y, size: 12, font: fonts.bold, color: NAVY });
-  const secondary = inr(report.secondaryValue);
-  page.drawText(secondary, {
-    x: PAGE_WIDTH - MARGIN - fonts.bold.widthOfTextAtSize(secondary, 12),
-    y,
-    size: 12,
+    size: 9,
     font: fonts.bold,
     color: LIME_INK,
   });
   y -= 14;
   page.drawRectangle({ x: MARGIN, y, width: contentWidth(), height: 8, color: LIME });
   page.drawRectangle({ x: MARGIN, y, width: contentWidth() * primaryShare, height: 8, color: BLUE });
-  const shareLabel = `${Math.round(primaryShare * 100)}%  /  ${Math.round((1 - primaryShare) * 100)}%`;
-  y -= 14;
-  page.drawText(shareLabel, { x: MARGIN, y, size: 8, font: fonts.regular, color: MUTED });
-  if (report.showMultiplier && report.primaryValue > 0) {
-    const multiple = `${(report.heroValue / report.primaryValue).toFixed(2)}x`;
-    page.drawText(multiple, {
-      x: PAGE_WIDTH - MARGIN - fonts.bold.widthOfTextAtSize(multiple, 11),
-      y,
-      size: 11,
-      font: fonts.bold,
-      color: NAVY,
-    });
-  }
 
   y -= 24;
   page.drawText(report.chartTitle, { x: MARGIN, y, size: 11, font: fonts.bold, color: NAVY });
@@ -157,94 +162,163 @@ function drawForecast(page: PDFPage, fonts: Fonts, logo: PDFImage | undefined, r
   paintFooter(page, fonts, name, 1);
 }
 
-function drawAdvisory(page: PDFPage, fonts: Fonts, logo: PDFImage | undefined, report: CalculatorReport, name: string) {
-  paintHeader(page, fonts, logo, "Page 2");
-  let y = PAGE_HEIGHT - 96;
-  page.drawText("STRATEGIC ADVISORY", { x: MARGIN, y, size: 8, font: fonts.bold, color: LIME_INK });
-  y -= 22;
-  page.drawText("How to read this plan", { x: MARGIN, y, size: 20, font: fonts.bold, color: NAVY });
-  const status = "Ready to review";
-  const statusWidth = fonts.bold.widthOfTextAtSize(status, 8) + 16;
-  page.drawRectangle({ x: PAGE_WIDTH - MARGIN - statusWidth, y: y - 4, width: statusWidth, height: 16, color: SOFT });
-  page.drawText(status, { x: PAGE_WIDTH - MARGIN - statusWidth + 8, y, size: 8, font: fonts.bold, color: LIME_INK });
-  y -= 16;
-  page.drawText(`Investor  ${name}`, { x: MARGIN, y, size: 10, font: fonts.regular, color: MUTED });
-
-  const story = wrap(report.narrative, fonts.regular, 9, contentWidth());
-  y -= 18;
-  story.slice(0, 3).forEach((line) => {
-    page.drawText(line, { x: MARGIN, y, size: 9, font: fonts.regular, color: INK });
-    y -= 13;
+function drawAdvisory(page: PDFPage, fonts: Fonts, logo: PDFImage | undefined, report: CalculatorReport, name: string, date: string) {
+  paintHeader(page, fonts, logo, date);
+  let y = PAGE_HEIGHT - 86;
+  page.drawText(fit("Strategic Advisory & Optimization", fonts.bold, 15, 300), { x: MARGIN, y, size: 15, font: fonts.bold, color: NAVY });
+  const investor = `Investor: ${name}`;
+  page.drawText(fit(investor, fonts.regular, 8, 200), {
+    x: PAGE_WIDTH - MARGIN - Math.min(200, fonts.regular.widthOfTextAtSize(investor, 8)),
+    y: y + 2,
+    size: 8,
+    font: fonts.regular,
+    color: MUTED,
   });
+  const status = "Status: Ready to review";
+  page.drawText(status, {
+    x: PAGE_WIDTH - MARGIN - fonts.bold.widthOfTextAtSize(status, 8),
+    y: y - 12,
+    size: 8,
+    font: fonts.bold,
+    color: LIME_INK,
+  });
+  y -= 32;
+  page.drawText("COMPARATIVE BENCHMARKS & EXECUTION ROADMAP", { x: MARGIN, y, size: 8, font: fonts.bold, color: LIME_INK });
+  y -= 14;
+  wrap(report.narrative, fonts.regular, 8, contentWidth()).slice(0, 2).forEach((line) => {
+    page.drawText(line, { x: MARGIN, y, size: 8, font: fonts.regular, color: MUTED });
+    y -= 11;
+  });
+  y -= 8;
 
-  if (report.comparisons.length) {
-    y -= 8;
-    page.drawText("Side by side", { x: MARGIN, y, size: 12, font: fonts.bold, color: NAVY });
-    y -= 16;
-    const cardWidth = (contentWidth() - 16) / Math.min(report.comparisons.length, 3);
+  const benchmarks = report.benchmarks.slice(0, 3);
+  if (benchmarks.length) {
+    page.drawText(fit(report.benchmarkHeading, fonts.bold, 9, contentWidth()), { x: MARGIN, y, size: 9, font: fonts.bold, color: NAVY });
+    y -= 14;
+    const tableHeight = 16 + benchmarks.length * 16;
+    const blockHeight = report.highlight ? Math.max(tableHeight, 104) : tableHeight;
+    const tableWidth = report.highlight ? 318 : contentWidth();
+    drawBenchmarkTable(page, fonts, benchmarks, report, MARGIN, y, tableWidth);
+    if (report.highlight) {
+      drawHighlightCard(page, fonts, report.highlight, MARGIN + tableWidth + 12, y, contentWidth() - tableWidth - 12, blockHeight);
+    }
+    y -= blockHeight + 16;
+  } else if (report.comparisons.length) {
     report.comparisons.slice(0, 3).forEach((item, index) => {
-      const x = MARGIN + index * (cardWidth + 8);
-      const highlight = index === report.comparisons.slice(0, 3).length - 1;
-      page.drawRectangle({
-        x,
-        y: y - 78,
-        width: cardWidth,
-        height: 90,
-        color: highlight ? NAVY : WHITE,
-        borderColor: highlight ? NAVY : LINE,
-        borderWidth: 1,
-      });
-      const ink = highlight ? WHITE : NAVY;
-      const sub = highlight ? rgb(0.85, 0.9, 1) : MUTED;
-      wrap(item.title, fonts.bold, 8, cardWidth - 16).slice(0, 2).forEach((line, lineIndex) => {
-        page.drawText(line, { x: x + 10, y: y - 4 - lineIndex * 11, size: 8, font: fonts.bold, color: ink });
-      });
-      page.drawText(fit(inr(item.value), fonts.bold, 12, cardWidth - 20), { x: x + 10, y: y - 36, size: 12, font: fonts.bold, color: highlight ? LIME : BLUE });
-      wrap(item.note, fonts.regular, 7, cardWidth - 20).slice(0, 2).forEach((line, lineIndex) => {
-        page.drawText(line, { x: x + 10, y: y - 54 - lineIndex * 10, size: 7, font: fonts.regular, color: sub });
-      });
+      page.drawText(fit(`${item.title}  ${inr(item.value)}`, fonts.regular, 8, contentWidth()), { x: MARGIN, y: y - index * 12, size: 8, font: fonts.regular, color: INK });
     });
-    y -= 108;
+    y -= report.comparisons.slice(0, 3).length * 12 + 10;
   }
 
-  report.notes.slice(0, 2).forEach((note) => {
-    const lines = wrap(note.body, fonts.regular, 8, contentWidth() - 24).slice(0, 3);
-    const height = 28 + lines.length * 11;
-    page.drawRectangle({ x: MARGIN, y: y - height + 14, width: contentWidth(), height, color: PAPER, borderColor: LINE, borderWidth: 1 });
-    page.drawText(note.title, { x: MARGIN + 12, y: y - 2, size: 10, font: fonts.bold, color: NAVY });
-    lines.forEach((line, index) => {
-      page.drawText(line, { x: MARGIN + 12, y: y - 18 - index * 11, size: 8, font: fonts.regular, color: INK });
+  if (report.delays.length) {
+    page.drawText(fit(report.delayHeading, fonts.bold, 10, contentWidth()), { x: MARGIN, y, size: 10, font: fonts.bold, color: NAVY });
+    y -= 12;
+    const count = Math.min(report.delays.length, 3);
+    const width = (contentWidth() - 8 * (count - 1)) / count;
+    const cardHeight = 70;
+    report.delays.slice(0, 3).forEach((delay, index) => {
+      const x = MARGIN + index * (width + 8);
+      page.drawRectangle({ x, y: y - cardHeight, width, height: cardHeight, color: WHITE, borderColor: LINE, borderWidth: 1 });
+      page.drawText(fit(delay.label.toUpperCase(), fonts.bold, 7, width - 16), { x: x + 8, y: y - 14, size: 7, font: fonts.bold, color: MUTED });
+      page.drawText(fit(`−${inr(Math.abs(delay.loss))}`, fonts.bold, 11, width - 16), { x: x + 8, y: y - 32, size: 11, font: fonts.bold, color: NAVY });
+      wrap(delay.note, fonts.regular, 7, width - 16).slice(0, 2).forEach((line, lineIndex) => {
+        page.drawText(line, { x: x + 8, y: y - 48 - lineIndex * 9, size: 7, font: fonts.regular, color: MUTED });
+      });
     });
-    y -= height + 10;
-  });
-
-  if (report.inflationNote) {
-    const lines = wrap(report.inflationNote, fonts.regular, 8, contentWidth() - 24).slice(0, 2);
-    page.drawRectangle({ x: MARGIN, y: y - 36, width: contentWidth(), height: 48, color: SOFT });
-    page.drawText("IN TODAY'S RUPEES", { x: MARGIN + 12, y: y - 2, size: 7, font: fonts.bold, color: LIME_INK });
-    lines.forEach((line, index) => {
-      page.drawText(line, { x: MARGIN + 12, y: y - 16 - index * 11, size: 8, font: fonts.regular, color: NAVY });
-    });
-    y -= 62;
+    y -= cardHeight + 16;
   }
 
-  page.drawText("Next three steps", { x: MARGIN, y, size: 12, font: fonts.bold, color: NAVY });
-  y -= 18;
-  report.steps.slice(0, 3).forEach((step, index) => {
-    page.drawRectangle({ x: MARGIN, y: y - 6, width: 18, height: 18, color: NAVY });
-    page.drawText(String(index + 1), { x: MARGIN + 6, y: y - 1, size: 9, font: fonts.bold, color: WHITE });
-    page.drawText(fit(step.title, fonts.bold, 10, 200), { x: MARGIN + 26, y, size: 10, font: fonts.bold, color: NAVY });
-    page.drawText(fit(step.body, fonts.regular, 8, contentWidth() - 36), { x: MARGIN + 26, y: y - 13, size: 8, font: fonts.regular, color: MUTED });
-    y -= 32;
-  });
+  if (report.realValue > 0 && report.inflationNote) {
+    const bandHeight = 54;
+    page.drawRectangle({ x: MARGIN, y: y - bandHeight, width: contentWidth(), height: bandHeight, color: SOFT });
+    page.drawText("INFLATION-ADJUSTED PURCHASING POWER", { x: MARGIN + 12, y: y - 14, size: 7, font: fonts.bold, color: LIME_INK });
+    wrap(report.inflationNote, fonts.regular, 8, contentWidth() - 160).slice(0, 2).forEach((line, index) => {
+      page.drawText(line, { x: MARGIN + 12, y: y - 28 - index * 11, size: 8, font: fonts.regular, color: NAVY });
+    });
+    const real = inr(report.realValue);
+    page.drawText(real, {
+      x: PAGE_WIDTH - MARGIN - 12 - fonts.bold.widthOfTextAtSize(real, 12),
+      y: y - 24,
+      size: 12,
+      font: fonts.bold,
+      color: NAVY,
+    });
+    page.drawText("In today's rupees", {
+      x: PAGE_WIDTH - MARGIN - 12 - fonts.regular.widthOfTextAtSize("In today's rupees", 7),
+      y: y - 38,
+      size: 7,
+      font: fonts.regular,
+      color: MUTED,
+    });
+    y -= bandHeight + 14;
+  }
 
-  y -= 4;
-  const legal = wrap(report.disclaimer, fonts.regular, 7, contentWidth() - 20).slice(0, 6);
-  page.drawRectangle({ x: MARGIN, y: y - legal.length * 9 - 8, width: contentWidth(), height: legal.length * 9 + 16, color: PAPER });
+  if (y > 150) {
+    page.drawText("How to act on this plan", { x: MARGIN, y, size: 10, font: fonts.bold, color: NAVY });
+    y -= 16;
+    report.steps.slice(0, 3).forEach((step, index) => {
+      page.drawText(`${index + 1}.  ${fit(step.title, fonts.bold, 9, 136)}`, { x: MARGIN, y, size: 9, font: fonts.bold, color: NAVY });
+      page.drawText(fit(step.body, fonts.regular, 8, contentWidth() - 164), { x: MARGIN + 156, y, size: 8, font: fonts.regular, color: MUTED });
+      y -= 14;
+    });
+    y -= 6;
+  }
+
+  const legal = wrap(`Regulatory notice: ${report.disclaimer}`, fonts.regular, 7, contentWidth() - 16).slice(0, 4);
+  const legalHeight = legal.length * 9 + 12;
+  const floor = 40;
+  if (y - legalHeight < floor) y = floor + legalHeight;
+  page.drawRectangle({ x: MARGIN, y: y - legalHeight, width: contentWidth(), height: legalHeight, color: PAPER });
   legal.forEach((line, index) => {
-    page.drawText(line, { x: MARGIN + 10, y: y - 4 - index * 9, size: 7, font: fonts.regular, color: MUTED });
+    page.drawText(line, { x: MARGIN + 8, y: y - legalHeight + 8 + (legal.length - 1 - index) * 9, size: 7, font: fonts.regular, color: MUTED });
   });
   paintFooter(page, fonts, name, 2);
+}
+
+function drawBenchmarkTable(page: PDFPage, fonts: Fonts, rows: CalculatorReport["benchmarks"], report: CalculatorReport, x: number, top: number, width: number) {
+  const nameWidth = Math.min(132, width * 0.46);
+  const rateWidth = 52;
+  const columns = [nameWidth, rateWidth, Math.max(40, width - nameWidth - rateWidth)];
+  const headerHeight = 16;
+  page.drawRectangle({ x, y: top - headerHeight, width, height: headerHeight, color: NAVY });
+  [report.benchmarkRateLabel === "Rate" ? "Asset" : "Item", report.benchmarkRateLabel, report.benchmarkValueLabel].forEach((label, index) => {
+    const cellX = x + 6 + columns.slice(0, index).reduce((sum, size) => sum + size, 0);
+    page.drawText(fit(label, fonts.bold, 7, columns[index] - 8), { x: cellX, y: top - 11, size: 7, font: fonts.bold, color: WHITE });
+  });
+  rows.forEach((row, index) => {
+    const rowTop = top - headerHeight - index * 16;
+    if (index === rows.length - 1) page.drawRectangle({ x, y: rowTop - 16, width, height: 16, color: SOFT });
+    const cells = [row.name, row.rate, inr(row.corpus)];
+    cells.forEach((cell, cellIndex) => {
+      const cellX = x + 6 + columns.slice(0, cellIndex).reduce((sum, size) => sum + size, 0);
+      page.drawText(fit(cell, cellIndex === 0 ? fonts.bold : fonts.regular, 7, columns[cellIndex] - 8), {
+        x: cellX,
+        y: rowTop - 11,
+        size: 7,
+        font: cellIndex === 0 ? fonts.bold : fonts.regular,
+        color: NAVY,
+      });
+    });
+  });
+}
+
+function drawHighlightCard(page: PDFPage, fonts: Fonts, highlight: NonNullable<CalculatorReport["highlight"]>, x: number, top: number, width: number, height: number) {
+  page.drawRectangle({ x, y: top - height, width, height, color: NAVY });
+  let textY = top - 16;
+  page.drawText(fit(highlight.kicker.toUpperCase(), fonts.bold, 7, width - 16), { x: x + 8, y: textY, size: 7, font: fonts.bold, color: LIME });
+  textY -= 14;
+  wrap(highlight.title, fonts.bold, 8, width - 16).slice(0, 2).forEach((line) => {
+    page.drawText(line, { x: x + 8, y: textY, size: 8, font: fonts.bold, color: WHITE });
+    textY -= 11;
+  });
+  textY -= 4;
+  page.drawText(fit(inr(highlight.value), fonts.bold, 12, width - 16), { x: x + 8, y: textY, size: 12, font: fonts.bold, color: LIME });
+  textY -= 16;
+  wrap(highlight.body, fonts.regular, 7, width - 16).slice(0, 2).forEach((line) => {
+    page.drawText(line, { x: x + 8, y: textY, size: 7, font: fonts.regular, color: WHITE });
+    textY -= 9;
+  });
+  page.drawText(fit(highlight.foot, fonts.bold, 6, width - 16), { x: x + 8, y: top - height + 8, size: 6, font: fonts.bold, color: LIME });
 }
 
 function drawBars(page: PDFPage, fonts: Fonts, rows: YearRow[], bar: "closing" | "deposit", top: number) {
@@ -305,6 +379,23 @@ function drawTable(page: PDFPage, fonts: Fonts, report: CalculatorReport, rows: 
     });
     y -= 16;
   });
+  const last = report.rows[report.rows.length - 1];
+  if (last) {
+    page.drawRectangle({ x: MARGIN, y: y - 12, width: contentWidth(), height: 16, color: SOFT });
+    const summary = ["Summary", "—", inr(last.invested), inr(last.gain), inr(last.closing)];
+    let summaryX = MARGIN + 6;
+    summary.forEach((cell, index) => {
+      page.drawText(fit(cell, fonts.bold, 7, widths[index] - 8), {
+        x: summaryX,
+        y: y - 8,
+        size: 7,
+        font: fonts.bold,
+        color: NAVY,
+      });
+      summaryX += widths[index];
+    });
+    y -= 16;
+  }
   if (truncated) {
     page.drawText(`Showing the first 8 and last 2 of ${report.rows.length} rows.`, {
       x: MARGIN,

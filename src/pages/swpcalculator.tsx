@@ -87,6 +87,7 @@ export default function SwpCalculator() {
     earnings: calculation.totalEarnings,
     finalValue: calculation.finalValue,
     rows: calculation.yearlyRows,
+    monthly: withdrawalPerMonth,
     note: calculation.finalValue > 0
       ? `After ${years} years the corpus still has about Rs ${Math.round(calculation.finalValue).toLocaleString("en-IN")} left.`
       : "The withdrawals use up the corpus before the horizon ends. A smaller payout would keep it invested longer.",

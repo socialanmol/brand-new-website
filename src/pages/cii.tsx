@@ -25,12 +25,11 @@ const CII_DATA: Record<string, number> = {
   "2019-20": 289,
   "2020-21": 301,
   "2021-22": 317,
-  "2022-13": 331, // fallback
   "2022-23": 331,
   "2023-24": 348,
   "2024-25": 363,
-  "2025-26": 375,
-  "2026-27": 390
+  "2025-26": 376,
+  "2026-27": 384,
 };
 
 export default function CostInflationIndexCalculator() {
@@ -59,9 +58,11 @@ export default function CostInflationIndexCalculator() {
 
     const ciiPurchase = CII_DATA[purchaseYear] || 200;
     const ciiSale = CII_DATA[salesYear] || 264;
+    const years = Object.keys(CII_DATA);
+    const orderOk = years.indexOf(salesYear) > years.indexOf(purchaseYear);
 
     // Indexed Cost of Acquisition = Purchase Value * (CII of Sale Year / CII of Purchase Year)
-    const indexedCost = Math.round(P * (ciiSale / ciiPurchase));
+    const indexedCost = orderOk ? Math.round(P * (ciiSale / ciiPurchase)) : P;
     const capitalGain = Math.max(0, S - indexedCost);
 
     // Standard LTCG tax rate on indexed capital gains for property/assets prior to recent amendments is typically 20% with indexation
@@ -72,9 +73,10 @@ export default function CostInflationIndexCalculator() {
       ciiPurchase,
       ciiSale,
       indexedCost,
-      capitalGain,
+      capitalGain: orderOk ? capitalGain : 0,
       taxPercentage,
-      capitalGainTax
+      capitalGainTax: orderOk ? capitalGainTax : 0,
+      orderOk,
     };
   }, [purchaseYear, purchaseValue, salesYear, saleValue]);
 
@@ -258,6 +260,9 @@ export default function CostInflationIndexCalculator() {
             <div className="bg-[#EEF2FB] border border-[#C5D3F2] rounded-[16px] p-6 text-center shadow-sm">
               <div className="text-xs font-semibold text-[#1A3B9F] uppercase tracking-wider">Capital Gain Tax Due</div>
               <div className="text-3xl font-extrabold text-[#1A3B9F] mt-2">{rs(calculation.capitalGainTax)}</div>
+              {!calculation.orderOk && (
+                <p className="mt-2 text-xs font-semibold text-[#B91C1C]">Choose a sale year after the purchase year. Indexation applies only when the asset is sold later.</p>
+              )}
             </div>
 
             {/* Detailed Indexation Breakdown Card */}

@@ -11,6 +11,27 @@ export type ReportNote = {
   body: string;
 };
 
+export type BenchmarkRow = {
+  name: string;
+  rate: string;
+  corpus: number;
+  gain: number;
+};
+
+export type DelayCard = {
+  label: string;
+  loss: number;
+  note: string;
+};
+
+export type ReportHighlight = {
+  kicker: string;
+  title: string;
+  value: number;
+  body: string;
+  foot: string;
+};
+
 export type CalculatorReport = {
   slug: string;
   heading: string;
@@ -31,6 +52,13 @@ export type CalculatorReport = {
   bar: "closing" | "deposit";
   showMultiplier: boolean;
   comparisons: { title: string; value: number; note: string }[];
+  benchmarks: BenchmarkRow[];
+  benchmarkHeading: string;
+  benchmarkRateLabel: string;
+  benchmarkValueLabel: string;
+  highlight: ReportHighlight | null;
+  delays: DelayCard[];
+  delayHeading: string;
   notes: ReportNote[];
   inflationNote: string;
   realValue: number;

@@ -1,4 +1,4 @@
-import type { CalculatorReport, YearRow } from "./types";
+import type { BenchmarkRow, CalculatorReport, DelayCard, ReportHighlight, YearRow } from "./types";
 import {
   DISCLAIMER,
   INVEST_STEPS,
@@ -13,11 +13,18 @@ import {
 const GROWTH_COLUMNS: CalculatorReport["columns"] = ["Year", "Added", "Invested", "Gain", "Closing value"];
 const LOAN_COLUMNS: CalculatorReport["columns"] = ["Year", "Principal paid", "Principal repaid", "Interest paid", "Balance left"];
 
-function shell(partial: Omit<CalculatorReport, "disclaimer" | "showMultiplier" | "bar" | "chartTitle"> & Partial<Pick<CalculatorReport, "showMultiplier" | "bar" | "chartTitle">>): CalculatorReport {
+function shell(partial: Omit<CalculatorReport, "disclaimer" | "showMultiplier" | "bar" | "chartTitle" | "benchmarks" | "benchmarkHeading" | "benchmarkRateLabel" | "benchmarkValueLabel" | "highlight" | "delays" | "delayHeading"> & Partial<Pick<CalculatorReport, "showMultiplier" | "bar" | "chartTitle" | "benchmarks" | "benchmarkHeading" | "benchmarkRateLabel" | "benchmarkValueLabel" | "highlight" | "delays" | "delayHeading">>): CalculatorReport {
   return {
     showMultiplier: true,
     bar: "closing",
-    chartTitle: "Year-by-year path",
+    chartTitle: "Cumulative asset growth",
+    benchmarks: [],
+    benchmarkHeading: "This plan vs traditional instruments",
+    benchmarkRateLabel: "Rate",
+    benchmarkValueLabel: "Final value",
+    highlight: null,
+    delays: [],
+    delayHeading: "The cost of starting later",
     disclaimer: DISCLAIMER,
     ...partial,
   };
@@ -63,7 +70,9 @@ export function composeSip(input: {
     secondaryLabel: "Wealth gain",
     secondaryValue: input.growth,
     rows,
+    chartTitle: "Cumulative asset growth (principal vs gain)",
     columns: GROWTH_COLUMNS,
+    ...sipAdvisory(input.monthly, input.months, input.rate, input.futureValue, input.invested),
     comparisons: rateComparisons(input.monthly, input.months, input.rate, input.futureValue),
     notes: [
       {
@@ -116,7 +125,9 @@ export function composeGoalSip(input: {
     secondaryLabel: "Estimated growth",
     secondaryValue: input.growth,
     rows,
+    chartTitle: "Cumulative asset growth (principal vs gain)",
     columns: GROWTH_COLUMNS,
+    ...sipAdvisory(input.monthly, months, input.rate, sipFuture(input.monthly, months, input.rate), input.invested),
     comparisons: rateComparisons(input.monthly, months, input.rate, sipFuture(input.monthly, months, input.rate)),
     notes: [
       {
@@ -181,6 +192,7 @@ export function composeTopUp(input: {
     secondaryValue: input.growth,
     rows: mapped,
     columns: GROWTH_COLUMNS,
+    ...topUpAdvisory(input.monthly, input.years, input.rate, input.futureValue, input.invested, input.flatValue),
     comparisons: input.flatValue
       ? [
           { title: "Flat SIP, no top-up", value: input.flatValue, note: "The same opening instalment held constant." },
@@ -238,6 +250,7 @@ export function composeLumpsum(input: {
     secondaryValue: input.growth,
     rows,
     columns: GROWTH_COLUMNS,
+    ...lumpsumAdvisory(input.principal, input.years, input.rate, input.futureValue),
     comparisons: [
       { title: "Savings account at 3.5%", value: input.principal * Math.pow(1.035, input.years), note: "Same amount, no market risk." },
       { title: "Fixed deposit at 6.8%", value: input.principal * Math.pow(1.068, input.years), note: "A steady rate over the same years." },
@@ -297,6 +310,7 @@ export function composeCompounding(input: {
     secondaryValue: input.interest,
     rows,
     columns: GROWTH_COLUMNS,
+    ...compoundingAdvisory(input.principal, input.rate, input.years, input.periodsPerYear, input.maturity),
     comparisons: [],
     notes: [
       {
@@ -321,6 +335,8 @@ export function composeLoan(input: {
   total: number;
   rate: number;
   tenureLabel: string;
+  repaymentMonths?: number;
+  balanceAtEmi?: number;
   rows: { year: number; principalPaid: number; interestPaid: number; endBalance: number }[];
 }): CalculatorReport {
   let repaid = 0;
@@ -357,6 +373,7 @@ export function composeLoan(input: {
     secondaryValue: input.interest,
     rows,
     columns: LOAN_COLUMNS,
+    ...loanAdvisory(input.balanceAtEmi ?? input.principal, input.rate, input.repaymentMonths ?? monthsFromLabel(input.tenureLabel, years), input.total),
     comparisons: [
       { title: "Principal you borrow", value: input.principal, note: "The amount that is repaid." },
       { title: "Interest over the tenure", value: input.interest, note: "The cost of borrowing on this schedule." },
@@ -425,6 +442,7 @@ export function composeRetirement(input: {
     secondaryValue: Math.max(0, input.corpus - input.invested),
     rows,
     columns: GROWTH_COLUMNS,
+    ...retirementAdvisory(input.monthlySip, input.years, input.rate, input.currentSavings),
     comparisons: [
       { title: "Income you entered, in today's rupees", value: input.monthlyNeedToday, note: "Before inflation." },
       { title: "Same lifestyle at retirement", value: input.futureMonthlyNeed, note: `Lifted by ${input.inflation}% inflation.` },
@@ -477,6 +495,7 @@ export function composeNps(input: {
     secondaryValue: input.growth,
     rows,
     columns: GROWTH_COLUMNS,
+    ...sipAdvisory(input.monthly, input.years * 12, input.rate, input.corpus, input.invested),
     comparisons: [
       { title: "Corpus", value: input.corpus, note: `Grown at ${input.rate}% until age 60.` },
       { title: "Used to buy an annuity", value: input.annuity, note: `${input.annuityPercent}% of the corpus.` },
@@ -536,6 +555,8 @@ export function composeChild(input: {
     secondaryValue: input.growth,
     rows,
     columns: GROWTH_COLUMNS,
+    ...sipAdvisory(input.monthly, input.years * 12, input.rate, input.futureCost, input.invested),
+    benchmarkHeading: "Where this education SIP finishes",
     comparisons: [],
     notes: [
       {
@@ -594,6 +615,8 @@ export function composeComposite(input: {
     secondaryValue: input.growth,
     rows,
     columns: GROWTH_COLUMNS,
+    ...sipAdvisory(input.sip, input.years * 12, input.rate, input.invested + input.growth, input.invested),
+    benchmarkHeading: "Where this goal's SIP finishes",
     comparisons: [
       { title: "Inflated goal", value: input.target, note: "Today's target lifted by inflation." },
       { title: "Existing savings, grown", value: input.existing, note: "What the current savings can cover." },
@@ -623,6 +646,7 @@ export function composeSwp(input: {
   earnings: number;
   finalValue: number;
   rows: { year: string; startBalance: number; withdrawn: number; endBalance: number }[];
+  monthly: number;
   note: string;
 }): CalculatorReport {
   let withdrawn = 0;
@@ -660,6 +684,7 @@ export function composeSwp(input: {
     rows,
     columns: ["Year", "Withdrawn", "Withdrawn so far", "Growth", "Balance left"],
     showMultiplier: false,
+    ...swpAdvisory(input.corpus, input.monthly, input.years, input.rate, input.finalValue),
     comparisons: [
       { title: "Starting corpus", value: input.corpus, note: "Invested once, at the beginning." },
       { title: "Paid out over the horizon", value: input.withdrawn, note: "Withdrawals are taken at the start of each month." },
@@ -718,6 +743,7 @@ export function composeInflation(input: {
     secondaryValue: input.impact,
     rows,
     columns: ["Year", "Starting cost", "Cost today", "Increase", "Future cost"],
+    ...inflationAdvisory(input.today, input.rate, input.years, input.future),
     comparisons: [],
     notes: [
       {
@@ -769,6 +795,7 @@ export function composeCii(input: {
     columns: ["Year", "Price", "Indexed cost", "Taxable gain", "Tax"],
     showMultiplier: false,
     bar: "deposit",
+    ...ciiAdvisory(input.purchase, input.sale, input.tax),
     comparisons: [
       { title: "Purchase price", value: input.purchase, note: input.purchaseYear },
       { title: "Indexed cost of acquisition", value: input.indexedCost, note: "Purchase price times sale CII / purchase CII." },
@@ -835,6 +862,7 @@ export function composeNetWorth(input: {
     columns: ["Line", "Amount", "Assets so far", "Liabilities so far", "Net so far"],
     showMultiplier: false,
     bar: "deposit",
+    ...netWorthAdvisory(input.assets, input.liabilities, input.net),
     comparisons: [
       { title: "Everything you own", value: input.assets, note: "Shares, cash, property and the other assets you entered." },
       { title: "Everything you owe", value: input.liabilities, note: "Loans, tax, bills and other dues." },
@@ -934,6 +962,71 @@ function endOfMonthRows(monthly: number, years: number, rate: number): YearRow[]
   return rows;
 }
 
+function sipAdvisory(monthly: number, months: number, rate: number, corpus: number, invested: number) {
+  const years = Math.max(1, Math.round(months / 12));
+  const savings = sipFuture(monthly, months, 3.5);
+  const deposit = monthly * months;
+  const fd = sipFuture(monthly, months, 6.8);
+  const step = stepUpTotals(monthly, years, rate, 10);
+  const loss = (cut: number) => Math.max(0, corpus - sipFuture(monthly, Math.max(0, months - cut), rate));
+  const benchmarks: BenchmarkRow[] = [
+    { name: "Savings account", rate: "3.5%", corpus: savings, gain: savings - deposit },
+    { name: "Bank fixed deposit", rate: "6.8%", corpus: fd, gain: fd - deposit },
+    { name: "This plan", rate: `${rate.toFixed(1)}%`, corpus, gain: corpus - invested },
+  ];
+  const highlight: ReportHighlight = {
+    kicker: "+10% yearly hike",
+    title: "Corpus with a 10% annual step-up",
+    value: step.value,
+    body: `Raising the instalment by 10% each year finishes ${inr(step.value - corpus)} ahead of the flat plan.`,
+    foot: `Invested ${inr(step.invested)}   ·   Gain ${inr(step.gain)}`,
+  };
+  const delays: DelayCard[] = [
+    { label: "Delay by 6 months", loss: loss(6), note: "Lost compounding over half a year." },
+    { label: "Delay by 1 year", loss: loss(12), note: "Misses a full year of instalments." },
+    { label: "Delay by 3 years", loss: loss(36), note: "The same SIP, started later." },
+  ];
+  return { benchmarks, highlight, delays };
+}
+
+function lumpsumAdvisory(principal: number, years: number, rate: number, corpus: number) {
+  const at = (annual: number, span = years) => principal * Math.pow(1 + annual / 100, Math.max(0, span));
+  const benchmarks: BenchmarkRow[] = [
+    { name: "Savings account", rate: "3.5%", corpus: at(3.5), gain: at(3.5) - principal },
+    { name: "Bank fixed deposit", rate: "6.8%", corpus: at(6.8), gain: at(6.8) - principal },
+    { name: "This plan", rate: `${rate.toFixed(1)}%`, corpus, gain: corpus - principal },
+  ];
+  const extraYear = at(rate, years + 1);
+  const highlight: ReportHighlight = {
+    kicker: "One more year",
+    title: "Value if it stays invested one more year",
+    value: extraYear,
+    body: `Leaving the corpus invested for one extra year adds about ${inr(extraYear - corpus)} at the selected return.`,
+    foot: `Invested ${inr(principal)}   ·   Horizon ${years + 1} years`,
+  };
+  const delays: DelayCard[] = [
+    { label: "Invest 6 months later", loss: Math.max(0, corpus - at(rate, years - 0.5)), note: "Half a year less of compounding." },
+    { label: "Invest 1 year later", loss: Math.max(0, corpus - at(rate, years - 1)), note: "A shorter holding period." },
+    { label: "Invest 3 years later", loss: Math.max(0, corpus - at(rate, years - 3)), note: "The same amount, less time." },
+  ];
+  return { benchmarks, highlight, delays };
+}
+
+function stepUpTotals(monthly: number, years: number, rate: number, stepPercent: number) {
+  const monthlyRate = Math.pow(1 + rate / 100, 1 / 12) - 1;
+  let sip = monthly;
+  let value = 0;
+  let invested = 0;
+  for (let year = 1; year <= years; year += 1) {
+    for (let month = 1; month <= 12; month += 1) {
+      invested += sip;
+      value = (value + sip) * (1 + monthlyRate);
+    }
+    sip *= 1 + stepPercent / 100;
+  }
+  return { value, invested, gain: value - invested };
+}
+
 function stepUpFuture(monthly: number, years: number, rate: number, stepPercent: number) {
   const monthlyRate = Math.pow(1 + rate / 100, 1 / 12) - 1;
   let sip = monthly;
@@ -943,4 +1036,312 @@ function stepUpFuture(monthly: number, years: number, rate: number, stepPercent:
     sip *= 1 + stepPercent / 100;
   }
   return value;
+}
+
+function topUpAdvisory(monthly: number, years: number, rate: number, futureValue: number, invested: number, flatValue?: number) {
+  const months = Math.max(0, Math.round(years * 12));
+  const span = Math.max(1, Math.round(years));
+  const deposit = monthly * months;
+  const savings = sipFuture(monthly, months, 3.5);
+  const fd = sipFuture(monthly, months, 6.8);
+  const flat = flatValue ?? sipFuture(monthly, months, rate);
+  const benchmarks: BenchmarkRow[] = [
+    { name: "Flat SIP in savings", rate: "3.5%", corpus: savings, gain: savings - deposit },
+    { name: "Flat SIP in an FD", rate: "6.8%", corpus: fd, gain: fd - deposit },
+    { name: "This top-up plan", rate: `${rate.toFixed(1)}%`, corpus: futureValue, gain: futureValue - invested },
+  ];
+  const highlight: ReportHighlight = {
+    kicker: "No annual rise",
+    title: "Corpus if the opening SIP stays flat",
+    value: flat,
+    body: `The rising instalment finishes ${inr(Math.abs(futureValue - flat))} ${futureValue >= flat ? "ahead of" : "behind"} that flat path.`,
+    foot: `Opening SIP ${inr(monthly)}   ·   ${span} years`,
+  };
+  const flatLoss = (cut: number) => Math.max(0, flat - sipFuture(monthly, Math.max(0, months - cut), rate));
+  const delays: DelayCard[] = [
+    { label: "Start 6 months later", loss: flatLoss(6), note: "Measured on a flat SIP at the opening amount." },
+    { label: "Start 1 year later", loss: flatLoss(12), note: "A full year of instalments missed." },
+    { label: "Start 3 years later", loss: flatLoss(36), note: "The same opening SIP, less time." },
+  ];
+  return {
+    benchmarks,
+    highlight,
+    delays,
+    benchmarkHeading: "A flat SIP versus this top-up",
+    delayHeading: "The cost of starting the opening SIP later",
+  };
+}
+
+function compoundingAdvisory(principal: number, rate: number, years: number, periodsPerYear: number, maturity: number) {
+  const at = (periods: number, span = years) => principal * Math.pow(1 + rate / 100 / periods, periods * Math.max(0, span));
+  const benchmarks: BenchmarkRow[] = [
+    { name: "Compounded yearly", rate: `${rate}%`, corpus: at(1), gain: at(1) - principal },
+    { name: "Compounded quarterly", rate: `${rate}%`, corpus: at(4), gain: at(4) - principal },
+    { name: "This frequency", rate: `${rate}%`, corpus: maturity, gain: maturity - principal },
+  ];
+  const monthlyValue = at(12);
+  const highlight: ReportHighlight = periodsPerYear >= 12
+    ? {
+        kicker: "One more year",
+        title: "Value after one extra year",
+        value: at(periodsPerYear, years + 1),
+        body: `Staying invested one more year adds about ${inr(at(periodsPerYear, years + 1) - maturity)}.`,
+        foot: `Principal ${inr(principal)}`,
+      }
+    : {
+        kicker: "Monthly compounding",
+        title: "Value if interest compounded every month",
+        value: monthlyValue,
+        body: `Monthly compounding finishes about ${inr(monthlyValue - at(1))} ahead of yearly compounding at the same rate.`,
+        foot: `Yearly compounding ${inr(at(1))}`,
+      };
+  const loss = (cut: number) => Math.max(0, maturity - at(periodsPerYear, years - cut));
+  const delays: DelayCard[] = [
+    { label: "Invest 1 year later", loss: loss(1), note: "One less year of compounding." },
+    { label: "Invest 3 years later", loss: loss(3), note: "The same principal, a shorter hold." },
+    { label: "Invest 5 years later", loss: loss(5), note: "Time, not the rate, is the missing piece." },
+  ];
+  return {
+    benchmarks,
+    highlight,
+    delays,
+    benchmarkHeading: "How often the interest is added",
+    benchmarkValueLabel: "Maturity value",
+    delayHeading: "The cost of investing later",
+  };
+}
+
+function loanAdvisory(balance: number, rate: number, months: number, total: number) {
+  const low = rate > 1 ? rate - 1 : Math.max(0.5, rate / 2);
+  const high = rate + 1;
+  const interestAt = (annual: number, span: number, base = balance) => emiInterest(base, annual, span);
+  const payable = (annual: number, span: number) => balance + interestAt(annual, span);
+  const benchmarks: BenchmarkRow[] = [
+    { name: "If the rate were lower", rate: `${low.toFixed(1)}%`, corpus: payable(low, months), gain: interestAt(low, months) },
+    { name: "This schedule", rate: `${rate.toFixed(1)}%`, corpus: total, gain: Math.max(0, total - balance) },
+    { name: "If the rate were higher", rate: `${high.toFixed(1)}%`, corpus: payable(high, months), gain: interestAt(high, months) },
+  ];
+  const shorter = months > 60 ? months - 60 : Math.max(12, Math.round(months * 0.75));
+  const shorterInterest = interestAt(rate, shorter);
+  const baseInterest = interestAt(rate, months);
+  const highlight: ReportHighlight = {
+    kicker: months > 60 ? "Five years shorter" : "A shorter tenure",
+    title: "Total paid if the tenure is shorter",
+    value: balance + shorterInterest,
+    body: `On the balance when EMIs start, ${formatSpan(shorter)} of EMIs costs about ${inr(Math.max(0, baseInterest - shorterInterest))} less interest than ${formatSpan(months)}.`,
+    foot: `Interest on this shorter tenure ${inr(shorterInterest)}`,
+  };
+  const grown = balance * Math.pow(1 + rate / 100 / 12, 12);
+  const delays: DelayCard[] = [
+    { label: "Rate 1 point higher", loss: Math.max(0, interestAt(high, months) - baseInterest), note: "The extra interest over the same tenure." },
+    { label: "Five more years", loss: Math.max(0, interestAt(rate, months + 60) - baseInterest), note: "A longer tenure lowers the EMI and raises interest." },
+    { label: "12 months interest-only", loss: Math.max(0, grown - balance + emiInterest(grown, rate, months) - baseInterest), note: "Interest is added to the balance, then EMIs start." },
+  ];
+  return {
+    benchmarks,
+    highlight,
+    delays,
+    benchmarkHeading: "Total paid back at nearby rates",
+    benchmarkValueLabel: "Total paid",
+    delayHeading: "What raises the interest",
+  };
+}
+
+function retirementAdvisory(monthlySip: number, years: number, rate: number, currentSavings: number) {
+  const months = Math.max(0, Math.round(years * 12));
+  const project = (annual: number, span = months) => sipFuture(monthlySip, span, annual) + currentSavings * Math.pow(1 + annual / 100, span / 12);
+  const contributed = monthlySip * months + currentSavings;
+  const chosen = project(rate);
+  const benchmarks: BenchmarkRow[] = [
+    { name: "Savings account", rate: "3.5%", corpus: project(3.5), gain: project(3.5) - contributed },
+    { name: "Bank fixed deposit", rate: "6.8%", corpus: project(6.8), gain: project(6.8) - contributed },
+    { name: "This plan", rate: `${rate.toFixed(1)}%`, corpus: chosen, gain: chosen - contributed },
+  ];
+  const step = stepUpTotals(monthlySip, Math.max(1, Math.round(years)), rate, 10);
+  const stepped = step.value + currentSavings * Math.pow(1 + rate / 100, years);
+  const highlight: ReportHighlight = {
+    kicker: "+10% yearly hike",
+    title: "Corpus if the SIP rises 10% a year",
+    value: stepped,
+    body: `A 10% step-up on the required SIP finishes about ${inr(Math.max(0, stepped - chosen))} ahead. Existing savings stay on the selected return.`,
+    foot: `SIP invested ${inr(step.invested)}   ·   Gain ${inr(step.gain)}`,
+  };
+  const sipOnly = sipFuture(monthlySip, months, rate);
+  const loss = (cut: number) => Math.max(0, sipOnly - sipFuture(monthlySip, Math.max(0, months - cut), rate));
+  const delays: DelayCard[] = [
+    { label: "Delay the SIP 6 months", loss: loss(6), note: "Existing savings are assumed to stay invested." },
+    { label: "Delay the SIP 1 year", loss: loss(12), note: "A year of contributions missed." },
+    { label: "Delay the SIP 3 years", loss: loss(36), note: "The same SIP, started later." },
+  ];
+  return {
+    benchmarks,
+    highlight,
+    delays,
+    benchmarkHeading: "The SIP plus today's savings, grown",
+  };
+}
+
+function swpAdvisory(corpus: number, monthly: number, years: number, rate: number, finalValue: number) {
+  const months = Math.max(0, Math.round(years * 12));
+  const ending = (annual: number, payout = monthly, span = months) => swpEnding(corpus, payout, span, annual);
+  const flatAtPlan = ending(rate);
+  const benchmarks: BenchmarkRow[] = [
+    { name: "Flat payout at 6%", rate: "6%", corpus: ending(6), gain: 0 },
+    { name: "Flat payout at 8%", rate: "8%", corpus: ending(8), gain: 0 },
+    { name: "This plan", rate: `${rate.toFixed(1)}%`, corpus: finalValue, gain: 0 },
+  ];
+  const lighter = ending(rate, monthly * 0.9);
+  const highlight: ReportHighlight = {
+    kicker: "Payout 10% smaller",
+    title: "Closing balance if the opening payout is 10% smaller",
+    value: lighter,
+    body: `Held flat, that smaller payout finishes near ${inr(lighter)}. This plan's own closing balance is ${inr(finalValue)}.`,
+    foot: `Opening payout ${inr(monthly)} / month`,
+  };
+  const delays: DelayCard[] = [
+    { label: "Payout 10% higher", loss: Math.max(0, flatAtPlan - ending(rate, monthly * 1.1)), note: "A flat payout, 10% above the opening amount." },
+    { label: "Return 2 points lower", loss: Math.max(0, flatAtPlan - ending(Math.max(0, rate - 2))), note: "The same flat payout, a lower return." },
+    { label: "One extra year", loss: Math.max(0, flatAtPlan - ending(rate, monthly, months + 12)), note: "Twelve more withdrawals at the opening amount." },
+  ];
+  return {
+    benchmarks,
+    highlight,
+    delays,
+    benchmarkHeading: "Closing balance at nearby returns",
+    benchmarkValueLabel: "Balance left",
+    delayHeading: "What drains a flat payout faster",
+  };
+}
+
+function inflationAdvisory(today: number, rate: number, years: number, future: number) {
+  const cost = (inflation: number, span = years) => today * Math.pow(1 + inflation / 100, Math.max(0, span));
+  const benchmarks: BenchmarkRow[] = [
+    { name: "If inflation is 4%", rate: "4%", corpus: cost(4), gain: cost(4) - today },
+    { name: "The rate you entered", rate: `${rate}%`, corpus: future, gain: future - today },
+    { name: "If inflation is 8%", rate: "8%", corpus: cost(8), gain: cost(8) - today },
+  ];
+  const monthly = sipInstalment(future, years * 12, 12);
+  const highlight: ReportHighlight = {
+    kicker: "A 12% SIP",
+    title: "Monthly SIP that funds this future cost",
+    value: monthly,
+    body: `Invested every month for ${years} years at 12%, this instalment reaches the inflated cost.`,
+    foot: `${years} years   ·   12% illustration`,
+  };
+  const delays: DelayCard[] = [1, 3, 5].map((cut) => ({
+    label: cut === 1 ? "Wait 1 more year" : `Wait ${cut} more years`,
+    loss: Math.max(0, cost(rate, years + cut) - future),
+    note: "The same purchase, at the inflation rate you entered.",
+  }));
+  return {
+    benchmarks,
+    highlight,
+    delays,
+    benchmarkHeading: "The same purchase at different inflation rates",
+    benchmarkRateLabel: "Inflation",
+    benchmarkValueLabel: "Future cost",
+    delayHeading: "The cost of waiting to buy",
+  };
+}
+
+function ciiAdvisory(purchase: number, sale: number, indexedTax: number) {
+  const nominal = Math.max(0, sale - purchase);
+  const tax20 = nominal * 0.2;
+  const tax125 = nominal * 0.125;
+  const benchmarks: BenchmarkRow[] = [
+    { name: "20% of the plain gain", rate: "20%", corpus: tax20, gain: nominal },
+    { name: "12.5% without indexation", rate: "12.5%", corpus: tax125, gain: nominal },
+    { name: "20% with indexation", rate: "20%", corpus: indexedTax, gain: Math.max(0, sale - purchase) },
+  ];
+  const highlight: ReportHighlight = {
+    kicker: "Indexation",
+    title: "Estimated tax on the indexed gain",
+    value: indexedTax,
+    body: `Against 20% of the gain before indexation, indexation changes the estimate by ${inr(tax20 - indexedTax)}.`,
+    foot: `Plain gain ${inr(nominal)}`,
+  };
+  const delays: DelayCard[] = [
+    { label: "No indexation at 12.5%", loss: Math.max(0, tax125 - indexedTax), note: "Extra tax versus this indexed estimate." },
+    { label: "No indexation at 20%", loss: Math.max(0, tax20 - indexedTax), note: "The 20% rate on the gain before indexation." },
+    {
+      label: "Indexed 20% vs 12.5%",
+      loss: Math.abs(indexedTax - tax125),
+      note: indexedTax <= tax125 ? "Indexation at 20% is the lower estimate here." : "12.5% of the plain gain is the lower estimate here.",
+    },
+  ];
+  return {
+    benchmarks,
+    highlight,
+    delays,
+    benchmarkHeading: "Estimated tax with and without indexation",
+    benchmarkRateLabel: "Tax rate",
+    benchmarkValueLabel: "Estimated tax",
+    delayHeading: "How the tax estimate moves",
+  };
+}
+
+function netWorthAdvisory(assets: number, liabilities: number, net: number) {
+  const share = (part: number) => (assets > 0 ? `${((part / assets) * 100).toFixed(1)}%` : "—");
+  const benchmarks: BenchmarkRow[] = [
+    { name: "Assets", rate: "100%", corpus: assets, gain: 0 },
+    { name: "Liabilities", rate: share(liabilities), corpus: liabilities, gain: 0 },
+    { name: "Net worth", rate: share(Math.max(0, net)), corpus: net, gain: net },
+  ];
+  const ratio = assets > 0 ? (liabilities / assets) * 100 : 0;
+  const highlight: ReportHighlight = {
+    kicker: "Balance sheet",
+    title: liabilities > 0 ? "Liabilities as a share of assets" : "No liabilities were entered",
+    value: net,
+    body: liabilities > 0
+      ? `Debts are ${ratio.toFixed(1)}% of the assets in this snapshot. Net worth is assets minus those debts.`
+      : "Net worth equals the assets you listed.",
+    foot: `Assets ${inr(assets)}   ·   Debts ${inr(liabilities)}`,
+  };
+  const delays: DelayCard[] = [
+    { label: "Debts 10% higher", loss: liabilities * 0.1, note: "Net worth falls by a tenth of today's debts." },
+    { label: "Assets 10% lower", loss: assets * 0.1, note: "The same debts, a smaller asset base." },
+    { label: "A new debt of 10%", loss: assets * 0.1, note: "Borrowing a tenth of today's assets." },
+  ];
+  return {
+    benchmarks,
+    highlight,
+    delays,
+    benchmarkHeading: "Assets, liabilities and net worth",
+    benchmarkRateLabel: "Share",
+    benchmarkValueLabel: "Amount",
+    delayHeading: "How this snapshot can move",
+  };
+}
+
+function emiInterest(principal: number, annual: number, months: number) {
+  if (principal <= 0 || months <= 0 || annual <= 0) return 0;
+  const monthly = annual / 100 / 12;
+  const pow = Math.pow(1 + monthly, months);
+  const emi = (principal * monthly * pow) / (pow - 1);
+  return Math.max(0, emi * months - principal);
+}
+
+function monthsFromLabel(label: string, fallbackYears: number) {
+  const match = label.match(/(\d+)\s*months/i);
+  if (match) return Math.max(1, Number(match[1]));
+  return Math.max(1, fallbackYears) * 12;
+}
+
+function swpEnding(corpus: number, monthly: number, months: number, annual: number) {
+  if (months <= 0) return Math.max(0, corpus);
+  const monthlyRate = Math.pow(1 + annual / 100, 1 / 12) - 1;
+  let balance = Math.max(0, corpus);
+  for (let month = 0; month < months; month += 1) {
+    balance -= Math.min(balance, Math.max(0, monthly));
+    balance *= 1 + monthlyRate;
+  }
+  return Math.max(0, balance);
+}
+
+function sipInstalment(target: number, months: number, rate: number) {
+  if (months <= 0 || target <= 0) return 0;
+  const monthlyRate = Math.pow(1 + rate / 100, 1 / 12) - 1;
+  if (monthlyRate === 0) return target / months;
+  const denominator = ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+  return denominator > 0 ? target / denominator : 0;
 }

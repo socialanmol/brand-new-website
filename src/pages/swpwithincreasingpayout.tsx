@@ -107,6 +107,7 @@ export default function SwpWithIncreasingPayoutCalculator() {
     earnings: calculation.totalEarnings,
     finalValue: calculation.finalValue,
     rows: calculation.yearlyRows,
+    monthly: withdrawalPerMonth,
     note: "The payout steps up at the start of each new year. If the balance cannot cover a withdrawal, the calculator pays only what is left.",
   }), [calculation, withdrawalPerMonth, years, returnRate, stepMode, stepValue]);
 
