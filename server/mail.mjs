@@ -1,21 +1,47 @@
 import nodemailer from "nodemailer";
 
+const STAFF_NOTIFICATION_TO = "mohit.bajaj@myanmol.com";
+
 export function mailConfigured() {
   return Boolean(process.env.SMTP_HOST && process.env.MAIL_FROM);
 }
 
-export async function sendReport({ to, name, heading, filename, pdf }) {
+function createTransport() {
   const port = Number(process.env.SMTP_PORT || 587);
   const auth = process.env.SMTP_USER
     ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS || "" }
     : undefined;
-  const transporter = nodemailer.createTransport({
+  return nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port,
     secure: port === 465,
     auth,
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 20_000,
   });
-  await transporter.sendMail({
+}
+
+export async function sendStaffCopy({ subject, text }) {
+  if (!mailConfigured()) {
+    console.error("Staff notification was not sent because SMTP is not configured.");
+    return;
+  }
+  try {
+    await createTransport().sendMail({
+      from: process.env.MAIL_FROM,
+      to: STAFF_NOTIFICATION_TO,
+      subject: String(subject).replace(/[\r\n]/g, " ").slice(0, 180),
+      text,
+    });
+  } catch (error) {
+    const code = error && typeof error === "object" && "code" in error ? error.code : "";
+    console.error("Staff notification failed:", code || "send failed");
+  }
+}
+
+export async function sendReport({ to, name, heading, filename, pdf }) {
+  await createTransport().sendMail({
     from: process.env.MAIL_FROM,
     to,
     subject: `${heading} - MyAnmol`,

@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { getPool, pingDatabase } from "./db.mjs";
-import { mailConfigured, sendReport } from "./mail.mjs";
+import { mailConfigured, sendReport, sendStaffCopy } from "./mail.mjs";
 import { acceptedGoogleProfile } from "./google-profile.mjs";
 import { assertSameOrigin, rateLimit } from "./guard.mjs";
 import {
@@ -106,6 +106,19 @@ async function createLead(request, response) {
     `INSERT INTO leads (name, phone, email, city, interest, source_path) VALUES (?, ?, ?, ?, ?, ?)`,
     [name, phone, email, city, interest || null, sourcePath],
   );
+  await sendStaffCopy({
+    subject: `Get Started: ${name}`,
+    text: [
+      "A Get Started form was submitted.",
+      "",
+      `Name: ${name}`,
+      `Phone: ${phone}`,
+      `Email: ${email}`,
+      `City: ${city || "—"}`,
+      `Interest: ${interest || "—"}`,
+      `Page: ${sourcePath || "—"}`,
+    ].join("\n"),
+  });
   json(response, 201, { id: result.insertId });
 }
 
@@ -130,6 +143,24 @@ async function createFormSubmission(request, response) {
     `INSERT INTO form_submissions (form_key, name, email, phone, fields, source_path) VALUES (?, ?, ?, ?, ?, ?)`,
     [formKey, fields.name || null, fields.email || null, fields.phone || null, JSON.stringify(fields), sourcePath],
   );
+  if (formKey === "book-a-review") {
+    await sendStaffCopy({
+      subject: `Book a Review: ${fields.name}`,
+      text: [
+        "A Book a Review form was submitted.",
+        "",
+        `Name: ${fields.name}`,
+        `Phone: ${fields.phone}`,
+        `Email: ${fields.email}`,
+        `Date: ${fields.date}`,
+        `Time window: ${fields.timeSlot}`,
+        `Mode: ${fields.mode === "office" ? "Office visit" : "Online"}`,
+        `Time zone: ${fields.timeZone || "—"}`,
+        `Notes: ${fields.notes || "—"}`,
+        `Page: ${sourcePath || "—"}`,
+      ].join("\n"),
+    });
+  }
   json(response, 201, { id: result.insertId });
 }
 
@@ -219,6 +250,18 @@ async function createContact(request, response) {
     `INSERT INTO contact_messages (name, email, phone, message, source) VALUES (?, ?, ?, ?, ?)`,
     [name, email, phone, message, source],
   );
+  await sendStaffCopy({
+    subject: `Contact: ${name}`,
+    text: [
+      "A Contact form was submitted.",
+      "",
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Phone: ${phone}`,
+      `Message: ${message}`,
+      `Source: ${source}`,
+    ].join("\n"),
+  });
   json(response, 201, { id: result.insertId });
 }
 
