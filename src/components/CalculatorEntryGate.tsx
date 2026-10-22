@@ -1,15 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router";
+import { CalculatorUserProvider, type CalculatorUser } from "../calculators/user";
 
 type GoogleCredentialResponse = {
   credential?: string;
-};
-
-type CalculatorUser = {
-  name: string;
-  email: string;
-  phone: string;
-  location: string;
 };
 
 type GoogleProfile = {
@@ -35,10 +29,11 @@ type GoogleIdentityApi = {
   };
 };
 
+const emptyForm = { name: "", email: "", phone: "", location: "" };
+
 function getGoogleProfile(credential: string): GoogleProfile {
   const payload = credential.split(".")[1];
   if (!payload) throw new Error("Invalid Google credential");
-
   const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
   const paddedBase64 = base64.padEnd(Math.ceil(base64.length / 4) * 4, "=");
   const bytes = Uint8Array.from(atob(paddedBase64), (character) => character.charCodeAt(0));
@@ -50,13 +45,12 @@ const styles = `
 .calculator-entry-card{padding:32px;border:1px solid #e3e8f4;border-radius:24px;background:#fff;box-shadow:0 12px 32px rgba(13,30,82,.08)}
 .calculator-entry h1{margin:0;color:#091540;font-size:clamp(24px,4vw,34px);font-weight:800;line-height:1.2}
 .calculator-entry-intro{margin:10px 0 24px;color:#4b5563;font-size:14px;line-height:1.6}
-.calculator-google-button{min-height:44px}
+.calculator-google-button{min-height:44px;margin-bottom:16px}
 .calculator-entry-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .calculator-entry-field{display:grid;gap:6px}
 .calculator-entry-field label{color:#091540;font-size:13px;font-weight:700}
 .calculator-entry-field input{width:100%;height:46px;padding:0 12px;border:1px solid #d1d5db;border-radius:10px;background:#fff;color:#111827;font:inherit}
 .calculator-entry-field input:focus{outline:3px solid rgba(26,59,159,.16);border-color:#1a3b9f}
-.calculator-entry-field input[readonly]{background:#f4f7fd;color:#4b5563}
 .calculator-entry-submit{grid-column:1/-1;min-height:46px;padding:0 18px;border:0;border-radius:10px;background:#8dc63f;color:#091540;font:700 14px Montserrat,system-ui,sans-serif;cursor:pointer}
 .calculator-entry-submit:disabled{background:#d1d5db;color:#6b7280;cursor:not-allowed}
 .calculator-entry-error{margin:12px 0 0;color:#b91c1c;font-size:13px}
@@ -67,44 +61,59 @@ const styles = `
 `;
 
 export default function CalculatorEntryGate() {
-  const [details, setDetails] = useState<CalculatorUser | null>(null);
   const [user, setUser] = useState<CalculatorUser | null>(null);
+  const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [ready, setReady] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID?.trim();
 
   useEffect(() => {
-    if (!clientId) {
-      setError("Google sign-in is unavailable right now.");
-      return;
-    }
+    let cancelled = false;
+    fetch("/api/calculator-profile")
+      .then(async (response) => {
+        if (!response.ok) return;
+        const body = await response.json();
+        if (!cancelled && body?.name && body?.email) {
+          setUser({
+            name: String(body.name),
+            email: String(body.email),
+            phone: String(body.phone || ""),
+            location: String(body.location || ""),
+          });
+        }
+      })
+      .catch(() => undefined)
+      .finally(() => {
+        if (!cancelled) setReady(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
+  useEffect(() => {
+    if (!clientId || user) return;
     let cancelled = false;
     const initializeGoogleSignIn = () => {
       if (cancelled || !buttonRef.current) return;
       const google = (window as Window & { google?: GoogleIdentityApi }).google;
-      if (!google) {
-        setError("Google sign-in is unavailable right now.");
-        return;
-      }
-
+      if (!google) return;
       google.accounts.id.initialize({
         client_id: clientId,
         callback: (response) => {
-          if (!response.credential) {
-            setError("Google sign-in could not be completed. Please try again.");
-            return;
-          }
+          if (!response.credential) return;
           try {
             const profile = getGoogleProfile(response.credential);
-            if (!profile.name || !profile.email) {
-              setError("Your Google account did not provide a name and email address.");
-              return;
-            }
+            setForm((current) => ({
+              ...current,
+              name: profile.name || current.name,
+              email: profile.email || current.email,
+            }));
             setError("");
-            setDetails({ name: profile.name, email: profile.email, phone: "", location: "" });
           } catch {
-            setError("Google sign-in could not be completed. Please try again.");
+            setError("Google could not fill your name and email. You can type them instead.");
           }
         },
       });
@@ -123,14 +132,12 @@ export default function CalculatorEntryGate() {
       initializeGoogleSignIn();
     } else if (existingScript) {
       existingScript.addEventListener("load", initializeGoogleSignIn, { once: true });
-      existingScript.addEventListener("error", () => setError("Google sign-in is unavailable right now."), { once: true });
     } else {
       const script = document.createElement("script");
       script.src = scriptUrl;
       script.async = true;
       script.defer = true;
       script.onload = initializeGoogleSignIn;
-      script.onerror = () => setError("Google sign-in is unavailable right now.");
       document.head.appendChild(script);
     }
 
@@ -138,19 +145,50 @@ export default function CalculatorEntryGate() {
       cancelled = true;
       if (buttonRef.current) buttonRef.current.replaceChildren();
     };
-  }, [clientId]);
+  }, [clientId, user]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!details) return;
-    const formData = new FormData(event.currentTarget);
-    setUser({
-      name: String(formData.get("name") ?? "").trim(),
-      email: String(formData.get("email") ?? "").trim(),
-      phone: String(formData.get("phone") ?? "").trim(),
-      location: String(formData.get("location") ?? "").trim(),
-    });
+  const update = (key: keyof typeof form) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((current) => ({ ...current, [key]: event.target.value }));
   };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSaving(true);
+    setError("");
+    try {
+      const response = await fetch("/api/calculator-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          location: form.location.trim(),
+        }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.error || "Those details could not be saved.");
+      setUser({
+        name: String(body.name),
+        email: String(body.email),
+        phone: String(body.phone || ""),
+        location: String(body.location || ""),
+      });
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : "Those details could not be saved.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!ready) {
+    return (
+      <>
+        <style>{styles}</style>
+        <section className="calculator-entry"><p className="calculator-entry-intro">Loading the calculator…</p></section>
+      </>
+    );
+  }
 
   if (!user) {
     return (
@@ -158,33 +196,31 @@ export default function CalculatorEntryGate() {
         <style>{styles}</style>
         <section className="calculator-entry" aria-labelledby="calculator-entry-title">
           <div className="calculator-entry-card">
-            <h1 id="calculator-entry-title">{details ? "A few details before you begin" : "Sign in to use the calculator"}</h1>
+            <h1 id="calculator-entry-title">A few details before you begin</h1>
             <p className="calculator-entry-intro">
-              {details
-                ? "Your name and email are filled from your Google account."
-                : "Continue with Google to fill your name and email, then add your contact details."}
+              Add your name, phone, email and city. The email on this form is where the calculator sends your report, and Download PDF saves the same report on this device.
             </p>
-            {!details && <div className="calculator-google-button" ref={buttonRef} />}
-            {error && <p className="calculator-entry-error" role="alert">{error}</p>}
+            {clientId && <div className="calculator-google-button" ref={buttonRef} />}
             <form className="calculator-entry-form" onSubmit={handleSubmit}>
               <div className="calculator-entry-field">
                 <label htmlFor="calculator-user-name">Name</label>
-                <input id="calculator-user-name" name="name" autoComplete="name" value={details?.name ?? ""} readOnly={Boolean(details)} disabled={!details} required />
+                <input id="calculator-user-name" name="name" autoComplete="name" value={form.name} onChange={update("name")} required />
               </div>
               <div className="calculator-entry-field">
                 <label htmlFor="calculator-user-phone">Contact number</label>
-                <input id="calculator-user-phone" name="phone" type="tel" autoComplete="tel" minLength={8} maxLength={15} pattern="[+0-9() .-]{8,20}" placeholder="Enter your contact number" required />
+                <input id="calculator-user-phone" name="phone" type="tel" autoComplete="tel" minLength={8} maxLength={15} pattern="[+0-9() .-]{8,20}" placeholder="Enter your contact number" value={form.phone} onChange={update("phone")} required />
               </div>
               <div className="calculator-entry-field">
                 <label htmlFor="calculator-user-email">Email ID</label>
-                <input id="calculator-user-email" name="email" type="email" autoComplete="email" value={details?.email ?? ""} readOnly={Boolean(details)} disabled={!details} required />
+                <input id="calculator-user-email" name="email" type="email" autoComplete="email" value={form.email} onChange={update("email")} required />
               </div>
               <div className="calculator-entry-field">
                 <label htmlFor="calculator-user-location">Current location</label>
-                <input id="calculator-user-location" name="location" autoComplete="address-level2" placeholder="Enter your current city" required />
+                <input id="calculator-user-location" name="location" autoComplete="address-level2" placeholder="Enter your current city" value={form.location} onChange={update("location")} required />
               </div>
-              <button className="calculator-entry-submit" type="submit" disabled={!details}>Enter the Calculator</button>
+              <button className="calculator-entry-submit" type="submit" disabled={saving}>{saving ? "Saving…" : "Enter the Calculator"}</button>
             </form>
+            {error && <p className="calculator-entry-error" role="alert">{error}</p>}
           </div>
         </section>
       </>
@@ -193,15 +229,13 @@ export default function CalculatorEntryGate() {
 
   const firstName = user.name.split(/\s+/)[0];
   return (
-    <>
+    <CalculatorUserProvider user={user}>
       <style>{styles}</style>
       <aside className="calculator-personalized" aria-live="polite">
-        <h2>Signed in with Google</h2>
-        <p>
-          You can now use the calculator and explore your results.
-        </p>
+        <h2>Hello, {firstName}</h2>
+        <p>Your report is prepared for {user.name}. Email sends it to {user.email}. Download PDF saves the same file on this device.</p>
       </aside>
       <Outlet />
-    </>
+    </CalculatorUserProvider>
   );
 }

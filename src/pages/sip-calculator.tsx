@@ -1,5 +1,7 @@
 ﻿import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode, TouchEvent as ReactTouchEvent } from 'react';
+import CalculatorActions from '../components/CalculatorActions';
+import { composeSip } from '../calculators/compose';
 
 /*
  * MyAnmol SIP Calculator
@@ -721,6 +723,16 @@ export default function SipCalculator() {
     return { invested, growth, futureValue, rows };
   }, [monthlySip, durationMonths, expectedReturn]);
 
+  const report = useMemo(() => composeSip({
+    monthly: monthlySip,
+    months: durationMonths,
+    rate: expectedReturn,
+    invested: projection.invested,
+    growth: projection.growth,
+    futureValue: projection.futureValue,
+    rows: projection.rows,
+  }), [monthlySip, durationMonths, expectedReturn, projection]);
+
   const animInvested = useAnimatedNumber(projection.invested);
   const animGrowth = useAnimatedNumber(projection.growth);
   const animFuture = useAnimatedNumber(projection.futureValue);
@@ -753,55 +765,6 @@ export default function SipCalculator() {
     setMonths(DEFAULTS.months);
     setRate(DEFAULTS.rate);
   };
-
-  const handleDownload = () => {
-    const rows = [
-      ['MyAnmol SIP Calculator'],
-      ['Monthly SIP (Rs)', monthlySip],
-      ['Duration (months)', durationMonths],
-      ['Expected return (% p.a.)', expectedReturn],
-      [],
-      ['Year', 'Months completed', 'Total invested (Rs)', 'Growth (Rs)', 'Total value (Rs)'],
-      ...projection.rows.map((row) => [row.year, row.months, Math.round(row.invested), Math.round(row.growth), Math.round(row.value)]),
-      [],
-      ['Total SIP amount invested', Math.round(projection.invested)],
-      ['Total growth', Math.round(projection.growth)],
-      ['Total future value', Math.round(projection.futureValue)],
-      [],
-      ['Mutual fund investments are subject to market risks, read all scheme related documents carefully. Illustration only.'],
-      ['Anmol Share Broking Pvt. Ltd. | ARN: 114893'],
-    ];
-
-    const csv = rows.map((row) => row.map((cell) => {
-      const text = String(cell ?? '');
-      return /[",]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
-    }).join(',')).join('\r\n');
-
-    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'MyAnmol-SIP-Projection.csv';
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 500);
-  };
-
-  const mailBody = [
-    'My SIP projection (MyAnmol SIP Calculator)',
-    '',
-    'Monthly SIP: ₹ ' + formatINR(monthlySip),
-    'Duration: ' + durationMonths + ' months (' + formatYears(durationMonths) + ')',
-    'Expected return: ' + expectedReturn + '% p.a.',
-    '',
-    'Total SIP amount invested: ₹ ' + formatINR(projection.invested),
-    'Total growth: ₹ ' + formatINR(projection.growth),
-    'Total future value: ₹ ' + formatINR(projection.futureValue),
-    '',
-    'Mutual fund investments are subject to market risks, read all scheme related documents carefully. Illustration only.',
-  ].join('\n');
-  const mailtoLink = 'mailto:?subject=' + encodeURIComponent('My SIP projection — MyAnmol') + '&body=' + encodeURIComponent(mailBody);
 
   const circumference = 2 * Math.PI * 80;
   const investedLength = circumference * (investedShare / 100);
@@ -950,8 +913,7 @@ export default function SipCalculator() {
                 <div className="ma-fv-value ma-num">₹ {formatINR(animFuture)}</div>
                 <div className="ma-fv-meta">in {formatYears(durationMonths)} at {expectedReturn}% p.a.</div>
                 <div className="ma-fv-actions">
-                  <a href={mailtoLink} className="ma-btn-ghost"><Icon name="mail" size={16} />Email</a>
-                  <button type="button" onClick={handleDownload} className="ma-btn-white"><Icon name="download" size={16} />Download</button>
+                  <CalculatorActions report={report} tone="onDark" />
                 </div>
               </div>
             </div>
@@ -1123,7 +1085,7 @@ export default function SipCalculator() {
             </div>
             <div className="ma-cta-btns">
               <a href="tel:+919742826665" className="ma-btn-lime"><Icon name="phone" size={16} />Talk to an advisor</a>
-              <a href={mailtoLink} className="ma-btn-line">Email my projection<Icon name="arrow" size={16} /></a>
+              <CalculatorActions report={report} tone="line" />
             </div>
           </div>
         </section>

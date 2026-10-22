@@ -60,6 +60,17 @@ const STATEMENTS = [
     INDEX idx_page_views_path (path),
     INDEX idx_page_views_started (started_at)
   )`,
+  `CREATE TABLE IF NOT EXISTS calculator_sessions (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    token_hash CHAR(64) NOT NULL UNIQUE,
+    name VARCHAR(120) NOT NULL,
+    email VARCHAR(190) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    location VARCHAR(120) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_calculator_sessions_expires (expires_at)
+  )`,
 ];
 
 let pool;
@@ -91,6 +102,7 @@ export async function migrate() {
   await ensureIndex(db, "sessions", "idx_sessions_expires", "expires_at");
   await ensureIndex(db, "users", "idx_users_email", "email");
   await db.query("DELETE FROM sessions WHERE expires_at <= UTC_TIMESTAMP()");
+  await db.query("DELETE FROM calculator_sessions WHERE expires_at <= UTC_TIMESTAMP()");
 }
 
 async function ensureIndex(db, table, name, column) {

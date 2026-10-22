@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useId, useMemo } from 'react';
+import CalculatorActions from '../components/CalculatorActions';
+import { composeCompounding } from '../calculators/compose';
 
 export default function CompoundingCalculator() {
   const princId = useId();
@@ -50,6 +52,16 @@ export default function CompoundingCalculator() {
     };
   }, [principal, rate, years, intervalMode]);
 
+  const report = useMemo(() => composeCompounding({
+    principal: calculation.principal,
+    rate: calculation.rate,
+    years: calculation.years,
+    interval: intervalMode,
+    periodsPerYear: intervalMode === "Monthly" ? 12 : intervalMode === "Quarterly" ? 4 : intervalMode === "Half Yearly" ? 2 : 1,
+    maturity: calculation.maturityAmount,
+    interest: calculation.interestAmount,
+  }), [calculation, intervalMode]);
+
   const inr = (v: number) => Math.round(v).toLocaleString('en-IN');
   const rs = (v: number) => 'Rs. ' + inr(v);
 
@@ -62,11 +74,6 @@ export default function CompoundingCalculator() {
   const princDash = `${Math.max(a - gap, 0)} ${C}`;
   const intDash = `${b > gap ? b - gap : 0} ${C}`;
   const intOffset = -a;
-
-  const handleDownloadPDF = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.print();
-  };
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen py-10 px-5">
@@ -82,13 +89,7 @@ export default function CompoundingCalculator() {
               Compounding Calculator
             </h2>
           </div>
-          <button
-            onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4v11" /><path d="m7 10 5 5 5-5" /><path d="M5 20h14" /></svg>
-            Download PDF / Print
-          </button>
+          <CalculatorActions report={report} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-6 items-start">

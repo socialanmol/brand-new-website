@@ -1,25 +1,39 @@
 import React, { useState, useEffect, useId, useMemo } from 'react';
+import { Link } from 'react-router';
+import CalculatorActions from '../components/CalculatorActions';
+import { composeLoan } from '../calculators/compose';
+
+const LOAN_TABS = [
+  { label: "Home Loan EMI Calculator", to: "/calculators/home-loan-emi-calculator" },
+  { label: "Personal Loan EMI Calculator", to: "/calculators/personal-loan-emi-calculator" },
+  { label: "Car Loan EMI Calculator", to: "/calculators/car-loan-emi-calculator" },
+  { label: "Education Loan EMI Calculator", to: "/calculators/education-loan-emi-calculator" },
+];
 
 export default function EducationLoanCalculator() {
   const loanAmtId = useId();
   const rateId = useId();
   const tenureId = useId();
+  const moraId = useId();
   const startYearId = useId();
 
   const [loanAmount, setLoanAmount] = useState<number>(2500000);
   const [interestRate, setInterestRate] = useState<number>(10.5);
   const [tenureType, setTenureType] = useState<'years' | 'months'>('years');
   const [tenureValue, setTenureValue] = useState<number>(20);
+  const [moratoriumMonths, setMoratoriumMonths] = useState<number>(12);
   const [startYear, setStartYear] = useState<number>(new Date().getFullYear());
   const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
 
   const [loanAmtText, setLoanAmtText] = useState<string>("25,00,000");
   const [rateText, setRateText] = useState<string>("10.5");
   const [tenureText, setTenureText] = useState<string>("20");
+  const [moraText, setMoraText] = useState<string>("12");
 
   useEffect(() => { setLoanAmtText(loanAmount.toLocaleString('en-IN')); }, [loanAmount]);
   useEffect(() => { setRateText(interestRate.toString()); }, [interestRate]);
   useEffect(() => { setTenureText(tenureValue.toString()); }, [tenureValue]);
+  useEffect(() => { setMoraText(moratoriumMonths.toString()); }, [moratoriumMonths]);
 
   const calculation = useMemo(() => {
     const P = Math.max(50000, isNaN(loanAmount) ? 2500000 : loanAmount);
@@ -27,22 +41,41 @@ export default function EducationLoanCalculator() {
     const T = tenureType === 'years' ? Math.max(1, Math.min(30, isNaN(tenureValue) ? 20 : tenureValue)) : Math.max(1, Math.min(360, isNaN(tenureValue) ? 240 : tenureValue));
     
     const totalMonths = tenureType === 'years' ? T * 12 : T;
+    const mora = Math.max(0, Math.min(84, isNaN(moratoriumMonths) ? 0 : moratoriumMonths));
     const monthlyRate = R / 100 / 12;
+
+    const yearlyRows = [];
+    let balance = P;
+    let moratoriumInterest = 0;
+    let yearInterest = 0;
+    for (let month = 1; month <= mora; month += 1) {
+      const interestForMonth = balance * monthlyRate;
+      moratoriumInterest += interestForMonth;
+      yearInterest += interestForMonth;
+      balance += interestForMonth;
+      if (month % 12 === 0 || month === mora) {
+        yearlyRows.push({
+          year: startYear + yearlyRows.length,
+          startBalance: 0,
+          principalPaid: 0,
+          interestPaid: Math.round(yearInterest),
+          endBalance: Math.round(balance),
+        });
+        yearInterest = 0;
+      }
+    }
+    const principalAtEmi = balance;
 
     let emi = 0;
     if (monthlyRate === 0) {
-      emi = P / totalMonths;
+      emi = principalAtEmi / totalMonths;
     } else {
       const pow = Math.pow(1 + monthlyRate, totalMonths);
-      emi = (P * monthlyRate * pow) / (pow - 1);
+      emi = (principalAtEmi * monthlyRate * pow) / (pow - 1);
     }
 
     const totalPayment = emi * totalMonths;
     const totalInterestPayable = Math.max(0, totalPayment - P);
-
-    // Amortization schedule per year for the visual stacked bar chart
-    const yearlyRows = [];
-    let balance = P;
 
     for (let y = 1; y <= Math.ceil(totalMonths / 12); y++) {
       let yrPrincipal = 0;
@@ -59,7 +92,7 @@ export default function EducationLoanCalculator() {
       }
 
       yearlyRows.push({
-        year: startYear + y - 1,
+        year: startYear + yearlyRows.length,
         startBalance: Math.round(startBal),
         principalPaid: Math.round(yrPrincipal),
         interestPaid: Math.round(yrInterest),
@@ -73,9 +106,29 @@ export default function EducationLoanCalculator() {
       totalInterest: Math.round(totalInterestPayable),
       totalPayment: Math.round(totalPayment),
       totalMonths,
+      moratoriumMonths: mora,
+      moratoriumInterest: Math.round(moratoriumInterest),
+      principalAtEmi: Math.round(principalAtEmi),
       yearlyRows
     };
-  }, [loanAmount, interestRate, tenureType, tenureValue, startYear]);
+  }, [loanAmount, interestRate, tenureType, tenureValue, moratoriumMonths, startYear]);
+
+  const report = useMemo(() => composeLoan({
+    slug: "education-loan-emi-calculator",
+    heading: "Education Loan EMI Report",
+    objective: "Education loan",
+    principal: calculation.principal,
+    emi: calculation.emi,
+    interest: calculation.totalInterest,
+    total: calculation.totalPayment,
+    rate: interestRate,
+    tenureLabel: calculation.moratoriumMonths
+      ? `${calculation.totalMonths % 12 === 0 ? `${calculation.totalMonths / 12} years` : `${calculation.totalMonths} months`} + ${calculation.moratoriumMonths}m grace`
+      : `${calculation.totalMonths} months`,
+    repaymentMonths: calculation.totalMonths,
+    balanceAtEmi: calculation.principalAtEmi,
+    rows: calculation.yearlyRows,
+  }), [calculation, interestRate]);
 
   const inr = (v: number) => Math.round(v).toLocaleString('en-IN');
   const rs = (v: number) => 'Rs. ' + inr(v);
@@ -90,11 +143,6 @@ export default function EducationLoanCalculator() {
   const intDash = `${b > gap ? b - gap : 0} ${C}`;
   const intOffset = -a;
 
-  const handleDownloadPDF = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.print();
-  };
-
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen py-10 px-5">
       <div className="max-w-[1240px] mx-auto">
@@ -104,32 +152,23 @@ export default function EducationLoanCalculator() {
           <div className="text-xs font-semibold text-[#6B7280]">
             Know more about Educational Loan, Education Loan in India and calculate Education Loans using our Education Loan Calculator.
           </div>
-          <button
-            onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 h-10 px-4 rounded-[8px] bg-white border border-[#E3E8F4] text-[#1A3B9F] font-extrabold text-xs hover:bg-[#EEF2FB] transition-all cursor-pointer shadow-sm"
-          >
-            Download PDF
-          </button>
+          <CalculatorActions report={report} />
         </div>
 
         {/* Navigation Tabs Bar matching screenshot */}
         <div className="flex border-b border-[#E3E8F4] mb-8 overflow-x-auto">
-          {[
-            { label: 'Home Loan EMI Calculator', active: false },
-            { label: 'Personal Loan EMI Calculator', active: false },
-            { label: 'Car Loan EMI Calculator', active: false },
-            { label: 'Education Loan EMI Calculator', active: true }
-          ].map((tab, idx) => (
-            <div
-              key={idx}
-              className={`py-3 px-6 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer ${
-                tab.active
-                  ? 'border-[#1A3B9F] text-white bg-[#1A3B9F] rounded-t-[8px]'
-                  : 'border-transparent text-[#6B7280] hover:text-[#111827]'
+          {LOAN_TABS.map((tab) => (
+            <Link
+              key={tab.to}
+              to={tab.to}
+              className={`py-3 px-6 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${
+                tab.to.endsWith("education-loan-emi-calculator")
+                  ? "border-[#1A3B9F] text-white bg-[#1A3B9F] rounded-t-[8px]"
+                  : "border-transparent text-[#6B7280] hover:text-[#111827]"
               }`}
             >
               {tab.label}
-            </div>
+            </Link>
           ))}
         </div>
 
@@ -224,6 +263,49 @@ export default function EducationLoanCalculator() {
               />
               <div className="flex justify-between mt-3 text-xs font-bold text-[#6B7280]">
                 <i>5% PA</i><i>20% PA</i>
+              </div>
+            </div>
+
+            <div className="p-7 border-b border-[#E3E8F4]">
+              <div className="flex justify-between items-center gap-4 mb-4 flex-wrap">
+                <label htmlFor={moraId} className="text-base font-bold text-[#111827] flex-1 min-w-[220px]">
+                  Moratorium (course + grace)
+                  <span className="block text-xs font-semibold text-[#6B7280] mt-0.5">Interest is added to the loan. EMI starts after this.</span>
+                </label>
+                <div className="flex items-center bg-[#EEF2FB] border border-transparent focus-within:border-[#1A3B9F] rounded-[8px] px-3.5 h-12 w-[190px]">
+                  <input
+                    id={moraId}
+                    type="text"
+                    inputMode="numeric"
+                    value={moraText}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/[^0-9]/g, "");
+                      setMoraText(raw);
+                      const val = Number(raw);
+                      if (!isNaN(val)) setMoratoriumMonths(Math.min(84, Math.max(0, val)));
+                    }}
+                    onBlur={() => {
+                      const clamped = Math.min(84, Math.max(0, Number(moraText) || 0));
+                      setMoratoriumMonths(clamped);
+                      setMoraText(String(clamped));
+                    }}
+                    className="border-0 bg-transparent outline-0 font-['Nunito_Sans',sans-serif] text-xl font-extrabold text-[#1A3B9F] text-right w-full"
+                  />
+                  <span className="text-xs font-bold text-[#6B7280] ml-2">Months</span>
+                </div>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="84"
+                step="1"
+                value={moratoriumMonths}
+                onChange={(e) => setMoratoriumMonths(Number(e.target.value))}
+                style={{ background: `linear-gradient(90deg, #1A3B9F 0 ${(moratoriumMonths / 84) * 100}%, #E5E9F2 0 100%)` }}
+                className="w-full h-2 rounded-full cursor-pointer appearance-none bg-[#E5E9F2] accent-[#1A3B9F]"
+              />
+              <div className="flex justify-between mt-3 text-xs font-bold text-[#6B7280]">
+                <i>No moratorium</i><i>7 years</i>
               </div>
             </div>
 
@@ -336,6 +418,11 @@ export default function EducationLoanCalculator() {
             <div className="bg-[#EEF2FB] border border-[#C5D3F2] rounded-[16px] p-4 text-center shadow-sm">
               <div className="text-[11px] font-semibold text-[#1A3B9F]">Total Payment (Principal + Interest)</div>
               <div className="text-xl font-extrabold text-[#1A3B9F] mt-1">{rs(calculation.totalPayment)}</div>
+              {calculation.moratoriumMonths > 0 && (
+                <p className="mt-2 text-[11px] font-semibold leading-relaxed text-[#374151]">
+                  During {calculation.moratoriumMonths} months of moratorium, {rs(calculation.moratoriumInterest)} of interest is added. EMI then runs on {rs(calculation.principalAtEmi)}.
+                </p>
+              )}
             </div>
 
           </div>
@@ -347,7 +434,11 @@ export default function EducationLoanCalculator() {
           <div className="p-6 border-b border-[#E3E8F4] bg-[#EEF2FB] flex justify-between items-center flex-wrap gap-4">
             <div>
               <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">Equated Monthly Installment</h3>
-              <p className="text-xs text-[#6B7280] mt-0.5">Schedule showing EMI payments starting from {startYear}</p>
+              <p className="text-xs text-[#6B7280] mt-0.5">
+                {calculation.moratoriumMonths > 0
+                  ? `Moratorium from ${startYear}, then EMI on the balance after interest is added.`
+                  : `EMI payments starting from ${startYear}.`}
+              </p>
             </div>
             
             <div className="flex items-center gap-4">
@@ -359,7 +450,7 @@ export default function EducationLoanCalculator() {
                   onChange={(e) => setStartYear(Number(e.target.value))}
                   className="bg-white border border-[#E3E8F4] rounded-[6px] px-3 py-1.5 text-xs font-bold text-[#1A3B9F] outline-0 cursor-pointer"
                 >
-                  {[2024, 2025, 2026, 2027, 2028].map((yr) => (
+                  {Array.from({ length: 8 }, (_, index) => new Date().getFullYear() + index).map((yr) => (
                     <option key={yr} value={yr}>{yr}</option>
                   ))}
                 </select>
@@ -399,18 +490,18 @@ export default function EducationLoanCalculator() {
               {/* Stacked Bar Chart with Line overlay */}
               <div className="h-[320px] flex items-end gap-2 pt-6 border-b border-[#E3E8F4] relative">
                 {calculation.yearlyRows.map((row, idx) => {
-                  const maxBal = calculation.principal || 1;
-                  const totalPaid = row.principalPaid + row.interestPaid || 1;
-                  const totalH = Math.min(260, (totalPaid / (calculation.emi * 12 || 1)) * 180);
-                  const princH = (row.principalPaid / totalPaid) * totalH;
-                  const intH = totalH - princH;
-                  const lineY = Math.max(10, (row.endBalance / maxBal) * 240);
+                  const maxBal = Math.max(calculation.principalAtEmi, calculation.principal, ...calculation.yearlyRows.map((item) => item.endBalance), 1);
+                  const totalPaid = row.principalPaid + row.interestPaid;
+                  const totalH = totalPaid > 0 ? Math.min(260, (totalPaid / (calculation.emi * 12 || 1)) * 180) : 0;
+                  const princH = totalPaid > 0 ? (row.principalPaid / totalPaid) * totalH : 0;
+                  const intH = totalPaid > 0 ? totalH - princH : 0;
+                  const lineY = Math.max(10, (row.endBalance / maxBal) * 220);
 
                   return (
                     <div key={idx} className="flex-1 flex flex-col items-center h-full justify-end group relative">
                       <div className="w-full flex flex-col items-center">
-                        <div className="w-[75%] bg-[#3B82F6] rounded-t-[2px]" style={{ height: `${Math.max(10, intH)}px` }} />
-                        <div className="w-[75%] bg-[#22C55E]" style={{ height: `${Math.max(10, princH)}px` }} />
+                        <div className="w-[75%] bg-[#3B82F6] rounded-t-[2px]" style={{ height: `${intH > 0 ? Math.max(4, intH) : 0}px` }} />
+                        <div className="w-[75%] bg-[#22C55E]" style={{ height: `${princH > 0 ? Math.max(4, princH) : 0}px` }} />
                       </div>
                       <span className="text-[10px] text-[#6B7280] mt-3 block font-semibold">{row.year}</span>
 
