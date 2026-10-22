@@ -8,17 +8,20 @@ export function mailConfigured() {
 
 function createTransport() {
   const port = Number(process.env.SMTP_PORT || 587);
+  const secure = port === 465;
   const auth = process.env.SMTP_USER
     ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS || "" }
     : undefined;
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port,
-    secure: port === 465,
+    secure,
+    requireTLS: !secure,
     auth,
     connectionTimeout: 10_000,
     greetingTimeout: 10_000,
     socketTimeout: 20_000,
+    tls: { minVersion: "TLSv1.2" },
   });
 }
 
