@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
+import { saveForm } from "../lib/saveForm";
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -11,12 +12,13 @@ export function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [mode, setMode] = useState<"online" | "office">("online");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "",
     mobile: "",
     email: "",
     date: "",
-    timeSlot: "10:00 AM - 10:45 AM",
+    timeSlot: "10:00 AM - 10:45 AM (Morning)",
     notes: "",
   });
 
@@ -34,27 +36,24 @@ export function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
-    const payload = {
-      ...form,
-      preferredMode: mode,
-      timeZone,
-      submittedAt: new Date().toISOString(),
-      source: "book-a-review-modal",
-    };
-
+    setError("");
     try {
-      await fetch("https://www.myanmol.com/_functions/saveReviewRequest", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+      await saveForm("book-a-review", {
+        name: form.name.trim(),
+        phone: form.mobile.trim(),
+        email: form.email.trim(),
+        date: form.date,
+        timeSlot: form.timeSlot,
+        mode,
+        timeZone,
+        notes: form.notes.trim(),
       });
-    } catch {
-      // Graceful fallback for local development or disconnected API
+      setSubmitted(true);
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : "We could not save your details. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
-    setSubmitted(true);
   };
 
   return (
@@ -255,6 +254,7 @@ export function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 >
                   {loading ? "Confirming Slot…" : "Confirm Booking Slot →"}
                 </button>
+                {error && <p className="text-xs font-semibold text-rose-600 text-center">{error}</p>}
                 <p className="text-[11px] text-gray-400 text-center mt-2.5">
                   Instant confirmation · Free of cost · No sales obligations
                 </p>

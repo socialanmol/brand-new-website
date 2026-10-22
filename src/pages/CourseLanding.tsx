@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { saveForm } from "../lib/saveForm";
 
 const MODULES = [
   { num: "01", title: "Money foundations: cash flow, budget and buffer", meta: "4 lessons · 2h", desc: "Where the money actually goes, and how much of it should be sitting still. You leave with a working budget and a sized emergency fund." },
@@ -18,11 +19,13 @@ export default function CourseLanding() {
   const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [saveError, setSaveError] = useState("");
+  const [saving, setSaving] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [openModule, setOpenModule] = useState<number | null>(0);
   const [showAllChips, setShowAllChips] = useState(false);
 
-  const handleContinue = (e: React.FormEvent) => {
+  const handleContinue = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, boolean> = {};
     if (name.trim().length < 2) newErrors.name = true;
@@ -31,8 +34,21 @@ export default function CourseLanding() {
     if (!consent) newErrors.consent = true;
 
     setErrors(newErrors);
-    if (Object.keys(newErrors).length === 0) {
+    if (Object.keys(newErrors).length > 0) return;
+    setSaving(true);
+    setSaveError("");
+    try {
+      await saveForm("course-enroll", {
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        consent: true,
+      });
       setIsSuccess(true);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "We could not save your details. Please try again.");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -454,12 +470,14 @@ export default function CourseLanding() {
                     </span>
                   </label>
                   {errors.consent && <p className="text-[11px] text-rose-500">Please accept the terms to continue.</p>}
+                  {saveError && <p className="text-[11px] font-semibold text-rose-600">{saveError}</p>}
 
                   <button
                     type="submit"
-                    className="w-full bg-[#1A3B9F] hover:bg-[#0D1E52] text-white font-extrabold text-sm py-3 rounded-xl transition-all shadow-md mt-4 cursor-pointer"
+                    disabled={saving}
+                    className="w-full bg-[#1A3B9F] hover:bg-[#0D1E52] text-white font-extrabold text-sm py-3 rounded-xl transition-all shadow-md mt-4 cursor-pointer disabled:opacity-60"
                   >
-                    Continue
+                    {saving ? "Saving…" : "Continue"}
                   </button>
                 </form>
               </div>
@@ -472,7 +490,7 @@ export default function CourseLanding() {
                   You're enrolled
                 </h3>
                 <p className="text-xs text-gray-500 mb-6 leading-relaxed">
-                  Module one is unlocked. We've sent the access link to <strong>{email}</strong>.
+                  Module one is unlocked. Your enrollment for <strong>{email}</strong> is saved.
                 </p>
                 <button
                   onClick={() => navigate(`/insights/workshops/financial-fitness-certificate/learn?name=${encodeURIComponent(name)}`)}

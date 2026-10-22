@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useOutletContext } from "react-router";
+import { saveForm } from "../lib/saveForm";
 import { BookingModal } from "./BookAReview";
 
 export default function Teachers() {
@@ -11,6 +12,8 @@ export default function Teachers() {
   const [schoolName, setSchoolName] = useState("");
   const [subjectName, setSubjectName] = useState("");
   const [submittedErrors, setSubmittedErrors] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -25,13 +28,26 @@ export default function Teachers() {
     schoolName.trim().length > 0 &&
     subjectName.trim().length > 0;
 
-  const handleStartLesson = (e: React.FormEvent) => {
+  const handleStartLesson = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isFormValid) {
+    if (!isFormValid) {
+      setSubmittedErrors(true);
+      return;
+    }
+    setSaving(true);
+    setSaveError("");
+    try {
+      await saveForm("teachers", {
+        name: teacherName.trim(),
+        school: schoolName.trim(),
+        subject: subjectName.trim(),
+      });
       setShowModal(false);
       window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      setSubmittedErrors(true);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "We could not save your details. Please try again.");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -130,10 +146,12 @@ export default function Teachers() {
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
                 <button
                   type="submit"
-                  className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3 rounded-full transition-all shadow-md hover:shadow-lg cursor-pointer"
+                  disabled={saving}
+                  className="bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3 rounded-full transition-all shadow-md hover:shadow-lg cursor-pointer disabled:opacity-60"
                 >
-                  Begin the lesson →
+                  {saving ? "Saving…" : "Begin the lesson →"}
                 </button>
+                {saveError && <p className="text-xs text-rose-300 sm:mr-auto">{saveError}</p>}
                 <span className="text-xs text-white/50 font-light italic">
                   Once a teacher, always a teacher.
                 </span>
