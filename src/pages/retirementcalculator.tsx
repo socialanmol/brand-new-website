@@ -1,5 +1,7 @@
 import React, { useState, useId, useMemo } from 'react';
 import { Link } from 'react-router';
+import CalculatorActions from '../components/CalculatorActions';
+import { composeRetirement } from '../calculators/compose';
 
 export default function RetirementCalculator() {
   const reqAmtId = useId();
@@ -72,13 +74,27 @@ export default function RetirementCalculator() {
     };
   }, [targetMonthly, currentAge, retirementAge, inflationRate, returnRate, currentSavings]);
 
+  const report = useMemo(() => composeRetirement({
+    years: calculations.yearsToRetire,
+    monthlyNeedToday: targetMonthly,
+    futureMonthlyNeed: calculations.futureMonthlyNeed,
+    corpus: calculations.inflationAdjustedCorpus,
+    currentSavings,
+    savingsAtRetirement: calculations.growthOfCurrentSavings,
+    monthlySip: calculations.monthlySavingsReq,
+    rate: returnRate,
+    inflation: inflationRate,
+    invested: calculations.totalAmountInvested,
+  }), [calculations, targetMonthly, currentSavings, returnRate, inflationRate]);
+
   const inr = (v: number) => Math.round(v).toLocaleString('en-IN');
   const rs = (v: number) => '₹ ' + inr(v);
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen py-10 px-5">
       <div className="max-w-[1140px] mx-auto">
-        <div className="mb-8">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div>
           <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.14em] text-[#6AA32A] bg-[#EFF8E2] px-3 py-1.5 rounded-full mb-3">
             Retirement Planning
           </span>
@@ -88,6 +104,8 @@ export default function RetirementCalculator() {
           <p className="text-sm text-[#6B7280] mt-2">
             Calculate your inflation-adjusted retirement target and discover the exact monthly investment required to live your golden years in absolute financial freedom.
           </p>
+          </div>
+          <CalculatorActions report={report} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-6 items-start">

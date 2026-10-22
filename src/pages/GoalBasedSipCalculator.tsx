@@ -1,4 +1,6 @@
 import { useId, useMemo, useState } from "react";
+import CalculatorActions from "../components/CalculatorActions";
+import { composeGoalSip } from "../calculators/compose";
 
 const formatINR = (value: number) =>
   new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(Math.round(value));
@@ -34,6 +36,15 @@ export default function GoalBasedSipCalculator() {
     };
   }, [targetAmount, years, expectedReturn]);
 
+  const report = useMemo(() => composeGoalSip({
+    target: targetAmount,
+    years,
+    rate: expectedReturn,
+    monthly: projection.monthlySip,
+    invested: projection.invested,
+    growth: projection.growth,
+  }), [projection, targetAmount, years, expectedReturn]);
+
   const targetTrack = `linear-gradient(90deg, #1A3B9F 0 ${((targetAmount - 100000) / 49900000) * 100}%, #E2E8F0 0 100%)`;
   const yearsTrack = `linear-gradient(90deg, #1A3B9F 0 ${((years - 1) / 39) * 100}%, #E2E8F0 0 100%)`;
   const returnTrack = `linear-gradient(90deg, #1A3B9F 0 ${((expectedReturn - 5) / 15) * 100}%, #E2E8F0 0 100%)`;
@@ -64,9 +75,14 @@ export default function GoalBasedSipCalculator() {
             <span className="h-1.5 w-1.5 rounded-full bg-[#8DC63F]" />
             Goal Planning Tool
           </div>
-          <h1 className="mt-5 font-['Montserrat',sans-serif] text-3xl font-extrabold sm:text-5xl">
-            Goal-Based SIP Calculator
-          </h1>
+          <div className="mt-5 flex flex-wrap items-end justify-between gap-4">
+            <h1 className="font-['Montserrat',sans-serif] text-3xl font-extrabold sm:text-5xl">
+              Goal-Based SIP Calculator
+            </h1>
+            <div className="rounded-2xl bg-white p-3">
+              <CalculatorActions report={report} />
+            </div>
+          </div>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/80 sm:text-base">
             Start with the life goal you want to fund. We’ll calculate the monthly SIP required to reach it on time.
           </p>

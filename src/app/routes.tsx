@@ -44,6 +44,7 @@ import CalculatorsHub from '../pages/CalculatorsHub';
 import SipCalculator from '../pages/sip-calculator';
 import SipTopUpCalculator from '../pages/siptopup';
 import LumpsumCalculator from '../pages/lumpsumcalculator';
+import LumpsumTargetCalculator from '../pages/lumpsumtarget';
 import CompoundingCalculator from '../pages/compoundingcalc';
 import CompositeGoalPlanner from '../pages/compositegoalplanner';
 import GoalBasedSipTopUpCalculator from '../pages/goalbasedtopup';
@@ -218,6 +219,7 @@ export const router = createBrowserRouter([
           { path: 'calculators/sip-calculator', Component: SipCalculator },
           { path: 'calculators/sip-topup-calculator', Component: SipTopUpCalculator },
           { path: 'calculators/lumpsum-calculator', Component: LumpsumCalculator },
+          { path: 'calculators/lumpsum-target-calculator', Component: LumpsumTargetCalculator },
           { path: 'calculators/compounding-calculator', Component: CompoundingCalculator },
           { path: 'calculators/composite-financial-goal-planner', Component: CompositeGoalPlanner },
           { path: 'calculators/goal-based-topup-sip', Component: GoalBasedSipTopUpCalculator },

@@ -1,4 +1,6 @@
 import React, { useState, useId, useMemo } from 'react';
+import CalculatorActions from '../components/CalculatorActions';
+import { composeNetWorth } from '../calculators/compose';
 
 export default function NetworthCalculator() {
   // Asset IDs
@@ -51,6 +53,26 @@ export default function NetworthCalculator() {
     };
   }, [shares, fixedInc, cash, property, gold, otherAssets, homeLoan, personalLoan, taxOwed, bills, ccDues, otherLiab]);
 
+  const report = useMemo(() => composeNetWorth({
+    assets: calculation.totalAssets,
+    liabilities: calculation.totalLiabilities,
+    net: calculation.networth,
+    lines: [
+      { label: "Shares and mutual funds", amount: shares, kind: "asset" },
+      { label: "Fixed income", amount: fixedInc, kind: "asset" },
+      { label: "Cash", amount: cash, kind: "asset" },
+      { label: "Property", amount: property, kind: "asset" },
+      { label: "Gold", amount: gold, kind: "asset" },
+      { label: "Other assets", amount: otherAssets, kind: "asset" },
+      { label: "Home loan", amount: homeLoan, kind: "liability" },
+      { label: "Personal loan", amount: personalLoan, kind: "liability" },
+      { label: "Tax owed", amount: taxOwed, kind: "liability" },
+      { label: "Bills", amount: bills, kind: "liability" },
+      { label: "Card dues", amount: ccDues, kind: "liability" },
+      { label: "Other liabilities", amount: otherLiab, kind: "liability" },
+    ],
+  }), [calculation, shares, fixedInc, cash, property, gold, otherAssets, homeLoan, personalLoan, taxOwed, bills, ccDues, otherLiab]);
+
   const inr = (v: number) => Math.round(v).toLocaleString('en-IN');
   const rs = (v: number) => 'Rs. ' + inr(v);
 
@@ -61,11 +83,6 @@ export default function NetworthCalculator() {
     if (num >= 100000) return `(Rupees ${(num / 100000).toFixed(2)} Lakh Only)`;
     if (num >= 1000) return `(Rupees ${(num / 1000).toFixed(1)} Thousand Only)`;
     return `(Rupees ${num} Only)`;
-  };
-
-  const handleDownloadPDF = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.print();
   };
 
   return (
@@ -82,13 +99,7 @@ export default function NetworthCalculator() {
               Networth Calculator
             </h2>
           </div>
-          <button
-            onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4v11" /><path d="m7 10 5 5 5-5" /><path d="M5 20h14" /></svg>
-            Download PDF / Print
-          </button>
+          <CalculatorActions report={report} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-6 items-start">

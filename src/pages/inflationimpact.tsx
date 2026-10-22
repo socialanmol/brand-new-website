@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useId, useMemo } from 'react';
+import CalculatorActions from '../components/CalculatorActions';
+import { composeInflation } from '../calculators/compose';
 
 export default function InflationImpactCalculator() {
   const invCostId = useId();
@@ -35,6 +37,14 @@ export default function InflationImpactCalculator() {
     };
   }, [initialCost, inflationRate, years]);
 
+  const report = useMemo(() => composeInflation({
+    today: calculation.initialCost,
+    rate: calculation.inflationRate,
+    years: calculation.years,
+    future: calculation.futureCost,
+    impact: calculation.inflationImpact,
+  }), [calculation]);
+
   const inr = (v: number) => Math.round(v).toLocaleString('en-IN');
   const rs = (v: number) => 'Rs. ' + inr(v);
 
@@ -47,11 +57,6 @@ export default function InflationImpactCalculator() {
   const invDash = `${Math.max(a - gap, 0)} ${C}`;
   const futDash = `${b > gap ? b - gap : 0} ${C}`;
   const futOffset = -a;
-
-  const handleDownloadPDF = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.print();
-  };
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased py-10 px-5">
@@ -67,13 +72,7 @@ export default function InflationImpactCalculator() {
               Inflation Impact Calculator
             </h2>
           </div>
-          <button
-            onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4v11" /><path d="m7 10 5 5 5-5" /><path d="M5 20h14" /></svg>
-            Download PDF
-          </button>
+          <CalculatorActions report={report} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-6 items-start">

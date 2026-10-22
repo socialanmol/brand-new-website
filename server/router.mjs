@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { getPool, pingDatabase } from "./db.mjs";
+import { mailConfigured, sendReport } from "./mail.mjs";
 import { acceptedGoogleProfile } from "./google-profile.mjs";
 import { assertSameOrigin, rateLimit } from "./guard.mjs";
 import {
@@ -65,6 +66,9 @@ export async function handleRequest(request, response) {
     return updateView(request, response, path.split("/").pop());
   }
   if (method === "GET" && path === "/api/analytics/summary") return analyticsSummary(request, response);
+  if (method === "GET" && path === "/api/calculator-profile") return calculatorProfile(request, response);
+  if (method === "POST" && path === "/api/calculator-profile") return saveCalculatorProfile(request, response);
+  if (method === "POST" && path === "/api/calculator-report") return emailCalculatorReport(request, response);
 
   json(response, 404, { error: "Not found" });
 }
@@ -335,6 +339,86 @@ async function analyticsSummary(request, response) {
       totalDurationMs: Number(page.totalDurationMs || 0),
     })),
   });
+}
+
+async function calculatorProfile(request, response) {
+  const session = await findCalculatorSession(request);
+  if (!session) throw new HttpError(401, "Enter your details to use the calculator.");
+  json(response, 200, session);
+}
+
+async function saveCalculatorProfile(request, response) {
+  assertSameOrigin(request);
+  rateLimit(request, "calculator-profile", 20, 10 * 60 * 1000);
+  const body = await readJson(request);
+  const name = requireName(body.name);
+  const email = requireEmail(body.email);
+  const phone = requireContact(body.phone);
+  const location = text(body.location, 120);
+  if (location.length < 2) throw new HttpError(400, "Enter your current location.");
+
+  const token = randomToken();
+  const expiresAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+  await query(
+    `INSERT INTO calculator_sessions (token_hash, name, email, phone, location, expires_at)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [sha256(token), name, email, phone, location, expiresAt],
+  );
+  setCookie(response, "ma_calc", token, { maxAge: 14 * 24 * 60 * 60 });
+  json(response, 201, { name, email, phone, location });
+}
+
+async function emailCalculatorReport(request, response) {
+  assertSameOrigin(request);
+  rateLimit(request, "calculator-mail", 5, 10 * 60 * 1000);
+  const session = await findCalculatorSession(request);
+  if (!session) throw new HttpError(401, "Enter your details to use the calculator.");
+  if (!mailConfigured()) throw new HttpError(503, "Email delivery is not configured yet.");
+
+  const body = await readJson(request, 2_000_000);
+  const slug = text(body.slug, 80);
+  const heading = text(body.heading, 120);
+  if (!/^[a-z0-9-]{3,80}$/.test(slug)) throw new HttpError(400, "Unknown calculator.");
+  if (heading.length < 3) throw new HttpError(400, "The report needs a heading.");
+  const encoded = String(body.pdfBase64 || "").replace(/\s+/g, "");
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(encoded)) throw new HttpError(400, "The report file is not a PDF.");
+  const pdf = Buffer.from(encoded, "base64");
+  if (pdf.length < 800 || pdf.length > 1_500_000 || pdf.subarray(0, 5).toString() !== "%PDF-") {
+    throw new HttpError(400, "The report file is not a PDF.");
+  }
+
+  try {
+    await sendReport({
+      to: session.email,
+      name: session.name,
+      heading,
+      filename: `MyAnmol-${slug}.pdf`,
+      pdf,
+    });
+  } catch (error) {
+    console.error("Calculator report email failed:", error instanceof Error ? error.message : "send failed");
+    throw new HttpError(502, "The report could not be emailed.");
+  }
+  json(response, 200, { ok: true });
+}
+
+async function findCalculatorSession(request) {
+  const token = readCookies(request).ma_calc || "";
+  if (!/^[a-f0-9]{64}$/.test(token)) return null;
+  const [rows] = await query(
+    `SELECT name, email, phone, location
+     FROM calculator_sessions
+     WHERE token_hash = ? AND expires_at > UTC_TIMESTAMP()
+     LIMIT 1`,
+    [sha256(token)],
+  );
+  return rows[0] || null;
+}
+
+function requireContact(value) {
+  const phone = text(value, 20).replace(/\D/g, "");
+  if (phone.length < 8 || phone.length > 15) throw new HttpError(400, "Enter a valid contact number.");
+  return phone;
 }
 
 function googleRedirectUri() {

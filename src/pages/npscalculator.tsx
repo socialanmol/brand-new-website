@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useId, useMemo } from 'react';
+import CalculatorActions from '../components/CalculatorActions';
+import { composeNps } from '../calculators/compose';
 
 export default function NpsCalculator() {
   const ageId = useId();
@@ -66,6 +68,20 @@ export default function NpsCalculator() {
     };
   }, [currentAge, monthlyInvest, returnRate, annuityReturnRate, annuityPercent]);
 
+  const report = useMemo(() => composeNps({
+    monthly: monthlyInvest,
+    years: calculation.yearsToRetire,
+    rate: returnRate,
+    annuityRate: annuityReturnRate,
+    annuityPercent,
+    invested: calculation.totalInvested,
+    corpus: calculation.totalCorpus,
+    growth: calculation.totalGrowth,
+    annuity: calculation.annuityAmount,
+    lumpSum: calculation.lumpSumAmount,
+    pension: calculation.monthlyPension,
+  }), [calculation, monthlyInvest, returnRate, annuityReturnRate, annuityPercent]);
+
   const inr = (v: number) => Math.round(v).toLocaleString('en-IN');
   const rs = (v: number) => 'Rs. ' + inr(v);
 
@@ -78,11 +94,6 @@ export default function NpsCalculator() {
   const invDash = `${Math.max(a - gap, 0)} ${C}`;
   const grDash = `${b > gap ? b - gap : 0} ${C}`;
   const grOffset = -a;
-
-  const handleDownloadPDF = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.print();
-  };
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen py-10 px-5">
@@ -98,13 +109,7 @@ export default function NpsCalculator() {
               National Pension System (NPS) Calculator
             </h2>
           </div>
-          <button
-            onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4v11" /><path d="m7 10 5 5 5-5" /><path d="M5 20h14" /></svg>
-            Download PDF / Print
-          </button>
+          <CalculatorActions report={report} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-6 items-start">

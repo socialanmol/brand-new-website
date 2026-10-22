@@ -16,7 +16,7 @@ Put Google credentials in environment secrets, never in chat or source:
 - `GOOGLE_PLACES_API_KEY` and `GOOGLE_PLACE_ID` turn on live reviews. Without them, `GET /api/google-reviews` returns sample reviews.
 - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` turn on header Google sign-in. The OAuth redirect URI is `$APP_ORIGIN/api/auth/google/callback` (`APP_ORIGIN` defaults to `http://127.0.0.1:8443`).
 
-Page timing uses the first-party `ma_vid` cookie. `GET /api/analytics/summary` returns page totals only to a signed-in Google user listed in `ADMIN_EMAILS`. Form writes reject cross-site requests. Start local MariaDB with `sudo service mariadb start`, then `MYSQL_PASSWORD=... bash scripts/prepare-mysql.sh` once to create the database user.
+Page timing uses the first-party `ma_vid` cookie. `GET /api/analytics/summary` returns page totals only to a signed-in Google user listed in `ADMIN_EMAILS`. Form writes reject cross-site requests. Calculator reports are emailed with `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` and `MAIL_FROM`; without those, Email returns 503 and Download PDF still saves the file. The recipient is the address stored with the `ma_calc` cookie, not an address in the request body. Start local MariaDB with `sudo service mariadb start`, then `MYSQL_PASSWORD=... bash scripts/prepare-mysql.sh` once to create the database user.
 
 ## Toolchain
 

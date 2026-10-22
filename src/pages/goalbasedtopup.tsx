@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useId, useMemo } from 'react';
+import CalculatorActions from '../components/CalculatorActions';
+import { composeTopUp } from '../calculators/compose';
 
 export default function GoalBasedSipTopUpCalculator() {
   const goalId = useId();
@@ -85,7 +87,8 @@ export default function GoalBasedSipTopUpCalculator() {
         year: `Year ${y}`,
         sipPerMonth: Math.round(sipStart),
         investedThisYear: Math.round(yearInvested),
-        totalInvestedCumulative: Math.round(totalInvested)
+        totalInvestedCumulative: Math.round(totalInvested),
+        totalValueCumulative: Math.round(totalVal),
       });
 
       if (y < Y) {
@@ -105,6 +108,25 @@ export default function GoalBasedSipTopUpCalculator() {
     };
   }, [targetGoal, years, returnRate, inflationRate, topUpPercent]);
 
+  const report = useMemo(() => composeTopUp({
+    slug: "goal-based-topup-sip",
+    heading: "Goal-Based Top-Up SIP Report",
+    objective: "Inflated goal with a rising SIP",
+    monthly: calculation.initialSip,
+    years,
+    rate: returnRate,
+    stepLabel: `${topUpPercent}% each year`,
+    invested: calculation.totalInvested,
+    growth: calculation.totalGrowth,
+    futureValue: calculation.finalAmount,
+    rows: calculation.yearlyRows.map((row) => ({
+      label: row.year,
+      deposit: row.investedThisYear,
+      invested: row.totalInvestedCumulative,
+      closing: row.totalValueCumulative,
+    })),
+  }), [calculation, years, returnRate, topUpPercent]);
+
   const inr = (v: number) => Math.round(v).toLocaleString('en-IN');
   const rs = (v: number) => 'Rs. ' + inr(v);
 
@@ -117,11 +139,6 @@ export default function GoalBasedSipTopUpCalculator() {
   const invDash = `${Math.max(a - gap, 0)} ${C}`;
   const grDash = `${b > gap ? b - gap : 0} ${C}`;
   const grOffset = -a;
-
-  const handleDownloadPDF = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.print();
-  };
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen py-10 px-5">
@@ -137,13 +154,7 @@ export default function GoalBasedSipTopUpCalculator() {
               Goal-Based SIP Top-Up Calculator
             </h2>
           </div>
-          <button
-            onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4v11" /><path d="m7 10 5 5 5-5" /><path d="M5 20h14" /></svg>
-            Download PDF / Print
-          </button>
+          <CalculatorActions report={report} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-6 items-start">

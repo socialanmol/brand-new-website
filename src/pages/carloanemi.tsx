@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useId, useMemo } from 'react';
+import CalculatorActions from '../components/CalculatorActions';
+import { composeLoan } from '../calculators/compose';
 
 export default function CarLoanCalculator() {
   const loanAmtId = useId();
@@ -79,6 +81,19 @@ export default function CarLoanCalculator() {
     };
   }, [loanAmount, interestRate, tenureValue, maxTenure]);
 
+  const report = useMemo(() => composeLoan({
+    slug: "car-loan-emi-calculator",
+    heading: "Car Loan EMI Report",
+    objective: carType === "used" ? "Used car" : "New car",
+    principal: calculation.principal,
+    emi: calculation.emi,
+    interest: calculation.totalInterest,
+    total: calculation.totalPayment,
+    rate: interestRate,
+    tenureLabel: `${calculation.totalMonths} months`,
+    rows: calculation.yearlyRows,
+  }), [calculation, interestRate, carType]);
+
   const inr = (v: number) => Math.round(v).toLocaleString('en-IN');
   const rs = (v: number) => 'Rs. ' + inr(v);
 
@@ -91,11 +106,6 @@ export default function CarLoanCalculator() {
   const princDash = `${Math.max(a - gap, 0)} ${C}`;
   const intDash = `${b > gap ? b - gap : 0} ${C}`;
   const intOffset = -a;
-
-  const handleDownloadPDF = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.print();
-  };
 
   const FAQS = [
     { q: "What is the typical tenure of a Car Loan in India?", a: "The typical tenure of a car loan can fall between 1 to 7 years. However, tenures can go up to 8 years for electric vehicles (EVs)." },
@@ -120,13 +130,7 @@ export default function CarLoanCalculator() {
               Calculate Your Car Loan EMI
             </h2>
           </div>
-          <button
-            onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4v11" /><path d="m7 10 5 5 5-5" /><path d="M5 20h14" /></svg>
-            Download PDF / Print
-          </button>
+          <CalculatorActions report={report} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-6 items-start mb-10">

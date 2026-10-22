@@ -1,4 +1,6 @@
 import React, { useState, useId, useMemo } from 'react';
+import CalculatorActions from '../components/CalculatorActions';
+import { composeCii } from '../calculators/compose';
 
 // Official Indian Income Tax Cost Inflation Index (CII) dataset
 const CII_DATA: Record<string, number> = {
@@ -76,13 +78,20 @@ export default function CostInflationIndexCalculator() {
     };
   }, [purchaseYear, purchaseValue, salesYear, saleValue]);
 
+  const report = useMemo(() => composeCii({
+    purchaseYear,
+    saleYear: salesYear,
+    purchase: purchaseValue,
+    sale: saleValue,
+    ciiPurchase: calculation.ciiPurchase,
+    ciiSale: calculation.ciiSale,
+    indexedCost: calculation.indexedCost,
+    gain: calculation.capitalGain,
+    tax: calculation.capitalGainTax,
+  }), [calculation, purchaseYear, salesYear, purchaseValue, saleValue]);
+
   const inr = (v: number) => Math.round(v).toLocaleString('en-IN');
   const rs = (v: number) => 'Rs. ' + inr(v);
-
-  const handleDownloadPDF = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.print();
-  };
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased py-10 px-5">
@@ -98,13 +107,7 @@ export default function CostInflationIndexCalculator() {
               Cost Inflation Index (CII) Calculator
             </h2>
           </div>
-          <button
-            onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4v11" /><path d="m7 10 5 5 5-5" /><path d="M5 20h14" /></svg>
-            Download PDF
-          </button>
+          <CalculatorActions report={report} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-6 items-start">

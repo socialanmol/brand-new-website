@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useId, useMemo } from 'react';
+import CalculatorActions from '../components/CalculatorActions';
+import { composeLoan } from '../calculators/compose';
 
 export default function EducationLoanCalculator() {
   const loanAmtId = useId();
@@ -77,6 +79,19 @@ export default function EducationLoanCalculator() {
     };
   }, [loanAmount, interestRate, tenureType, tenureValue, startYear]);
 
+  const report = useMemo(() => composeLoan({
+    slug: "education-loan-emi-calculator",
+    heading: "Education Loan EMI Report",
+    objective: "Education loan",
+    principal: calculation.principal,
+    emi: calculation.emi,
+    interest: calculation.totalInterest,
+    total: calculation.totalPayment,
+    rate: interestRate,
+    tenureLabel: `${calculation.totalMonths} months`,
+    rows: calculation.yearlyRows,
+  }), [calculation, interestRate]);
+
   const inr = (v: number) => Math.round(v).toLocaleString('en-IN');
   const rs = (v: number) => 'Rs. ' + inr(v);
 
@@ -90,11 +105,6 @@ export default function EducationLoanCalculator() {
   const intDash = `${b > gap ? b - gap : 0} ${C}`;
   const intOffset = -a;
 
-  const handleDownloadPDF = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.print();
-  };
-
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen py-10 px-5">
       <div className="max-w-[1240px] mx-auto">
@@ -104,12 +114,7 @@ export default function EducationLoanCalculator() {
           <div className="text-xs font-semibold text-[#6B7280]">
             Know more about Educational Loan, Education Loan in India and calculate Education Loans using our Education Loan Calculator.
           </div>
-          <button
-            onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 h-10 px-4 rounded-[8px] bg-white border border-[#E3E8F4] text-[#1A3B9F] font-extrabold text-xs hover:bg-[#EEF2FB] transition-all cursor-pointer shadow-sm"
-          >
-            Download PDF
-          </button>
+          <CalculatorActions report={report} />
         </div>
 
         {/* Navigation Tabs Bar matching screenshot */}

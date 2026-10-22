@@ -1,4 +1,6 @@
 import React, { useState, useId, useMemo } from 'react';
+import CalculatorActions from '../components/CalculatorActions';
+import { composeComposite } from '../calculators/compose';
 
 export default function CompositeGoalPlanner() {
   const currentAgeId = useId();
@@ -99,19 +101,31 @@ export default function CompositeGoalPlanner() {
       purchase: { target: itemFutureCost, fvSavings: itemSavingsFutureValue, remaining: itemRemainingTarget },
       active: { target: activeGoalTarget, fvSavings: activeSavingsFV, remaining: activeRemaining, horizon: activeHorizon },
       yearlyData,
+      monthlySip: Math.round(sipReq),
       totalInvestedSummary: yearlyData[yearlyData.length - 1]?.invested || 0,
       totalInterestSummary: yearlyData[yearlyData.length - 1]?.interest || 0,
       totalAmountSummary: yearlyData[yearlyData.length - 1]?.total || 0
     };
   }, [inflation, expectedReturn, existingSavings, activeTab, eduGoalCost, childAge, eduTargetAge, wealthTarget, wealthYears, itemCost, itemYears]);
 
+  const report = useMemo(() => {
+    const tabName = activeTab === "education" ? "Child education" : activeTab === "wealth" ? "Wealth creation" : "Dream purchase";
+    return composeComposite({
+      tab: tabName,
+      years: calculations.active.horizon,
+      rate: expectedReturn,
+      inflation,
+      target: calculations.active.target,
+      existing: calculations.active.fvSavings,
+      sip: calculations.monthlySip,
+      invested: calculations.totalInvestedSummary,
+      growth: calculations.totalInterestSummary,
+      rows: calculations.yearlyData,
+    });
+  }, [calculations, activeTab, expectedReturn, inflation]);
+
   const inr = (v: number) => Math.round(v).toLocaleString('en-IN');
   const rs = (v: number) => '₹ ' + inr(v);
-
-  const handleDownloadPDF = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.print();
-  };
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen py-10 px-5">
@@ -127,13 +141,7 @@ export default function CompositeGoalPlanner() {
               Composite Goal Planner
             </h2>
           </div>
-          <button
-            onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4v11" /><path d="m7 10 5 5 5-5" /><path d="M5 20h14" /></svg>
-            Download PDF / Print
-          </button>
+          <CalculatorActions report={report} />
         </div>
 
         {/* Global Inputs Card */}
