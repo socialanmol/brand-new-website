@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-const STAFF_NOTIFICATION_TO = "mohit.bajaj@myanmol.com";
+const STAFF_NOTIFICATION_TO = "social.anmol@gmail.com";
 
 export function mailConfigured() {
   return Boolean(process.env.SMTP_HOST && process.env.MAIL_FROM);
@@ -57,7 +57,7 @@ export async function sendReport({ to, name, heading, filename, pdf }) {
       "",
       "MyAnmol",
       "ARN 114893",
-      "mutualfunds@myanmol.com",
+      "intern.myanmol@gmail.com",
     ].join("\n"),
     attachments: [{ filename, content: pdf, contentType: "application/pdf" }],
   });
