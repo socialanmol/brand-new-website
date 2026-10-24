@@ -65,6 +65,7 @@ import RetirementCalculator from '../pages/retirementcalculator';
 import FinancialConfidenceBuilder from '../pages/FinancialConfidenceBuilder';
 import GoalMapping from '../pages/GoalMapping';
 import SpecializedInvestmentFunds from '../pages/SpecializedInvestmentFunds';
+import MutualFundsHub from '../pages/mutual_funds_hub';
 import InvestmentServices from '../pages/InvestmentServices';
 import Careers from '../pages/Careers';
 import FinancialWellnessThemed from '../pages/FinancialWellnessThemed';
@@ -175,6 +176,7 @@ export const router = createBrowserRouter([
       { path: 'services/other/tax-filing', Component: TaxFiling },
       { path: 'services/other/:slug', Component: ComingSoon },
 
+      { path: 'mutual-funds', Component: MutualFundsHub },
       { path: 'mutual-funds/gift-city', Component: GiftCity },
       { path: 'gift-city', Component: GiftCity },
 
