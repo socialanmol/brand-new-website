@@ -37,7 +37,7 @@ export default function InvestmentServices() {
             </div>
             <div className="flex flex-col gap-3 pt-4 border-t border-white/10">
               <a
-                href="https://play.google.com/store/apps/details?id=com.myanmol.app&pcampaignid=web_share"
+                href="https://play.google.com/store/apps/details?id=in.wealthy.android.wealthy&listing=myanmolwealth&pli=1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-xs font-bold text-[#091540] bg-[#8DC63F] hover:bg-[#9ED64A] py-2.5 px-4 rounded-xl text-center justify-center transition-all shadow-sm"
@@ -45,7 +45,7 @@ export default function InvestmentServices() {
                 Android Play Store App →
               </a>
               <a
-                href="https://apps.apple.com/in/app/myanmol-mutual-funds/id6748212457"
+                href="https://apps.apple.com/us/app/wealthy-stocks-mutual-funds/id1222950243?ppid=861dec7d-1fc6-4e46-9ac7-1c1ef4846b68"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-xs font-bold text-[#091540] bg-[#8DC63F] hover:bg-[#9ED64A] py-2.5 px-4 rounded-xl text-center justify-center transition-all shadow-sm"
