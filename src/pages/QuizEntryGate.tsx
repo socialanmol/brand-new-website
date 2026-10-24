@@ -21,7 +21,7 @@ export default function QuizEntryGate() {
   }
 
   if (hasStarted) {
-    return quizNumber === "1" ? <QuizOne userDetails={userDetails} /> : <QuizTwo />;
+    return quizNumber === "1" ? <QuizOne userDetails={userDetails} /> : <QuizTwo userDetails={userDetails} />;
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {

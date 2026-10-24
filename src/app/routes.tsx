@@ -28,6 +28,7 @@ import ForFamilies from '../pages/ForFamilies';
 import OurTeam from '../pages/OurTeam';
 import ForNri from '../pages/ForNri';
 import FinancialFitnessQuiz from '../pages/FinancialFitnessQuiz';
+import QuizEntryGate from '../pages/QuizEntryGate';
 import BuildYourWealth from '../pages/BuildYourWealth';
 import RegulatoryDisclosures from '../pages/RegulatoryDisclosures';
 import WealthEstateSolutions from '../pages/WealthEstateSolutions';
@@ -73,7 +74,7 @@ import FixedDeposits from '../pages/FixedDeposits';
 import EquityTrading from '../pages/EquityTrading';
 import TaxFiling from '../pages/TaxFiling';
 import Glossary from '../pages/Glossary';
-import GiftCity from '../pages/GiftCity';
+import GiftCity from '../pages/Giftcity';
 import ContactUs from '../pages/ContactUs';
 import ComingSoon from '../pages/ComingSoon';
 import CalculatorEntryGate from '../components/CalculatorEntryGate';
@@ -197,7 +198,9 @@ export const router = createBrowserRouter([
       { path: 'financial-wellness-check', Component: FinancialWellnessThemed },
 
       { path: 'fw/quiz', Component: FinancialFitnessQuiz },
+      { path: 'fw/quiz/:quizNumber', Component: QuizEntryGate },
       { path: 'financial-fitness-quiz', Component: FinancialFitnessQuiz },
+      { path: 'financial-fitness-quiz/:quizNumber', Component: QuizEntryGate },
 
       { path: 'fw/build', Component: BuildYourWealth },
       { path: 'build-your-wealth', Component: BuildYourWealth },
