@@ -256,8 +256,11 @@ export default function MutualFundsHub() {
         {listStatus === "error" && (
           <p className="text-sm font-semibold text-rose-700">The scheme list could not be loaded from the Google Sheet.</p>
         )}
-        {listStatus === "ready" && filteredSchemes.length === 0 && (
+        {listStatus === "ready" && schemes.length === 0 && (
           <p className="text-sm text-[#6B7280]">No schemes are listed for {month}.</p>
+        )}
+        {listStatus === "ready" && schemes.length > 0 && filteredSchemes.length === 0 && (
+          <p className="text-sm text-[#6B7280]">No schemes match this search.</p>
         )}
 
         {/* Schemes Grid */}
@@ -287,14 +290,18 @@ export default function MutualFundsHub() {
               </div>
 
               {/* Fund Metrics Box */}
-              <div className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[16px] p-4 grid grid-cols-3 gap-2 text-center">
+              <div className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[16px] p-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
                 <div>
                   <div className="text-[10px] text-[#6B7280] font-semibold">1Yr Return</div>
                   <div className="text-xs font-extrabold text-[#6AA32A] mt-0.5">{scheme.return1Yr}</div>
                 </div>
-                <div className="border-x border-[#E3E8F4]">
+                <div>
                   <div className="text-[10px] text-[#6B7280] font-semibold">3Yr Return</div>
                   <div className="text-xs font-extrabold text-[#1A3B9F] mt-0.5">{scheme.return3Yr}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-[#6B7280] font-semibold">5Yr Return</div>
+                  <div className="text-xs font-extrabold text-[#1A3B9F] mt-0.5">{scheme.return5Yr}</div>
                 </div>
                 <div>
                   <div className="text-[10px] text-[#6B7280] font-semibold">AUM</div>
