@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
+import { saveForm } from "../lib/saveForm";
 
 export default function SeminarInvestingPlanning() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen">
@@ -49,9 +52,18 @@ export default function SeminarInvestingPlanning() {
 
             {!subscribed ? (
               <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (email) setSubscribed(true);
+                onSubmit={async (event) => {
+                  event.preventDefault();
+                  setSaving(true);
+                  setError("");
+                  try {
+                    await saveForm("seminar-investing", { email: email.trim() });
+                    setSubscribed(true);
+                  } catch (submitError) {
+                    setError(submitError instanceof Error ? submitError.message : "We could not save your email. Please try again.");
+                  } finally {
+                    setSaving(false);
+                  }
                 }}
               >
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-2 text-left">
@@ -65,16 +77,18 @@ export default function SeminarInvestingPlanning() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm mb-4 focus:border-[#1A3B9F] focus:outline-none"
                 />
+                {error && <p className="text-xs font-semibold text-rose-600 mb-3 text-left">{error}</p>}
                 <button
                   type="submit"
-                  className="w-full bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm py-3.5 rounded-full shadow-md transition-all cursor-pointer"
+                  disabled={saving}
+                  className="w-full bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm py-3.5 rounded-full shadow-md transition-all cursor-pointer disabled:opacity-60"
                 >
-                  Sign Up →
+                  {saving ? "Saving…" : "Sign Up →"}
                 </button>
               </form>
             ) : (
               <div className="p-4 bg-emerald-50 text-emerald-800 rounded-xl text-xs font-semibold">
-                ✓ Thanks for subscribing! You'll receive updates for our next seminar.
+                ✓ Your email is saved. We'll use it when the next seminar is announced.
               </div>
             )}
           </div>

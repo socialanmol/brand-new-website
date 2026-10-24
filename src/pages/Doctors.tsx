@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useOutletContext } from "react-router";
+import { saveForm } from "../lib/saveForm";
 import { BookingModal } from "./BookAReview";
 
 export default function Doctors() {
@@ -11,6 +12,8 @@ export default function Doctors() {
   const [address, setAddress] = useState("");
   const [rxDate, setRxDate] = useState("");
   const [submittedErrors, setSubmittedErrors] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -32,13 +35,26 @@ export default function Doctors() {
     address.trim().length > 0 &&
     rxDate.trim().length > 0;
 
-  const handleStartDiagnosis = (e: React.FormEvent) => {
+  const handleStartDiagnosis = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isFormValid) {
+    if (!isFormValid) {
+      setSubmittedErrors(true);
+      return;
+    }
+    setSaving(true);
+    setSaveError("");
+    try {
+      await saveForm("docwealth", {
+        name: doctorName.trim(),
+        clinic: address.trim(),
+        visitDate: rxDate.trim(),
+      });
       setShowModal(false);
       window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      setSubmittedErrors(true);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "We could not save your details. Please try again.");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -130,10 +146,12 @@ export default function Doctors() {
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[rgba(26,59,159,0.12)]">
                 <button
                   type="submit"
-                  className="w-full sm:w-auto bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3 rounded-full transition-all shadow-md cursor-pointer"
+                  disabled={saving}
+                  className="w-full sm:w-auto bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base px-8 py-3 rounded-full transition-all shadow-md cursor-pointer disabled:opacity-60"
                 >
-                  Read the diagnosis →
+                  {saving ? "Saving…" : "Read the diagnosis →"}
                 </button>
+                {saveError && <p className="w-full text-xs font-semibold text-rose-600">{saveError}</p>}
 
                 <div className="text-right">
                   <span className="block text-[10px] font-bold uppercase tracking-widest text-gray-400">

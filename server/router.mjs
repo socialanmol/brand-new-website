@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { getPool, pingDatabase } from "./db.mjs";
-import { mailConfigured, sendReport } from "./mail.mjs";
+import { mailConfigured, sendReport, sendStaffCopy } from "./mail.mjs";
 import { acceptedGoogleProfile } from "./google-profile.mjs";
 import { assertSameOrigin, rateLimit } from "./guard.mjs";
 import {
@@ -56,6 +56,7 @@ export async function handleRequest(request, response) {
   if (method === "GET" && path === "/api/google-reviews") return googleReviews(response);
   if (method === "POST" && path === "/api/leads") return createLead(request, response);
   if (method === "POST" && path === "/api/contact") return createContact(request, response);
+  if (method === "POST" && path === "/api/forms") return createFormSubmission(request, response);
   if (method === "GET" && path === "/api/auth/config") return authConfig(response);
   if (method === "GET" && path === "/api/auth/google") return startGoogle(request, response);
   if (method === "GET" && path === "/api/auth/google/callback") return finishGoogle(request, response, url);
@@ -105,7 +106,132 @@ async function createLead(request, response) {
     `INSERT INTO leads (name, phone, email, city, interest, source_path) VALUES (?, ?, ?, ?, ?, ?)`,
     [name, phone, email, city, interest || null, sourcePath],
   );
+  await sendStaffCopy({
+    subject: `Get Started: ${name}`,
+    text: [
+      "A Get Started form was submitted.",
+      "",
+      `Name: ${name}`,
+      `Phone: ${phone}`,
+      `Email: ${email}`,
+      `City: ${city || "—"}`,
+      `Interest: ${interest || "—"}`,
+      `Page: ${sourcePath || "—"}`,
+    ].join("\n"),
+  });
   json(response, 201, { id: result.insertId });
+}
+
+const REVIEW_SLOTS = new Set([
+  "07:00 AM - 07:45 AM (Early Bird)",
+  "10:00 AM - 10:45 AM (Morning)",
+  "01:00 PM - 01:45 PM (Lunch Window)",
+  "04:00 PM - 04:45 PM (Afternoon)",
+  "07:00 PM - 07:45 PM (Evening)",
+  "09:00 PM - 09:45 PM (Post Dinner)",
+]);
+
+async function createFormSubmission(request, response) {
+  assertSameOrigin(request);
+  const body = await readJson(request);
+  const formKey = text(body.form, 64);
+  if (!/^[a-z0-9-]{3,64}$/.test(formKey)) throw new HttpError(400, "Choose a form.");
+  rateLimit(request, `form:${formKey}`, 8, 10 * 60 * 1000);
+  const fields = readFields(formKey, body.fields);
+  const sourcePath = safePath(body.sourcePath) || null;
+  const [result] = await query(
+    `INSERT INTO form_submissions (form_key, name, email, phone, fields, source_path) VALUES (?, ?, ?, ?, ?, ?)`,
+    [formKey, fields.name || null, fields.email || null, fields.phone || null, JSON.stringify(fields), sourcePath],
+  );
+  if (formKey === "book-a-review") {
+    await sendStaffCopy({
+      subject: `Book a Review: ${fields.name}`,
+      text: [
+        "A Book a Review form was submitted.",
+        "",
+        `Name: ${fields.name}`,
+        `Phone: ${fields.phone}`,
+        `Email: ${fields.email}`,
+        `Date: ${fields.date}`,
+        `Time window: ${fields.timeSlot}`,
+        `Mode: ${fields.mode === "office" ? "Office visit" : "Online"}`,
+        `Time zone: ${fields.timeZone || "—"}`,
+        `Notes: ${fields.notes || "—"}`,
+        `Page: ${sourcePath || "—"}`,
+      ].join("\n"),
+    });
+  }
+  json(response, 201, { id: result.insertId });
+}
+
+function readFields(formKey, raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new HttpError(400, "Enter the form details.");
+  if (formKey === "teachers") {
+    return {
+      name: requireName(raw.name),
+      school: requiredLine(raw.school, "Enter the school or college."),
+      subject: requiredLine(raw.subject, "Enter the subject you teach."),
+    };
+  }
+  if (formKey === "docwealth") {
+    return {
+      name: requireName(raw.name),
+      clinic: requiredLine(raw.clinic, "Enter the hospital or clinic."),
+      visitDate: requiredLine(raw.visitDate, "Enter the date."),
+    };
+  }
+  if (formKey === "book-a-review") {
+    const mode = raw.mode === "office" ? "office" : raw.mode === "online" ? "online" : "";
+    if (!mode) throw new HttpError(400, "Choose online or an office visit.");
+    const timeSlot = text(raw.timeSlot, 80);
+    if (!REVIEW_SLOTS.has(timeSlot)) throw new HttpError(400, "Choose a time window.");
+    return {
+      name: requireName(raw.name),
+      phone: flexiblePhone(raw.phone),
+      email: requireEmail(raw.email),
+      date: calendarDate(raw.date),
+      timeSlot,
+      mode,
+      timeZone: text(raw.timeZone, 80),
+      notes: text(raw.notes, 2000),
+    };
+  }
+  if (formKey === "course-enroll") {
+    if (raw.consent !== true) throw new HttpError(400, "Accept the terms to continue.");
+    return {
+      name: requireName(raw.name),
+      email: requireEmail(raw.email),
+      phone: flexiblePhone(raw.phone),
+      consent: true,
+    };
+  }
+  if (formKey === "seminar-investing" || formKey === "seminar-life-stress" || formKey === "seminar-retirement") {
+    return { email: requireEmail(raw.email) };
+  }
+  throw new HttpError(400, "Choose a form.");
+}
+
+function requiredLine(value, message) {
+  const line = text(value, 160);
+  if (line.length < 2) throw new HttpError(400, message);
+  return line;
+}
+
+function flexiblePhone(value) {
+  const digits = text(value, 20).replace(/\D/g, "");
+  const local = digits.length === 12 && digits.startsWith("91") ? digits.slice(2) : digits;
+  if (!/^[0-9]{10}$/.test(local)) throw new HttpError(400, "Enter a valid 10-digit phone number.");
+  return local;
+}
+
+function calendarDate(value) {
+  const date = text(value, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new HttpError(400, "Choose a date.");
+  const parsed = new Date(`${date}T00:00:00Z`);
+  if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) {
+    throw new HttpError(400, "Choose a date.");
+  }
+  return date;
 }
 
 async function createContact(request, response) {
@@ -124,6 +250,18 @@ async function createContact(request, response) {
     `INSERT INTO contact_messages (name, email, phone, message, source) VALUES (?, ?, ?, ?, ?)`,
     [name, email, phone, message, source],
   );
+  await sendStaffCopy({
+    subject: `Contact: ${name}`,
+    text: [
+      "A Contact form was submitted.",
+      "",
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Phone: ${phone}`,
+      `Message: ${message}`,
+      `Source: ${source}`,
+    ].join("\n"),
+  });
   json(response, 201, { id: result.insertId });
 }
 

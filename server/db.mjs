@@ -60,6 +60,17 @@ const STATEMENTS = [
     INDEX idx_page_views_path (path),
     INDEX idx_page_views_started (started_at)
   )`,
+  `CREATE TABLE IF NOT EXISTS form_submissions (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    form_key VARCHAR(64) NOT NULL,
+    name VARCHAR(120) NULL,
+    email VARCHAR(190) NULL,
+    phone VARCHAR(20) NULL,
+    fields JSON NOT NULL,
+    source_path VARCHAR(255) NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_form_submissions_key (form_key, created_at)
+  )`,
   `CREATE TABLE IF NOT EXISTS calculator_sessions (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     token_hash CHAR(64) NOT NULL UNIQUE,
@@ -97,6 +108,7 @@ export async function migrate() {
     await db.query(statement);
   }
   await db.query("ALTER TABLE users MODIFY google_sub VARCHAR(255) NOT NULL");
+  await ensureIndex(db, "form_submissions", "idx_form_submissions_key", "form_key");
   await ensureIndex(db, "leads", "idx_leads_created", "created_at");
   await ensureIndex(db, "contact_messages", "idx_contact_created", "created_at");
   await ensureIndex(db, "sessions", "idx_sessions_expires", "expires_at");
