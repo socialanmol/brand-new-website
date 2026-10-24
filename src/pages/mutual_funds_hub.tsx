@@ -218,7 +218,7 @@ export default function MutualFundsHub() {
           </div>
           <a
             href="tel:+919742826665"
-            className="h-12 px-6 rounded-xl bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all flex items-center gap-2 shadow-md no-underline"
+            className="h-12 px-6 rounded-xl bg-[#8DC63F] text-[#091540] font-extrabold text-xs hover:bg-[#9ED64A] transition-all flex items-center gap-2 shadow-md no-underline"
           >
             Speak with an Advisor →
           </a>
