@@ -498,12 +498,17 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
   const [openIdx, setOpenIdx]     = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled]   = useState(false);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 4);
     window.addEventListener('scroll', h, { passive: true });
     return () => window.removeEventListener('scroll', h);
   }, []);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   const closeAll = useCallback(() => setOpenIdx(null), []);
   const toggle   = (i: number) => setOpenIdx(p => p === i ? null : i);
@@ -620,6 +625,7 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
                 </Link>
               </div>
               <Link to="/investment-services"
+                onClick={() => setMobileOpen(false)}
                 style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>
                 View Portfolio
               </Link>
