@@ -34,6 +34,17 @@ const PILLARS = [
   },
 ];
 
+const INDIA_OUTLINE =
+  "M295.4 85.0 L296.0 88.5 L293.0 90.2 L293.7 95.9 L287.6 94.2 L276.5 100.6 L276.8 105.9 L272.1 113.7 L271.6 118.2 L267.8 125.8 L261.1 123.7 L260.8 133.3 L258.9 136.4 L259.8 140.4 L255.6 142.6 L251.0 127.9 L248.7 127.9 L247.3 133.8 L242.6 129.0 L245.2 123.8 L249.1 123.2 L253.0 115.4 L248.1 113.8 L240.2 113.9 L232.0 112.7 L231.3 106.2 L227.2 105.8 L220.4 101.8 L217.4 108.0 L223.5 113.0 L218.2 116.4 L216.3 119.8 L221.6 122.3 L220.1 127.8 L223.1 134.8 L224.4 142.4 L223.2 145.8 L217.4 145.7 L206.8 147.6 L207.3 154.6 L202.8 160.0 L190.4 166.3 L180.9 177.2 L174.4 183.0 L165.9 189.1 L165.9 193.3 L161.6 195.6 L153.9 198.9 L149.9 199.4 L147.3 206.5 L149.1 218.5 L149.6 226.2 L146.0 235.0 L145.9 250.7 L141.5 251.2 L137.6 258.2 L140.2 261.3 L132.4 263.9 L129.5 270.2 L126.1 272.9 L118.0 264.2 L114.1 251.3 L110.8 241.9 L107.8 237.6 L103.2 228.7 L101.1 217.1 L99.6 211.3 L91.8 198.6 L88.3 180.6 L85.7 168.8 L85.8 157.6 L84.1 148.9 L71.7 154.4 L65.6 153.3 L54.5 142.1 L58.6 138.8 L56.0 135.1 L46.0 127.3 L51.7 121.1 L70.5 121.1 L68.8 113.2 L64.0 108.5 L63.1 101.3 L57.5 97.2 L66.9 87.5 L76.8 88.2 L85.8 78.5 L91.1 69.1 L99.4 59.8 L99.3 53.2 L106.6 47.8 L99.7 43.3 L96.7 37.0 L93.7 28.9 L97.9 24.9 L110.9 27.2 L120.4 25.8 L128.7 18.0 L137.8 28.8 L137.0 36.4 L140.4 41.1 L140.1 45.9 L134.0 44.6 L136.4 54.8 L144.8 60.7 L156.6 67.2 L151.2 71.4 L147.9 80.0 L156.2 83.5 L164.3 88.1 L175.4 93.3 L187.1 94.5 L192.1 99.2 L198.7 100.1 L209.0 102.2 L216.1 102.1 L217.1 98.4 L216.0 92.5 L216.6 88.5 L221.8 86.6 L222.6 93.9 L222.7 95.7 L230.5 99.2 L235.9 97.8 L243.1 98.4 L250.1 98.1 L250.7 92.5 L247.2 89.5 L254.1 88.3 L261.9 81.5 L271.8 75.6 L278.9 77.8 L285.0 73.9 L289.0 79.7 L286.1 83.6 L295.4 85.0 Z";
+
+const HUBS = [
+  { name: "Ludhiana", x: 111.7, y: 60.5, anchor: "end", dx: -9 },
+  { name: "New Delhi", x: 123.3, y: 81.7, anchor: "start", dx: 9 },
+  { name: "Jaipur", x: 111.1, y: 97.5, anchor: "end", dx: -9 },
+  { name: "Dibrugarh", x: 274.7, y: 92.3, anchor: "end", dx: -9 },
+  { name: "Bengaluru", x: 126.6, y: 226.5, anchor: "start", dx: 9 },
+];
+
 const OFFICES = [
   {
     city: "Bengaluru",
@@ -235,54 +246,46 @@ export default function OurJourney() {
 
             {/* Right Map Visual */}
             <div className="flex justify-center items-center">
-              <div className="relative w-full max-w-[420px] aspect-[4/5] bg-gradient-to-b from-[#0D1E52] to-[#091540] rounded-3xl p-6 border border-white/10 shadow-2xl flex flex-col justify-between">
+              <div className="relative w-full max-w-[420px] bg-gradient-to-b from-[#0D1E52] to-[#091540] rounded-3xl p-5 sm:p-6 border border-white/10 shadow-2xl flex flex-col gap-3">
                 <div className="flex justify-between items-center text-xs font-bold text-white/60">
                   <span>Pan-India Presence</span>
                   <span className="text-[#8DC63F]">5 Regional Hubs</span>
                 </div>
 
-                {/* Conceptual Schematic Points */}
-                <div className="relative w-full h-[280px]">
-                  {/* Ludhiana */}
-                  <div className="absolute top-[18%] left-[28%] flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-[#8DC63F] animate-ping" />
-                    <span className="text-[11px] font-bold text-white whitespace-nowrap">
-                      Ludhiana
-                    </span>
-                  </div>
-
-                  {/* New Delhi */}
-                  <div className="absolute top-[28%] left-[34%] flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#8DC63F]" />
-                    <span className="text-[11px] font-bold text-white whitespace-nowrap">
-                      New Delhi
-                    </span>
-                  </div>
-
-                  {/* Jaipur */}
-                  <div className="absolute top-[38%] left-[24%] flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#8DC63F]" />
-                    <span className="text-[11px] font-bold text-white whitespace-nowrap">
-                      Jaipur
-                    </span>
-                  </div>
-
-                  {/* Dibrugarh */}
-                  <div className="absolute top-[26%] right-[8%] flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#8DC63F]" />
-                    <span className="text-[11px] font-bold text-white whitespace-nowrap">
-                      Dibrugarh
-                    </span>
-                  </div>
-
-                  {/* Bengaluru */}
-                  <div className="absolute bottom-[16%] left-[38%] flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-[#8DC63F] animate-pulse" />
-                    <span className="text-[11px] font-bold text-white whitespace-nowrap">
-                      Bengaluru
-                    </span>
-                  </div>
-                </div>
+                <svg
+                  viewBox="0 0 342 291"
+                  className="w-full h-auto"
+                  role="img"
+                  aria-label="Map of India with offices in Ludhiana, New Delhi, Jaipur, Dibrugarh, and Bengaluru"
+                >
+                  <path
+                    d={INDIA_OUTLINE}
+                    fill="rgba(141,198,63,0.14)"
+                    stroke="#8DC63F"
+                    strokeWidth="1.6"
+                    strokeLinejoin="round"
+                  />
+                  {HUBS.map((hub) => (
+                    <g key={hub.name}>
+                      <circle cx={hub.x} cy={hub.y} r="8" fill="#8DC63F" opacity="0.28">
+                        <animate attributeName="r" values="4;10;4" dur="2.6s" repeatCount="indefinite" />
+                        <animate attributeName="opacity" values="0.4;0;0.4" dur="2.6s" repeatCount="indefinite" />
+                      </circle>
+                      <circle cx={hub.x} cy={hub.y} r="3.4" fill="#8DC63F" stroke="#091540" strokeWidth="1" />
+                      <text
+                        x={hub.x + hub.dx}
+                        y={hub.y + 4}
+                        textAnchor={hub.anchor}
+                        fill="#ffffff"
+                        fontSize="12"
+                        fontWeight="700"
+                        style={{ paintOrder: "stroke", stroke: "#091540", strokeWidth: 3.5 }}
+                      >
+                        {hub.name}
+                      </text>
+                    </g>
+                  ))}
+                </svg>
 
                 <div className="text-[11px] text-white/50 text-center font-light border-t border-white/10 pt-3">
                   Advisory sessions conducted both physically at offices &amp; via secure video conferencing worldwide.

@@ -30,7 +30,7 @@ export default function ContactUs() {
     setIsSubmitting(true);
 
     try {
-      await fetch("https://www.myanmol.com/_functions/saveContactMessage", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -38,15 +38,19 @@ export default function ContactUs() {
           email: email.trim(),
           phone: phone.trim(),
           message: message.trim(),
-          submittedAt: new Date().toISOString(),
           source: "contact-page",
         }),
       });
-    } catch (err) {
-      console.warn("Contact form save failed.", err);
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        setErrorMsg(body.error || "We could not send your message. Please try again.");
+        return;
+      }
+      setIsSubmitted(true);
+    } catch {
+      setErrorMsg("We could not send your message. Please try again.");
     } finally {
       setIsSubmitting(false);
-      setIsSubmitted(true);
     }
   };
 

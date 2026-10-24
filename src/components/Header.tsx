@@ -130,7 +130,36 @@ const INTERESTS = [
 export function GetStartedModal({ onClose }: { onClose: () => void }) {
   const [form, setForm] = useState({ name: '', phone: '', email: '', city: '', interest: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const upd = (k: keyof typeof form, v: string) => setForm(f => ({ ...f, [k]: v }));
+
+  const submitLead = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError('');
+    if (!/^[0-9]{10}$/.test(form.phone.trim())) {
+      setError('Enter a valid 10-digit phone number.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, sourcePath: window.location.pathname }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        setError(body.error || 'We could not save your details. Please try again.');
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError('We could not save your details. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -181,7 +210,7 @@ export function GetStartedModal({ onClose }: { onClose: () => void }) {
               <button onClick={onClose} style={{ fontFamily: 'var(--fs)', background: '#8DC63F', color: '#091540', fontSize: 14, fontWeight: 800, padding: '11px 28px', borderRadius: 100, border: 'none', cursor: 'pointer' }}>Close</button>
             </div>
           ) : (
-          <form onSubmit={e => { e.preventDefault(); setSubmitted(true); }} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <form onSubmit={submitLead} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
                   <label style={labelStyle}>Full Name <span style={{ color: '#E04E2B' }}>*</span></label>
@@ -213,11 +242,14 @@ export function GetStartedModal({ onClose }: { onClose: () => void }) {
                   </select>
                 </div>
               </div>
-              <button type="submit"
-                style={{ marginTop: 4, fontFamily: 'var(--fs)', background: '#1A3B9F', color: '#fff', fontSize: 14.5, fontWeight: 800, padding: '13px', borderRadius: 12, border: 'none', cursor: 'pointer' }}
-                onMouseEnter={e => (e.currentTarget.style.background = '#0D1E52')}
-                onMouseLeave={e => (e.currentTarget.style.background = '#1A3B9F')}>
-                Connect me with an advisor →
+              {error && (
+                <p style={{ margin: 0, fontFamily: 'var(--fs)', fontSize: 13, fontWeight: 700, color: '#B91C1C' }}>{error}</p>
+              )}
+              <button type="submit" disabled={submitting}
+                style={{ marginTop: 4, fontFamily: 'var(--fs)', background: submitting ? '#93C5FD' : '#1A3B9F', color: '#fff', fontSize: 14.5, fontWeight: 800, padding: '13px', borderRadius: 12, border: 'none', cursor: submitting ? 'wait' : 'pointer' }}
+                onMouseEnter={e => { if (!submitting) e.currentTarget.style.background = '#0D1E52'; }}
+                onMouseLeave={e => { if (!submitting) e.currentTarget.style.background = '#1A3B9F'; }}>
+                {submitting ? 'Saving…' : 'Connect me with an advisor →'}
               </button>
               <p style={{ textAlign: 'center', fontFamily: 'var(--fs)', fontSize: 11, color: '#9CA3AF' }}>No spam. No cold calls. Just a personalised conversation.</p>
           </form>
@@ -494,16 +526,64 @@ function MobileNestedEntry({ item, onClose }: { item: NestedGroup; onClose: () =
 
 /* ─── MAIN HEADER ────────────────────────────────────────────────────────────── */
 
+type SignedInUser = { name: string; email: string };
+
 export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
   const [openIdx, setOpenIdx]     = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled]   = useState(false);
+  const [user, setUser] = useState<SignedInUser | null>(null);
+  const [googleReady, setGoogleReady] = useState(false);
+  const [authNote, setAuthNote] = useState('');
+  const location = useLocation();
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 4);
     window.addEventListener('scroll', h, { passive: true });
     return () => window.removeEventListener('scroll', h);
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('auth') === 'unavailable') setAuthNote('Google sign-in is not configured yet.');
+    if (params.get('auth') === 'failed') setAuthNote('Google sign-in could not be completed.');
+  }, [location.search]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { user?: SignedInUser | null } | null) => {
+        if (!cancelled) setUser(data?.user ?? null);
+      })
+      .catch(() => { if (!cancelled) setUser(null); });
+    fetch('/api/auth/config')
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { google?: boolean } | null) => {
+        if (!cancelled) setGoogleReady(Boolean(data?.google));
+      })
+      .catch(() => { if (!cancelled) setGoogleReady(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const signOut = async () => {
+    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+    setUser(null);
+  };
+
+  const signInStyle = (compact: boolean): React.CSSProperties => compact
+    ? { fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none', background: 'transparent', cursor: 'pointer', width: '100%' }
+    : { fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.72)', padding: '6px 12px', borderRadius: 7, border: '1px solid rgba(255,255,255,.15)', textDecoration: 'none', whiteSpace: 'nowrap', background: 'transparent', cursor: 'pointer' };
+
+  const signInControl = (compact: boolean) => {
+    if (user) {
+      return <button type="button" onClick={signOut} style={signInStyle(compact)}>{user.name.split(' ')[0]} · Sign out</button>;
+    }
+    if (!googleReady) {
+      return <button type="button" style={signInStyle(compact)} onClick={() => setAuthNote('Google sign-in is not configured yet.')}>Sign in</button>;
+    }
+    return <a href="/api/auth/google" style={signInStyle(compact)}>Sign in</a>;
+  };
 
   const closeAll = useCallback(() => setOpenIdx(null), []);
   const toggle   = (i: number) => setOpenIdx(p => p === i ? null : i);
@@ -561,13 +641,7 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
               onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,.72)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.15)'; }}>
               Contact Us
             </Link>
-            <Link to="/calculators/sip-calculator"
-              className="hidden lg:inline-flex"
-              style={{ fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.72)', padding: '6px 12px', borderRadius: 7, border: '1px solid rgba(255,255,255,.15)', textDecoration: 'none', whiteSpace: 'nowrap', transition: 'all .15s' }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.35)'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,.72)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.15)'; }}>
-              Sign In
-            </Link>
+            <div className="hidden lg:inline-flex">{signInControl(false)}</div>
             <Link to="/investment-services"
               className="hidden lg:inline-flex"
               style={{ fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.72)', padding: '6px 12px', borderRadius: 7, border: '1px solid rgba(255,255,255,.15)', textDecoration: 'none', whiteSpace: 'nowrap', transition: 'all .15s' }}
@@ -613,11 +687,7 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
                   style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>
                   Contact Us
                 </Link>
-                <Link to="/calculators/sip-calculator"
-                  onClick={() => setMobileOpen(false)}
-                  style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>
-                  Sign In
-                </Link>
+                <div onClick={() => setMobileOpen(false)}>{signInControl(true)}</div>
               </div>
               <Link to="/investment-services"
                 style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>
@@ -628,6 +698,11 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
                 Get Started
               </button>
             </div>
+          </div>
+        )}
+        {authNote && (
+          <div style={{ background: '#FEF3C7', color: '#78350F', textAlign: 'center', fontFamily: 'var(--fs)', fontSize: 13, fontWeight: 700, padding: '8px 16px' }}>
+            {authNote}
           </div>
         )}
       </header>

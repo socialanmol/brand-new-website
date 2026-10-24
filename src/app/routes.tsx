@@ -73,7 +73,7 @@ import FixedDeposits from '../pages/FixedDeposits';
 import EquityTrading from '../pages/EquityTrading';
 import TaxFiling from '../pages/TaxFiling';
 import Glossary from '../pages/Glossary';
-import GiftCity from '../pages/GiftCity';
+import GiftCity from '../pages/Giftcity';
 import ContactUs from '../pages/ContactUs';
 import ComingSoon from '../pages/ComingSoon';
 import CalculatorEntryGate from '../components/CalculatorEntryGate';

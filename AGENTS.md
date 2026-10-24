@@ -9,6 +9,21 @@ A Vite development server is **already running** on `$PORT` (default 8443). You 
 - Preview URL: The user can access the running app through the preview panel
 - Hot reload: Changes to source files are reflected immediately
 
+The API listens on `127.0.0.1:$API_PORT` (default 8787) via `pnpm dev:api`. Vite proxies `/api` to it. It stores Get Started leads, contact messages, Google sign-in sessions, and first-party page timing in MySQL (`MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE`).
+
+Put Google credentials in environment secrets, never in chat or source:
+
+- `GOOGLE_PLACES_API_KEY` and `GOOGLE_PLACE_ID` turn on live reviews. Without them, `GET /api/google-reviews` returns sample reviews.
+- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` turn on header Google sign-in. The OAuth redirect URI is `$APP_ORIGIN/api/auth/google/callback` (`APP_ORIGIN` defaults to `http://127.0.0.1:8443`).
+
+Page timing uses the first-party `ma_vid` cookie. `GET /api/analytics/summary` returns page totals only to a signed-in Google user listed in `ADMIN_EMAILS`. Form writes reject cross-site requests. Start local MariaDB with `sudo service mariadb start`, then `MYSQL_PASSWORD=... bash scripts/prepare-mysql.sh` once to create the database user.
+
+## Toolchain
+
+`.mise.toml` pins Node.js 22 and pnpm 10.34.3. Activate that pnpm with `corepack prepare pnpm@10.34.3 --activate`, then install with `pnpm install --frozen-lockfile`. Photos and logos are Git LFS objects; run `git lfs pull` after checkout so image files are not pointer text.
+
+Cloud Agents run on Linux, so import paths must match filename case exactly.
+
 ## Project Structure
 
 This is the canonical project structure. Start with task-relevant files below. Only follow imports or inspect other files when required, when a documented path is missing, or when the repository contradicts this guide.

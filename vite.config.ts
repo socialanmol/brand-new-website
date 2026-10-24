@@ -37,16 +37,25 @@ export default defineConfig(({ mode }) => {
       host: process.env.FIGMA_DEV_SERVER_HOST || '0.0.0.0',
       port: parseInt(process.env.PORT || '8443'),
       strictPort: true,
+      // Cursor preview URLs are subdomains of cursorvm.com. A leading dot allows every subdomain.
+      allowedHosts: ['.cursorvm.com'],
       proxy: {
-        '/api': `http://127.0.0.1:${process.env.API_PORT || '8787'}`,
+        '/api': {
+          target: `http://127.0.0.1:${process.env.API_PORT || '8787'}`,
+          xfwd: true,
+        },
       },
       watch: { ignored: ['**/.figma/**'] },
     },
     preview: {
       host: process.env.FIGMA_DEV_SERVER_HOST || '0.0.0.0',
       port: parseInt(process.env.PORT || '8443'),
+      allowedHosts: ['.cursorvm.com'],
       proxy: {
-        '/api': `http://127.0.0.1:${process.env.API_PORT || '8787'}`,
+        '/api': {
+          target: `http://127.0.0.1:${process.env.API_PORT || '8787'}`,
+          xfwd: true,
+        },
       },
     },
   }

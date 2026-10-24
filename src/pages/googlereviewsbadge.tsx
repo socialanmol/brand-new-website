@@ -38,7 +38,7 @@ const GoogleReviewsBadge: React.FC<GoogleReviewsBadgeProps> = ({
 
   useEffect(() => {
     let cancelled = false;
-    fetch(endpoint)
+    fetch(endpoint, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
       .then((json: GoogleReviewsData) => {
         if (!cancelled) setData(json);

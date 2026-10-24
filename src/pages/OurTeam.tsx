@@ -373,31 +373,30 @@ export default function OurTeam() {
       {/* CULTURE / VIDEO BANNER */}
       <section className="py-14 sm:py-20 bg-white">
         <div className="max-w-[1140px] mx-auto px-6">
-          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#091540] via-[#0D1E52] to-[#1A3B9F] min-h-[340px] flex items-center justify-center text-center p-8 text-white shadow-xl">
+          <div className="relative aspect-video overflow-hidden rounded-3xl bg-gradient-to-br from-[#091540] via-[#0D1E52] to-[#1A3B9F] text-white shadow-xl">
             {videoOpen ? (
-              <div className="w-full max-w-3xl aspect-video rounded-2xl overflow-hidden shadow-2xl">
-                <iframe
-                  className="w-full h-full"
-                  src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-                  title="MyAnmol Culture"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
+              <iframe
+                className="absolute inset-0 h-full w-full"
+                src="https://www.youtube.com/embed/KqcZL0l7SSU?autoplay=1&rel=0"
+                title="Journey of MyAnmol"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
             ) : (
-              <div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
                 <button
                   type="button"
                   onClick={() => setVideoOpen(true)}
                   className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#8DC63F] text-[#091540] flex items-center justify-center mx-auto mb-6 shadow-xl hover:scale-110 transition-transform cursor-pointer"
-                  aria-label="Play culture video"
+                  aria-label="Play Journey of MyAnmol"
                 >
                   <svg className="w-8 h-8 ml-1 fill-current" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 </button>
                 <h3 className="font-[var(--fd)] text-2xl sm:text-4xl font-extrabold tracking-tight mb-2">
-                  Life at <em className="text-[#8DC63F] not-italic italic font-serif">MyAnmol</em>
+                  Journey of <em className="text-[#8DC63F] not-italic italic font-serif">MyAnmol</em>
                 </h3>
                 <p className="text-xs uppercase tracking-[.18em] font-semibold text-white/60">
                   Transparency · Needs-First Advisory · Ongoing Client Care
