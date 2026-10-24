@@ -169,10 +169,10 @@ export default function MutualFundsHub() {
 
   const presentCategories = schemes.map((scheme) => scheme.category).filter(Boolean);
   const categories = [
-    "All",
-    ...CATEGORY_ORDER.filter((category) => presentCategories.includes(category)),
+    ...CATEGORY_ORDER.filter((category) => category !== "Hybrid / Balanced" || presentCategories.includes(category)),
     ...presentCategories.filter((category, index, all) => !CATEGORY_ORDER.includes(category) && all.indexOf(category) === index),
   ];
+  const categoryChips = ["All", ...categories];
 
   const filteredSchemes = schemes.filter((scheme) => {
     const matchesCat = selectedCategory === "All" || scheme.category === selectedCategory;
@@ -180,6 +180,9 @@ export default function MutualFundsHub() {
     const matchesSearch = scheme.name.toLowerCase().includes(query) || scheme.fundHouse.toLowerCase().includes(query);
     return matchesCat && matchesSearch;
   });
+
+  const showingFeatured = searchQuery.trim() === "" && selectedCategory === "All";
+  const displayedSchemes = showingFeatured ? filteredSchemes.slice(0, 6) : filteredSchemes;
 
   const handleStartSip = (e: React.FormEvent) => {
     e.preventDefault();
@@ -192,31 +195,44 @@ export default function MutualFundsHub() {
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen py-12 px-5 sm:px-8">
-      <div className="max-w-[1200px] mx-auto space-y-10">
-        
-        {/* Top Header */}
-        <div className="text-center max-w-[750px] mx-auto space-y-3">
-          <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.14em] text-[#6AA32A] bg-[#EFF8E2] px-3.5 py-1.5 rounded-full">
+      <div className="max-w-[1200px] mx-auto space-y-12">
+
+        <div className="text-center max-w-[800px] mx-auto space-y-4">
+          <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.14em] text-[#8DC63F] bg-[#EEF2FB] px-4 py-2 rounded-full border border-[#8DC63F]/30">
             AMFI Registered Distributor (ARN: 114893)
           </span>
-          <h1 className="font-[var(--fd)] text-3xl sm:text-5xl font-bold text-[#091540]">
-            Explore Mutual Fund Schemes
+          <h1 className="font-[var(--fd)] text-3xl sm:text-5xl font-extrabold text-[#091540] tracking-tight">
+            Mutual Funds Hub — Regular Growth Schemes
           </h1>
-          <p className="text-sm text-[#6B7280] leading-relaxed">
-            Discover goal-mapped direct mutual fund schemes handpicked by expert wealth advisors. Invest systematically with zero hidden commissions.
+          <p className="text-sm sm:text-base text-[#6B7280] leading-relaxed font-light">
+            At MyAnmol, we are proudly focused on <b className="text-[#1A3B9F]">Regular Growth Schemes</b> backed by dedicated advisory, goal-mapping, and ongoing portfolio reviews. Invest systematically with expert handholding at every step.
           </p>
         </div>
 
-        {/* Search & Category Filter Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#EEF2FB] border border-[#C5D3F2] p-4 rounded-[20px]">
-          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+        <div className="bg-[#EEF2FB] border border-[#1A3B9F]/20 rounded-[24px] p-6 sm:p-8 flex items-center justify-between flex-wrap gap-6">
+          <div className="space-y-2 max-w-[700px]">
+            <h2 className="font-[var(--fd)] text-lg font-bold text-[#091540]">Why Choose Regular Growth Plans with MyAnmol?</h2>
+            <p className="text-xs sm:text-sm text-[#374151] leading-relaxed">
+              Unlike execution-only platforms, regular plans enable us to provide you with continuous professional guidance, annual rebalancing, tax advisory, and priority support from AMFI-certified advisors.
+            </p>
+          </div>
+          <a
+            href="tel:+919742826665"
+            className="h-12 px-6 rounded-xl bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all flex items-center gap-2 shadow-md no-underline"
+          >
+            Speak with an Advisor →
+          </a>
+        </div>
+
+        <div className="flex flex-col gap-4 bg-[#F8FAFE] border border-[#E3E8F4] p-5 rounded-[20px]">
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
             <label className="flex items-center gap-2 text-xs font-bold text-[#1A3B9F]">
               Month
               <select
                 value={month}
                 onChange={(event) => setMonth(event.target.value)}
                 disabled={months.length === 0}
-                className="h-11 min-w-[140px] rounded-[10px] border border-[#E3E8F4] bg-white px-3 text-xs font-semibold text-[#1A3B9F] outline-0 focus:border-[#1A3B9F]"
+                className="h-12 min-w-[140px] rounded-[12px] border border-[#E3E8F4] bg-white px-3 text-xs font-semibold text-[#1A3B9F] outline-0 focus:border-[#1A3B9F]"
               >
                 {months.length === 0 && <option value="">Loading…</option>}
                 {months.map((name) => (
@@ -226,22 +242,22 @@ export default function MutualFundsHub() {
             </label>
             <input
               type="text"
-              placeholder="Search by fund name or fund house..."
+              placeholder="Search by fund name or fund house (e.g. Parag Parikh, HDFC)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-[320px] bg-white border border-[#E3E8F4] rounded-[10px] px-4 h-11 text-xs font-semibold text-[#1A3B9F] outline-0 focus:border-[#1A3B9F]"
+              className="w-full sm:w-[360px] bg-white border border-[#E3E8F4] rounded-[12px] px-4 h-12 text-xs font-semibold text-[#1A3B9F] outline-0 focus:border-[#1A3B9F]"
             />
           </div>
 
-          <div className="flex gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
-            {categories.map((cat) => (
+          <div className="flex gap-2 overflow-x-auto w-full pb-1">
+            {categoryChips.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`py-2 px-4 rounded-[8px] text-xs font-bold transition-all whitespace-nowrap cursor-pointer border ${
+                className={`py-2 px-4 rounded-[10px] text-xs font-bold transition-all whitespace-nowrap cursor-pointer border ${
                   selectedCategory === cat
-                    ? 'bg-[#1A3B9F] text-white border-[#1A3B9F] shadow-sm'
-                    : 'bg-white text-[#374151] border-[#E3E8F4] hover:bg-[#EEF2FB]'
+                    ? "bg-[#1A3B9F] text-white border-[#1A3B9F] shadow-sm"
+                    : "bg-white text-[#374151] border-[#E3E8F4] hover:bg-[#EEF2FB]"
                 }`}
               >
                 {cat}
@@ -250,90 +266,125 @@ export default function MutualFundsHub() {
           </div>
         </div>
 
-        {listStatus === "loading" && (
-          <p className="text-sm text-[#6B7280]">Loading schemes for {month || "the latest month"}…</p>
-        )}
-        {listStatus === "error" && (
-          <p className="text-sm font-semibold text-rose-700">The scheme list could not be loaded from the Google Sheet.</p>
-        )}
-        {listStatus === "ready" && schemes.length === 0 && (
-          <p className="text-sm text-[#6B7280]">No schemes are listed for {month}.</p>
-        )}
-        {listStatus === "ready" && schemes.length > 0 && filteredSchemes.length === 0 && (
-          <p className="text-sm text-[#6B7280]">No schemes match this search.</p>
-        )}
+        <div className="space-y-4">
+          <div className="flex justify-between items-center gap-3">
+            <h2 className="font-[var(--fd)] text-xl font-bold text-[#091540]">
+              Featured Regular Growth Schemes ({listStatus === "ready" ? displayedSchemes.length : 0})
+            </h2>
+            <span className="text-xs text-[#6B7280] text-right">
+              {showingFeatured
+                ? (filteredSchemes.length > 6
+                  ? "Showing top 6 recommended schemes. Use search above for more."
+                  : month ? `Schemes for ${month}` : "")
+                : "Filtered results"}
+            </span>
+          </div>
 
-        {/* Schemes Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredSchemes.map((scheme) => (
-            <div
-              key={scheme.id}
-              className="bg-white border border-[#E3E8F4] rounded-[24px] p-6 shadow-sm hover:border-[#1A3B9F] hover:shadow-md transition-all flex flex-col justify-between space-y-6"
-            >
-              <div className="space-y-3">
-                <div className="flex justify-between items-center gap-2">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#6AA32A] bg-[#EFF8E2] px-3 py-1 rounded-full">
-                    {scheme.category}
-                  </span>
-                  <span className="text-[10px] font-bold text-[#D97706] bg-[#FFFDF0] border border-[#FFE8A3] px-2.5 py-1 rounded-full">
-                    {scheme.risk}
-                  </span>
+          {listStatus === "loading" && (
+            <p className="text-sm text-[#6B7280]">Loading schemes for {month || "the latest month"}…</p>
+          )}
+          {listStatus === "error" && (
+            <p className="text-sm font-semibold text-rose-700">The scheme list could not be loaded from the Google Sheet.</p>
+          )}
+          {listStatus === "ready" && schemes.length === 0 && (
+            <p className="text-sm text-[#6B7280]">No schemes are listed for {month}.</p>
+          )}
+          {listStatus === "ready" && schemes.length > 0 && filteredSchemes.length === 0 && (
+            <p className="text-sm text-[#6B7280]">No schemes match this filter.</p>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {displayedSchemes.map((scheme) => (
+              <div
+                key={scheme.id}
+                className="bg-white border border-[#E3E8F4] rounded-[24px] p-6 shadow-sm hover:border-[#1A3B9F] hover:shadow-md transition-all flex flex-col justify-between space-y-6"
+              >
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#6AA32A] bg-[#EFF8E2] px-3 py-1 rounded-full">
+                      {scheme.category}
+                    </span>
+                    <span className="text-[10px] font-bold text-[#D97706] bg-[#FFFDF0] border border-[#FFE8A3] px-2.5 py-1 rounded-full">
+                      {scheme.risk}
+                    </span>
+                  </div>
+
+                  <h3 className="font-[var(--fd)] text-lg font-bold text-[#091540] line-clamp-2 mt-2">
+                    {scheme.name}
+                  </h3>
+
+                  <p className="text-xs text-[#6B7280] leading-relaxed line-clamp-2 font-light">
+                    {scheme.description}
+                  </p>
                 </div>
 
-                <h3 className="font-[var(--fd)] text-lg font-bold text-[#091540] line-clamp-2 mt-2">
-                  {scheme.name}
-                </h3>
+                <div className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[16px] p-4 grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <div className="text-[10px] text-[#6B7280] font-semibold">1Yr Return</div>
+                    <div className="text-xs font-extrabold text-[#6AA32A] mt-0.5">{scheme.return1Yr}</div>
+                  </div>
+                  <div className="border-x border-[#E3E8F4]">
+                    <div className="text-[10px] text-[#6B7280] font-semibold">3Yr Return</div>
+                    <div className="text-xs font-extrabold text-[#1A3B9F] mt-0.5">{scheme.return3Yr}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-[#6B7280] font-semibold">AUM</div>
+                    <div className="text-xs font-extrabold text-[#091540] mt-0.5">{scheme.aum}</div>
+                  </div>
+                </div>
 
-                <p className="text-xs text-[#6B7280] leading-relaxed line-clamp-2">
-                  {scheme.description}
-                </p>
+                <div className="pt-4 border-t border-[#E3E8F4] flex justify-between items-center">
+                  <div className="text-xs text-[#6B7280]">
+                    {scheme.minSip != null
+                      ? <>Min. SIP: <b className="text-[#1A3B9F]">₹{scheme.minSip.toLocaleString("en-IN")}</b></>
+                      : scheme.fundHouse}
+                  </div>
+                  <button
+                    onClick={() => { setInvestModalScheme(scheme); setSipAmount(scheme.minSip ?? 5000); }}
+                    className="h-10 px-5 rounded-xl bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
+                  >
+                    Invest SIP →
+                  </button>
+                </div>
               </div>
-
-              {/* Fund Metrics Box */}
-              <div className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[16px] p-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                <div>
-                  <div className="text-[10px] text-[#6B7280] font-semibold">1Yr Return</div>
-                  <div className="text-xs font-extrabold text-[#6AA32A] mt-0.5">{scheme.return1Yr}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-[#6B7280] font-semibold">3Yr Return</div>
-                  <div className="text-xs font-extrabold text-[#1A3B9F] mt-0.5">{scheme.return3Yr}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-[#6B7280] font-semibold">5Yr Return</div>
-                  <div className="text-xs font-extrabold text-[#1A3B9F] mt-0.5">{scheme.return5Yr}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-[#6B7280] font-semibold">AUM</div>
-                  <div className="text-xs font-extrabold text-[#091540] mt-0.5">{scheme.aum}</div>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-[#E3E8F4] flex justify-between items-center">
-                <div className="text-xs text-[#6B7280]">
-                  {scheme.minSip != null
-                    ? <>Min. SIP: <b className="text-[#1A3B9F]">₹{scheme.minSip.toLocaleString("en-IN")}</b></>
-                    : scheme.fundHouse}
-                </div>
-                <button
-                  onClick={() => { setInvestModalScheme(scheme); setSipAmount(scheme.minSip ?? 5000); }}
-                  className="h-10 px-5 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
-                >
-                  Invest SIP →
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Instant SIP Investment Modal */}
+        <div className="bg-gradient-to-br from-[#091540] via-[#0D1E52] to-[#1A3B9F] rounded-[32px] p-8 sm:p-12 text-white text-center space-y-6 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle,rgba(141,198,63,0.15)_0%,transparent_70%)] rounded-full pointer-events-none" />
+          <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.14em] text-[#8DC63F] bg-[#8DC63F]/15 px-4 py-1.5 rounded-full border border-[#8DC63F]/30">
+            Start Your Wealth Journey Today
+          </span>
+          <h2 className="font-[var(--fd)] text-2xl sm:text-4xl font-extrabold tracking-tight">
+            Ready to Build Your Goal-Mapped Mutual Fund Portfolio?
+          </h2>
+          <p className="text-xs sm:text-sm text-white/80 max-w-[650px] mx-auto font-light leading-relaxed">
+            Connect with our certified wealth advisors at MyAnmol (ARN: 114893). Get personalized regular growth scheme recommendations tailored to your family&apos;s future milestones.
+          </p>
+          <div className="pt-2 flex justify-center gap-4 flex-wrap">
+            <a
+              href="tel:+919742826665"
+              className="h-12 px-8 rounded-xl bg-[#8DC63F] text-[#091540] font-extrabold text-xs hover:bg-[#9ED64A] transition-all flex items-center gap-2 shadow-xl no-underline"
+            >
+              Call Now: +91-9742826665
+            </a>
+            <a
+              href="mailto:mutualfunds@myanmol.com"
+              className="h-12 px-8 rounded-xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs border border-white/20 transition-all flex items-center gap-2 no-underline"
+            >
+              Email mutualfunds@myanmol.com
+            </a>
+          </div>
+        </div>
+
         {investModalScheme && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
             <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-[500px] overflow-hidden p-6 sm:p-8 border border-[#E3E8F4] space-y-6">
-              
+
               <div className="flex justify-between items-center">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-[#6AA32A] bg-[#EFF8E2] px-3 py-1 rounded-full">
-                  Quick SIP Setup
+                  Quick SIP Setup (Regular Growth)
                 </span>
                 <button
                   onClick={() => setInvestModalScheme(null)}
@@ -356,7 +407,7 @@ export default function MutualFundsHub() {
                     ✓
                   </div>
                   <h4 className="font-[var(--fd)] text-lg font-bold text-[#091540]">SIP Order Initiated Successfully!</h4>
-                  <p className="text-xs text-[#6B7280]">Our wealth desk will reach out to complete your BSE Star MF mandate setup.</p>
+                  <p className="text-xs text-[#6B7280]">Our wealth desk will reach out to complete your regular growth mandate setup.</p>
                 </div>
               ) : (
                 <form onSubmit={handleStartSip} className="space-y-5">
@@ -376,14 +427,14 @@ export default function MutualFundsHub() {
                   </div>
 
                   <div className="bg-[#FFFDF0] border border-[#FFE8A3] rounded-[12px] p-4 text-xs text-[#856404] leading-relaxed">
-                    <b>Note:</b> By initiating this SIP, you agree to AMFI guidelines and mandate verification through BSE Star MF. Zero distribution commissions.
+                    <b>Note:</b> By initiating this Regular SIP, you unlock dedicated advisor support and annual portfolio reviews.
                   </div>
 
                   <button
                     type="submit"
                     className="w-full h-12 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-sm hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
                   >
-                    Confirm & Start SIP (₹{sipAmount.toLocaleString('en-IN')} / mo) →
+                    Confirm & Start SIP (₹{sipAmount.toLocaleString("en-IN")} / mo) →
                   </button>
                 </form>
               )}
