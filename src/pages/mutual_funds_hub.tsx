@@ -1,112 +1,183 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface MutualFundScheme {
   id: string;
   name: string;
-  category: 'Equity - Flexi Cap' | 'Equity - Mid Cap' | 'Equity - Small Cap' | 'ELSS Tax Saver' | 'Debt & Arbitrage' | 'Hybrid / Balanced';
-  risk: 'Very High Risk' | 'High Risk' | 'Moderate Risk' | 'Low Risk';
+  category: string;
+  risk: string;
   aum: string;
   return1Yr: string;
   return3Yr: string;
   return5Yr: string;
-  minSip: number;
+  minSip?: number;
   fundHouse: string;
   description: string;
 }
 
-const SCHEMES_DATA: MutualFundScheme[] = [
-  {
-    id: 'ppfas-flexi-cap',
-    name: 'Parag Parikh Flexi Cap Fund - Direct Growth',
-    category: 'Equity - Flexi Cap',
-    risk: 'Very High Risk',
-    aum: '₹68,450 Cr',
-    return1Yr: '+22.4%',
-    return3Yr: '+19.8%',
-    return5Yr: '+21.5%',
-    minSip: 1000,
-    fundHouse: 'PPFAS Mutual Fund',
-    description: 'Invests across large-cap, mid-cap, small-cap and international equities with a value-investing philosophy.'
-  },
-  {
-    id: 'quant-small-cap',
-    name: 'Quant Small Cap Fund - Direct Growth',
-    category: 'Equity - Small Cap',
-    risk: 'Very High Risk',
-    aum: '₹24,120 Cr',
-    return1Yr: '+31.8%',
-    return3Yr: '+28.4%',
-    return5Yr: '+29.2%',
-    minSip: 1000,
-    fundHouse: 'Quant Mutual Fund',
-    description: 'Dynamic multi-asset valuation model driven by predictive analytics and high-momentum small-cap discovery.'
-  },
-  {
-    id: 'hdfc-mid-cap-opp',
-    name: 'HDFC Mid-Cap Opportunities Fund - Direct Growth',
-    category: 'Equity - Mid Cap',
-    risk: 'Very High Risk',
-    aum: '₹62,100 Cr',
-    return1Yr: '+26.5%',
-    return3Yr: '+24.1%',
-    return5Yr: '+22.0%',
-    minSip: 1000,
-    fundHouse: 'HDFC Mutual Fund',
-    description: 'Focuses on identifying mid-sized companies with strong economic moats, scalable business models, and attractive valuations.'
-  },
-  {
-    id: 'axis-elss-tax-saver',
-    name: 'Axis ELSS Tax Saver Fund - Direct Growth',
-    category: 'ELSS Tax Saver',
-    risk: 'Very High Risk',
-    aum: '₹34,800 Cr',
-    return1Yr: '+18.2%',
-    return3Yr: '+16.5%',
-    return5Yr: '+17.9%',
-    minSip: 500,
-    fundHouse: 'Axis Mutual Fund',
-    description: 'Tax-saving equity linked savings scheme with a statutory 3-year lock-in, investing in high-conviction growth businesses.'
-  },
-  {
-    id: 'icici-prudential-bluechip',
-    name: 'ICICI Prudential Bluechip Fund - Direct Growth',
-    category: 'Equity - Flexi Cap',
-    risk: 'Very High Risk',
-    aum: '₹55,200 Cr',
-    return1Yr: '+19.5%',
-    return3Yr: '+17.2%',
-    return5Yr: '+16.8%',
-    minSip: 100,
-    fundHouse: 'ICICI Prudential Mutual Fund',
-    description: 'Large-cap oriented equity fund focused on market leaders across sectors with consistent compounding track records.'
-  },
-  {
-    id: 'sbi-arbitrage-opportunities',
-    name: 'SBI Arbitrage Opportunities Fund - Direct Growth',
-    category: 'Debt & Arbitrage',
-    risk: 'Low Risk',
-    aum: '₹41,900 Cr',
-    return1Yr: '+7.4%',
-    return3Yr: '+6.9%',
-    return5Yr: '+6.5%',
-    minSip: 500,
-    fundHouse: 'SBI Mutual Fund',
-    description: 'Capitalizes on price differentials between cash and derivatives segments while maintaining equity taxation benefits.'
+const SHEET_ID = "1OYTrtDxFN755cQ2qLzvgZ77a97JnG97atWOISbdVamg";
+const CATEGORY_ORDER = ["Equity - Flexi Cap", "Equity - Mid Cap", "Equity - Small Cap", "ELSS Tax Saver", "Debt & Arbitrage", "Hybrid / Balanced"];
+const MONTH_INDEX = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+
+function monthSortKey(label: string) {
+  const match = label.trim().match(/^([A-Za-z]+)\s+(\d{4})$/);
+  if (!match) return Number.MAX_SAFE_INTEGER;
+  const month = MONTH_INDEX.findIndex((name) => match[1].toLowerCase().startsWith(name));
+  return Number(match[2]) * 12 + (month < 0 ? 0 : month);
+}
+
+function parseCsv(text: string) {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let quoted = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    if (quoted) {
+      if (char === "\"") {
+        if (text[index + 1] === "\"") {
+          cell += "\"";
+          index += 1;
+        } else {
+          quoted = false;
+        }
+      } else {
+        cell += char;
+      }
+    } else if (char === "\"") {
+      quoted = true;
+    } else if (char === ",") {
+      row.push(cell);
+      cell = "";
+    } else if (char === "\n") {
+      row.push(cell);
+      rows.push(row);
+      row = [];
+      cell = "";
+    } else if (char !== "\r") {
+      cell += char;
+    }
   }
-];
+  if (cell.length > 0 || row.length > 0) {
+    row.push(cell);
+    rows.push(row);
+  }
+  return rows.filter((entry) => entry.some((value) => value.trim()));
+}
+
+function cleanCell(value: string | undefined) {
+  return (value ?? "").trim().replace(/^'+|'+$/g, "");
+}
+
+function parseMinSip(value: string | undefined) {
+  if (!value || !value.trim()) return undefined;
+  const amount = Number(value.replace(/[^\d.]/g, ""));
+  return Number.isFinite(amount) && amount > 0 ? amount : undefined;
+}
+
+async function loadMonthNames() {
+  const response = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/htmlview`, { cache: "no-store" });
+  if (!response.ok) throw new Error("sheet list failed");
+  const html = await response.text();
+  const names: string[] = [];
+  const pattern = /items\.push\(\{name:\s*"((?:\\.|[^"\\])*)"/g;
+  let match = pattern.exec(html);
+  while (match) {
+    names.push(JSON.parse(`"${match[1]}"`));
+    match = pattern.exec(html);
+  }
+  if (names.length === 0) throw new Error("no months");
+  return names.sort((left, right) => monthSortKey(right) - monthSortKey(left));
+}
+
+async function loadSchemes(month: string) {
+  const response = await fetch(
+    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(month)}`,
+    { cache: "no-store" },
+  );
+  if (!response.ok) throw new Error("sheet rows failed");
+  const rows = parseCsv(await response.text());
+  const [header, ...body] = rows;
+  if (!header) return [];
+  const columns = header.map((name) => name.trim());
+  return body.flatMap((row, index) => {
+    const record = Object.fromEntries(columns.map((column, columnIndex) => [column, row[columnIndex] ?? ""]));
+    const name = cleanCell(record.name);
+    if (!name) return [];
+    return [{
+      id: cleanCell(record.id) || `${month}-${index}`,
+      name,
+      category: cleanCell(record.category),
+      risk: cleanCell(record.risk),
+      aum: cleanCell(record.aum),
+      return1Yr: cleanCell(record.return1Yr),
+      return3Yr: cleanCell(record.return3Yr),
+      return5Yr: cleanCell(record.return5Yr),
+      minSip: parseMinSip(record.minSip),
+      fundHouse: cleanCell(record.fundHouse),
+      description: cleanCell(record.description),
+    }];
+  });
+}
 
 export default function MutualFundsHub() {
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [months, setMonths] = useState<string[]>([]);
+  const [month, setMonth] = useState("");
+  const [schemes, setSchemes] = useState<MutualFundScheme[]>([]);
+  const [listStatus, setListStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [investModalScheme, setInvestModalScheme] = useState<MutualFundScheme | null>(null);
   const [sipAmount, setSipAmount] = useState<number>(5000);
   const [successMsg, setSuccessMsg] = useState(false);
 
-  const categories = ['All', 'Equity - Flexi Cap', 'Equity - Mid Cap', 'Equity - Small Cap', 'ELSS Tax Saver', 'Debt & Arbitrage'];
+  useEffect(() => {
+    let ignore = false;
+    loadMonthNames()
+      .then((names) => {
+        if (ignore) return;
+        setMonths(names);
+        setMonth(names[0] ?? "");
+      })
+      .catch(() => {
+        if (!ignore) setListStatus("error");
+      });
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
-  const filteredSchemes = SCHEMES_DATA.filter((scheme) => {
-    const matchesCat = selectedCategory === 'All' || scheme.category === selectedCategory;
-    const matchesSearch = scheme.name.toLowerCase().includes(searchQuery.toLowerCase()) || scheme.fundHouse.toLowerCase().includes(searchQuery.toLowerCase());
+  useEffect(() => {
+    if (!month) return;
+    let ignore = false;
+    setListStatus("loading");
+    setSelectedCategory("All");
+    loadSchemes(month)
+      .then((rows) => {
+        if (ignore) return;
+        setSchemes(rows);
+        setListStatus("ready");
+      })
+      .catch(() => {
+        if (ignore) return;
+        setSchemes([]);
+        setListStatus("error");
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [month]);
+
+  const presentCategories = schemes.map((scheme) => scheme.category).filter(Boolean);
+  const categories = [
+    "All",
+    ...CATEGORY_ORDER.filter((category) => presentCategories.includes(category)),
+    ...presentCategories.filter((category, index, all) => !CATEGORY_ORDER.includes(category) && all.indexOf(category) === index),
+  ];
+
+  const filteredSchemes = schemes.filter((scheme) => {
+    const matchesCat = selectedCategory === "All" || scheme.category === selectedCategory;
+    const query = searchQuery.toLowerCase();
+    const matchesSearch = scheme.name.toLowerCase().includes(query) || scheme.fundHouse.toLowerCase().includes(query);
     return matchesCat && matchesSearch;
   });
 
@@ -138,13 +209,29 @@ export default function MutualFundsHub() {
 
         {/* Search & Category Filter Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#EEF2FB] border border-[#C5D3F2] p-4 rounded-[20px]">
-          <input
-            type="text"
-            placeholder="Search by fund name or fund house..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full sm:w-[320px] bg-white border border-[#E3E8F4] rounded-[10px] px-4 h-11 text-xs font-semibold text-[#1A3B9F] outline-0 focus:border-[#1A3B9F]"
-          />
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+            <label className="flex items-center gap-2 text-xs font-bold text-[#1A3B9F]">
+              Month
+              <select
+                value={month}
+                onChange={(event) => setMonth(event.target.value)}
+                disabled={months.length === 0}
+                className="h-11 min-w-[140px] rounded-[10px] border border-[#E3E8F4] bg-white px-3 text-xs font-semibold text-[#1A3B9F] outline-0 focus:border-[#1A3B9F]"
+              >
+                {months.length === 0 && <option value="">Loading…</option>}
+                {months.map((name) => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
+              </select>
+            </label>
+            <input
+              type="text"
+              placeholder="Search by fund name or fund house..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full sm:w-[320px] bg-white border border-[#E3E8F4] rounded-[10px] px-4 h-11 text-xs font-semibold text-[#1A3B9F] outline-0 focus:border-[#1A3B9F]"
+            />
+          </div>
 
           <div className="flex gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
             {categories.map((cat) => (
@@ -162,6 +249,16 @@ export default function MutualFundsHub() {
             ))}
           </div>
         </div>
+
+        {listStatus === "loading" && (
+          <p className="text-sm text-[#6B7280]">Loading schemes for {month || "the latest month"}…</p>
+        )}
+        {listStatus === "error" && (
+          <p className="text-sm font-semibold text-rose-700">The scheme list could not be loaded from the Google Sheet.</p>
+        )}
+        {listStatus === "ready" && filteredSchemes.length === 0 && (
+          <p className="text-sm text-[#6B7280]">No schemes are listed for {month}.</p>
+        )}
 
         {/* Schemes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -207,10 +304,12 @@ export default function MutualFundsHub() {
 
               <div className="pt-4 border-t border-[#E3E8F4] flex justify-between items-center">
                 <div className="text-xs text-[#6B7280]">
-                  Min. SIP: <b className="text-[#1A3B9F]">₹{scheme.minSip.toLocaleString('en-IN')}</b>
+                  {scheme.minSip != null
+                    ? <>Min. SIP: <b className="text-[#1A3B9F]">₹{scheme.minSip.toLocaleString("en-IN")}</b></>
+                    : scheme.fundHouse}
                 </div>
                 <button
-                  onClick={() => { setInvestModalScheme(scheme); setSipAmount(scheme.minSip); }}
+                  onClick={() => { setInvestModalScheme(scheme); setSipAmount(scheme.minSip ?? 5000); }}
                   className="h-10 px-5 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
                 >
                   Invest SIP →
@@ -258,13 +357,15 @@ export default function MutualFundsHub() {
                     <label className="text-xs font-bold text-[#374151] block">Monthly SIP Amount (₹)</label>
                     <input
                       type="number"
-                      min={investModalScheme.minSip}
+                      min={investModalScheme.minSip ?? 500}
                       step="500"
                       value={sipAmount}
                       onChange={(e) => setSipAmount(Number(e.target.value))}
                       className="w-full bg-[#EEF2FB] border border-[#E3E8F4] rounded-[8px] px-4 h-12 text-base font-extrabold text-[#1A3B9F] outline-0 focus:border-[#1A3B9F]"
                     />
-                    <p className="text-[11px] text-[#6B7280]">Minimum SIP amount is ₹{investModalScheme.minSip.toLocaleString('en-IN')}</p>
+                    {investModalScheme.minSip != null && (
+                      <p className="text-[11px] text-[#6B7280]">Minimum SIP amount is ₹{investModalScheme.minSip.toLocaleString("en-IN")}</p>
+                    )}
                   </div>
 
                   <div className="bg-[#FFFDF0] border border-[#FFE8A3] rounded-[12px] p-4 text-xs text-[#856404] leading-relaxed">
