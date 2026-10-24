@@ -202,7 +202,7 @@ export default function MutualFundsHub() {
             AMFI Registered Distributor (ARN: 114893)
           </span>
           <h1 className="font-[var(--fd)] text-3xl sm:text-5xl font-extrabold text-[#091540] tracking-tight">
-            Mutual Funds Hub — Regular Growth Schemes
+            Mutual Funds
           </h1>
           <p className="text-sm sm:text-base text-[#6B7280] leading-relaxed font-light">
             At MyAnmol, we are proudly focused on <b className="text-[#1A3B9F]">Regular Growth Schemes</b> backed by dedicated advisory, goal-mapping, and ongoing portfolio reviews. Invest systematically with expert handholding at every step.
@@ -367,13 +367,13 @@ export default function MutualFundsHub() {
               href="tel:+919742826665"
               className="h-12 px-8 rounded-xl bg-[#8DC63F] text-[#091540] font-extrabold text-xs hover:bg-[#9ED64A] transition-all flex items-center gap-2 shadow-xl no-underline"
             >
-              Call Now: +91-9742826665
+              Call Us Now
             </a>
             <a
               href="mailto:mutualfunds@myanmol.com"
               className="h-12 px-8 rounded-xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs border border-white/20 transition-all flex items-center gap-2 no-underline"
             >
-              Email mutualfunds@myanmol.com
+              Email Us Now
             </a>
           </div>
         </div>
