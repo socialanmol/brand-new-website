@@ -69,8 +69,10 @@ const GoogleReviewsBadge: React.FC<GoogleReviewsBadgeProps> = ({
     };
   }, [open]);
 
-  const fiveStarReviews = data.reviews.filter((review) => review.rating === 5);
-  const pageCount = Math.max(1, Math.ceil(fiveStarReviews.length / PAGE_SIZE));
+  const shownReviews = data.reviews
+    .filter((review) => review.rating === 5 || review.rating === 4)
+    .sort((left, right) => right.rating - left.rating);
+  const pageCount = Math.max(1, Math.ceil(shownReviews.length / PAGE_SIZE));
 
   useEffect(() => {
     setReviewPage(0);
@@ -84,7 +86,7 @@ const GoogleReviewsBadge: React.FC<GoogleReviewsBadgeProps> = ({
     return () => window.clearInterval(timer);
   }, [open, pageCount]);
 
-  const visibleReviews = fiveStarReviews.slice(reviewPage * PAGE_SIZE, reviewPage * PAGE_SIZE + PAGE_SIZE);
+  const visibleReviews = shownReviews.slice(reviewPage * PAGE_SIZE, reviewPage * PAGE_SIZE + PAGE_SIZE);
 
   return (
     <div className="gr-root" ref={rootRef}>
