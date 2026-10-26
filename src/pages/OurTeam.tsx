@@ -50,6 +50,20 @@ const FOUNDERS: TeamMember[] = [
     image: karthikeyan,
     bio: "A Fellow Chartered Accountant with over 15 years of experience in financial advisory, specializing in insurance planning and risk management. He focuses on building robust protection strategies grounded in clarity, trust, and long-term value for clients.",
   },
+  {
+    name: "Sandhya Bajaj",
+    role: "Founder",
+    department: "Founder & Market Strategy Expert",
+    monogram: "SB",
+    bio: "At MyAnmol, she brings invaluable perspective and stability to strategic decision-making.",
+  },
+  {
+    name: "Chayan Agarwal",
+    role: "SDE & DM",
+    department: "SDE & DM",
+    monogram: "CA",
+    bio: "At MyAnmol, he brings invaluable perspective and stability to strategic decision-making by working on the website and handling the marketing.",
+  },
 ];
 
 const SENIOR_LEADERSHIP: TeamMember[] = [
@@ -239,13 +253,15 @@ export default function OurTeam() {
                 key={idx}
                 className="bg-white border border-[rgba(26,59,159,0.12)] rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all group"
               >
-                <div className="aspect-[4/5] overflow-hidden bg-[#EEF2FB] relative">
-                  {member.image && (
+                <div className="aspect-[4/5] overflow-hidden bg-[#EEF2FB] relative flex items-center justify-center text-[#1A3B9F] font-[var(--fd)] text-5xl font-extrabold select-none">
+                  {member.image ? (
                     <img
                       src={member.image}
                       alt={member.name}
                       className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                     />
+                  ) : (
+                    member.monogram
                   )}
                 </div>
                 <div className="p-6 flex-1 flex flex-col">
