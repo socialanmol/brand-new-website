@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { renderCalculatorPdf } from "../calculators/pdf";
 import type { CalculatorReport } from "../calculators/types";
-import { useCalculatorUser } from "../calculators/user";
+import { useReportRequest } from "../calculators/user";
 
 type Props = {
   report: CalculatorReport;
@@ -9,19 +9,21 @@ type Props = {
 };
 
 export default function CalculatorActions({ report, tone = "light" }: Props) {
-  const user = useCalculatorUser();
+  const requestReport = useReportRequest();
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState<"mail" | "pdf" | null>(null);
 
-  async function buildPdf() {
-    return renderCalculatorPdf(report, user?.name || "Investor");
+  async function buildPdf(name: string) {
+    return renderCalculatorPdf(report, name || "Investor");
   }
 
   async function download() {
+    const person = await requestReport();
+    if (!person) return;
     setBusy("pdf");
     setStatus("");
     try {
-      const bytes = await buildPdf();
+      const bytes = await buildPdf(person.name);
       const copy = new Uint8Array(bytes.byteLength);
       copy.set(bytes);
       const blob = new Blob([copy.buffer], { type: "application/pdf" });
@@ -42,14 +44,12 @@ export default function CalculatorActions({ report, tone = "light" }: Props) {
   }
 
   async function email() {
-    if (!user?.email) {
-      setStatus("Enter your details on the calculator form before emailing the report.");
-      return;
-    }
+    const person = await requestReport();
+    if (!person) return;
     setBusy("mail");
     setStatus("");
     try {
-      const bytes = await buildPdf();
+      const bytes = await buildPdf(person.name);
       const response = await fetch("/api/calculator-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -61,7 +61,7 @@ export default function CalculatorActions({ report, tone = "light" }: Props) {
       });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(body.error || "The report could not be emailed.");
-      setStatus(`Sent to ${user.email}.`);
+      setStatus(`Sent to ${person.email}.`);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "The report could not be emailed.");
     } finally {
