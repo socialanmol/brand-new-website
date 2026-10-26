@@ -10,8 +10,7 @@ export default function FinancialFitnessQuiz() {
       title: "Financial Confidence Quiz",
       desc: "A complete picture of your financial health across five dimensions — emergency fund, insurance, investments, retirement, and goal planning. See exactly where you're strong and where to focus next.",
       meta: ["5 dimensions", "2 minutes", "Instant Scorecard"],
-      externalUrl:
-        "https://www.myanmol.com/financial-fitness-quiz/financial-fitness-quiz-one",
+      to: "/fw/quiz/1",
     },
     {
       id: "quiz-2",
@@ -20,8 +19,7 @@ export default function FinancialFitnessQuiz() {
       title: "Investment Risk Profile Quiz",
       desc: "Understand your real risk appetite before you invest a single rupee. A short set of questions to find out whether your portfolio should lean conservative, balanced, or growth-focused.",
       meta: ["10 questions", "3 minutes", "Asset Allocation Guide"],
-      externalUrl:
-        "https://www.myanmol.com/financial-fitness-quiz/financial-fitness-quiz-two",
+      to: "/fw/quiz/2",
     },
   ];
 
@@ -89,14 +87,12 @@ export default function FinancialFitnessQuiz() {
               </div>
 
               {/* Action Button */}
-              <a
-                href={q.externalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to={q.to}
                 className="w-full inline-flex items-center justify-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-sm sm:text-base py-3.5 px-6 rounded-full transition-all shadow-md hover:shadow-lg"
               >
                 Start {q.number} →
-              </a>
+              </Link>
             </div>
           ))}
         </div>

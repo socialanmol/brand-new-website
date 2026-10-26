@@ -29,11 +29,15 @@ const Stars: React.FC<{ value: number; size?: number }> = ({ value, size = 16 })
   </span>
 );
 
+const PAGE_SIZE = 5;
+const ROTATE_MS = 10000;
+
 const GoogleReviewsBadge: React.FC<GoogleReviewsBadgeProps> = ({
   endpoint = "/api/google-reviews",
 }) => {
   const [data, setData] = useState<GoogleReviewsData>(SAMPLE_GOOGLE_REVIEWS);
   const [open, setOpen] = useState(false);
+  const [reviewPage, setReviewPage] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -65,7 +69,24 @@ const GoogleReviewsBadge: React.FC<GoogleReviewsBadgeProps> = ({
     };
   }, [open]);
 
-  const top5 = data.reviews.slice(0, 5);
+  const shownReviews = data.reviews
+    .filter((review) => review.rating === 5 || review.rating === 4)
+    .sort((left, right) => right.rating - left.rating);
+  const pageCount = Math.max(1, Math.ceil(shownReviews.length / PAGE_SIZE));
+
+  useEffect(() => {
+    setReviewPage(0);
+  }, [data]);
+
+  useEffect(() => {
+    if (!open || pageCount < 2) return;
+    const timer = window.setInterval(() => {
+      setReviewPage((current) => (current + 1) % pageCount);
+    }, ROTATE_MS);
+    return () => window.clearInterval(timer);
+  }, [open, pageCount]);
+
+  const visibleReviews = shownReviews.slice(reviewPage * PAGE_SIZE, reviewPage * PAGE_SIZE + PAGE_SIZE);
 
   return (
     <div className="gr-root" ref={rootRef}>
@@ -87,8 +108,8 @@ const GoogleReviewsBadge: React.FC<GoogleReviewsBadgeProps> = ({
           </div>
 
           <ul className="gr-list">
-            {top5.map((r, i) => (
-              <li key={i} className="gr-item">
+            {visibleReviews.map((r) => (
+              <li key={`${r.author}-${r.timeAgo}-${r.text}`} className="gr-item">
                 <div className="gr-item-head">
                   {r.photoUrl ? (
                     <img src={r.photoUrl} alt="" width={32} height={32} className="gr-avatar" referrerPolicy="no-referrer" />
