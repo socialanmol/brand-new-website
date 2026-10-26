@@ -69,8 +69,8 @@ export async function GET() {
       text: clip(r.text?.text, 2000),
       timeAgo: clip(r.relativePublishTimeDescription, 80),
     }))
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, 5);
+    .filter((review) => review.rating === 5 || review.rating === 4)
+    .sort((a, b) => b.rating - a.rating);
 
   const total = Number(place.userRatingCount);
   return Response.json({

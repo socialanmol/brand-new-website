@@ -56,7 +56,8 @@ const NAV: NavEntry[] = [
       {
         label: 'Mutual Funds',
         children: [
-          { label: 'Specialised Investment Funds (SIFs)',  to: '/services/sif',      icon: '📈' },
+          { label: 'About Mutual Funds',                  to: '/mutual-funds',           icon: '📘' },
+          { label: 'Specialised Investment Funds (SIFs)',  to: '/services/sif',           icon: '📈' },
           { label: 'Portfolio Management Services (PMS)', to: '/services/pms',      icon: '🗂️' },
           { label: 'Alternative Investment Fund (AIF)',   to: '/services/aif',      icon: '🏛️' },
           { label: 'Gift City & Global Investing',        to: '/mutual-funds/gift-city', icon: '🌐' },
@@ -92,6 +93,7 @@ const NAV: NavEntry[] = [
     items: [
       { label: 'Glossary',                 to: '/insights/glossary',  icon: '📖' },
       { label: 'Our Insights',             to: '/insights/articles',  icon: '✍️' },
+      { label: 'News and Marketing Hub',   to: '/insights/news-and-marketing', icon: '📰' },
       { label: 'Learn, Unlearn & Relearn', to: '/insights/learn',     icon: '🔄' },
       { label: 'Seminars & Workshops',     to: '/insights/seminars',  icon: '🎤' },
     ],
@@ -550,6 +552,10 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
   }, [location.search]);
 
   useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
     let cancelled = false;
     fetch('/api/auth/me', { credentials: 'include' })
       .then((response) => (response.ok ? response.json() : null))
@@ -690,6 +696,7 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
                 <div onClick={() => setMobileOpen(false)}>{signInControl(true)}</div>
               </div>
               <Link to="/investment-services"
+                onClick={() => setMobileOpen(false)}
                 style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>
                 View Portfolio
               </Link>

@@ -10,6 +10,7 @@ import TermInsurance from '../pages/TermInsurance';
 import LifeInsurance from '../pages/LifeInsurance';
 import Resources from '../pages/Resources';
 import ArticlesInsights from '../pages/ArticlesInsights';
+import NewsAndMarketingHub from '../pages/news_and_marketing_hub';
 import ForArmedForces from '../pages/ForArmedForces';
 import ForBusinessOwners from '../pages/ForBusinessOwners';
 import SeminarsWorkshops from '../pages/SeminarsWorkshops';
@@ -28,6 +29,7 @@ import ForFamilies from '../pages/ForFamilies';
 import OurTeam from '../pages/OurTeam';
 import ForNri from '../pages/ForNri';
 import FinancialFitnessQuiz from '../pages/FinancialFitnessQuiz';
+import QuizEntryGate from '../pages/QuizEntryGate';
 import BuildYourWealth from '../pages/BuildYourWealth';
 import RegulatoryDisclosures from '../pages/RegulatoryDisclosures';
 import WealthEstateSolutions from '../pages/WealthEstateSolutions';
@@ -64,6 +66,7 @@ import RetirementCalculator from '../pages/retirementcalculator';
 import FinancialConfidenceBuilder from '../pages/FinancialConfidenceBuilder';
 import GoalMapping from '../pages/GoalMapping';
 import SpecializedInvestmentFunds from '../pages/SpecializedInvestmentFunds';
+import MutualFundsHub from '../pages/mutual_funds_hub';
 import InvestmentServices from '../pages/InvestmentServices';
 import Careers from '../pages/Careers';
 import FinancialWellnessThemed from '../pages/FinancialWellnessThemed';
@@ -103,6 +106,7 @@ export const router = createBrowserRouter([
       { path: 'insights/learn', Component: Resources },
       { path: 'insights/articles', Component: ArticlesInsights },
       { path: 'articles', Component: ArticlesInsights },
+      { path: 'insights/news-and-marketing', Component: NewsAndMarketingHub },
 
       { path: 'financial-wellbeing', Component: FinancialWellnessThemed },
       { path: 'solutions/financial-wellbeing', Component: FinancialWellnessThemed },
@@ -173,6 +177,7 @@ export const router = createBrowserRouter([
       { path: 'services/other/tax-filing', Component: TaxFiling },
       { path: 'services/other/:slug', Component: ComingSoon },
 
+      { path: 'mutual-funds', Component: MutualFundsHub },
       { path: 'mutual-funds/gift-city', Component: GiftCity },
       { path: 'gift-city', Component: GiftCity },
 
@@ -198,7 +203,9 @@ export const router = createBrowserRouter([
       { path: 'financial-wellness-check', Component: FinancialWellnessThemed },
 
       { path: 'fw/quiz', Component: FinancialFitnessQuiz },
+      { path: 'fw/quiz/:quizNumber', Component: QuizEntryGate },
       { path: 'financial-fitness-quiz', Component: FinancialFitnessQuiz },
+      { path: 'financial-fitness-quiz/:quizNumber', Component: QuizEntryGate },
 
       { path: 'fw/build', Component: BuildYourWealth },
       { path: 'build-your-wealth', Component: BuildYourWealth },

@@ -122,30 +122,33 @@ export default function ContactUs() {
               </div>
             </div>
 
-            <div className="bg-[#F8FAFE] border border-[rgba(26,59,159,0.12)] rounded-2xl p-6 flex gap-4 items-start shadow-sm">
+            <a
+              href="tel:+919742826665"
+              className="bg-[#F8FAFE] border border-[rgba(26,59,159,0.12)] rounded-2xl p-6 flex gap-4 items-center shadow-sm no-underline"
+            >
               <div className="w-11 h-11 rounded-full bg-[#8DC63F]/15 border border-[#8DC63F]/30 flex items-center justify-center text-xl shrink-0">
                 📞
               </div>
-              <div>
-                <h3 className="font-[var(--fd)] text-lg font-bold text-[#091540] mb-1">
-                  Phone Number
-                </h3>
-                <a
-                  href="tel:+919742826665"
-                  className="text-sm font-bold text-[#1A3B9F] hover:underline block mb-1"
-                >
-                  Call on +91-9742826665
-                </a>
-                <a
-                  href="https://wa.me/919986011100"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-bold text-[#1A3B9F] hover:underline block"
-                >
-                  WhatsApp us on +91-9986011100
-                </a>
+              <h3 className="font-[var(--fd)] text-lg font-bold text-[#091540]">
+                Phone Number
+              </h3>
+            </a>
+
+            <a
+              href="https://wa.me/919986011100"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#F8FAFE] border border-[rgba(26,59,159,0.12)] rounded-2xl p-6 flex gap-4 items-center shadow-sm no-underline"
+            >
+              <div className="w-11 h-11 rounded-full bg-[#8DC63F]/15 border border-[#8DC63F]/30 flex items-center justify-center shrink-0" aria-hidden="true">
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="#128C7E">
+                  <path d="M20.5 3.5A11 11 0 0 0 2.1 16.8L1 23l6.4-1.1A11 11 0 0 0 20.5 3.5Zm-8.5 17a9.1 9.1 0 0 1-4.6-1.3l-.3-.2-3.8.6.6-3.7-.2-.3A9.1 9.1 0 1 1 12 20.5Zm5-6.8c-.3-.1-1.6-.8-1.8-.9s-.4-.1-.6.1-.7.9-.8 1-.3.2-.6.1a7.4 7.4 0 0 1-2.2-1.4 8.2 8.2 0 0 1-1.5-1.9c-.2-.3 0-.4.1-.6l.4-.5.2-.3a.5.5 0 0 0 0-.5c0-.1-.6-1.4-.8-1.9s-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4 15 15 0 0 0 1.5.6 3.6 3.6 0 0 0 1.7.1 2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .2-1.2c-.1-.1-.3-.2-.6-.3Z" />
+                </svg>
               </div>
-            </div>
+              <h3 className="font-[var(--fd)] text-lg font-bold text-[#091540]">
+                WhatsApp
+              </h3>
+            </a>
           </div>
 
           {/* CONTACT FORM */}
