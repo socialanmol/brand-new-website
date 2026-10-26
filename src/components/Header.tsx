@@ -56,7 +56,8 @@ const NAV: NavEntry[] = [
       {
         label: 'Mutual Funds',
         children: [
-          { label: 'Specialised Investment Funds (SIFs)',  to: '/services/sif',      icon: '📈' },
+          { label: 'About Mutual Funds',                  to: '/mutual-funds',           icon: '📘' },
+          { label: 'Specialised Investment Funds (SIFs)',  to: '/services/sif',           icon: '📈' },
           { label: 'Portfolio Management Services (PMS)', to: '/services/pms',      icon: '🗂️' },
           { label: 'Alternative Investment Fund (AIF)',   to: '/services/aif',      icon: '🏛️' },
           { label: 'Gift City & Global Investing',        to: '/mutual-funds/gift-city', icon: '🌐' },

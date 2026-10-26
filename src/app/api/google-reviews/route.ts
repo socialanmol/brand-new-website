@@ -39,8 +39,8 @@ export async function GET() {
       text: r.text?.text ?? "",
       timeAgo: r.relativePublishTimeDescription ?? "",
     }))
-    .sort((a, b) => b.rating - a.rating) // highest-rated first
-    .slice(0, 5);
+    .filter((review) => review.rating === 5 || review.rating === 4)
+    .sort((a, b) => b.rating - a.rating);
 
   return Response.json({
     rating: place.rating ?? 0,
