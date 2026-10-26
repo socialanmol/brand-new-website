@@ -7,12 +7,24 @@ export type CalculatorUser = {
   location: string;
 };
 
-const CalculatorUserContext = createContext<CalculatorUser | null>(null);
+type ReportAccess = {
+  user: CalculatorUser | null;
+  requestReport: () => Promise<CalculatorUser | null>;
+};
 
-export function CalculatorUserProvider({ user, children }: { user: CalculatorUser; children: React.ReactNode }) {
-  return <CalculatorUserContext.Provider value={user}>{children}</CalculatorUserContext.Provider>;
+const CalculatorUserContext = createContext<ReportAccess>({
+  user: null,
+  requestReport: async () => null,
+});
+
+export function CalculatorUserProvider({ value, children }: { value: ReportAccess; children: React.ReactNode }) {
+  return <CalculatorUserContext.Provider value={value}>{children}</CalculatorUserContext.Provider>;
 }
 
 export function useCalculatorUser() {
-  return useContext(CalculatorUserContext);
+  return useContext(CalculatorUserContext).user;
+}
+
+export function useReportRequest() {
+  return useContext(CalculatorUserContext).requestReport;
 }
