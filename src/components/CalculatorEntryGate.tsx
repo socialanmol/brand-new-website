@@ -54,10 +54,7 @@ const styles = `
 .calculator-entry-submit{grid-column:1/-1;min-height:46px;padding:0 18px;border:0;border-radius:10px;background:#8dc63f;color:#091540;font:700 14px Montserrat,system-ui,sans-serif;cursor:pointer}
 .calculator-entry-submit:disabled{background:#d1d5db;color:#6b7280;cursor:not-allowed}
 .calculator-entry-error{margin:12px 0 0;color:#b91c1c;font-size:13px}
-.calculator-personalized{max-width:1152px;margin:24px auto 0;padding:18px 22px;border:1px solid #dce5f6;border-radius:16px;background:#f4f7fd;color:#091540;font-family:Montserrat,system-ui,sans-serif;line-height:1.6}
-.calculator-personalized h2{margin:0 0 4px;font-size:19px;font-weight:800}
-.calculator-personalized p{margin:0;color:#374151;font-size:14px}
-@media(max-width:560px){.calculator-entry-card{padding:24px 18px}.calculator-entry-form{grid-template-columns:1fr}.calculator-entry-submit{grid-column:auto}.calculator-personalized{margin:18px 16px 0;padding:16px}}
+@media(max-width:560px){.calculator-entry-card{padding:24px 18px}.calculator-entry-form{grid-template-columns:1fr}.calculator-entry-submit{grid-column:auto}}
 `;
 
 export default function CalculatorEntryGate() {
@@ -227,14 +224,9 @@ export default function CalculatorEntryGate() {
     );
   }
 
-  const firstName = user.name.split(/\s+/)[0];
   return (
     <CalculatorUserProvider user={user}>
       <style>{styles}</style>
-      <aside className="calculator-personalized" aria-live="polite">
-        <h2>Hello, {firstName}</h2>
-        <p>Your report is prepared for {user.name}. Email sends it to {user.email}. Download PDF saves the same file on this device.</p>
-      </aside>
       <Outlet />
     </CalculatorUserProvider>
   );
