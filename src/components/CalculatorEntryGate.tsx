@@ -3,6 +3,7 @@ import { Outlet } from "react-router";
 import { CalculatorUserProvider, type CalculatorUser } from "../calculators/user";
 
 const emptyForm = { name: "", email: "", phone: "", location: "" };
+const UNLOCK_KEY = "ma-calculator-report-unlocked";
 
 const styles = `
 .calculator-report-backdrop{position:fixed;inset:0;z-index:800;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(9,21,64,.55)}
@@ -24,12 +25,14 @@ const styles = `
 
 export default function CalculatorEntryGate() {
   const [user, setUser] = useState<CalculatorUser | null>(null);
-  const [unlocked, setUnlocked] = useState(false);
+  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem(UNLOCK_KEY) === "1");
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const pending = useRef<((value: CalculatorUser | null) => void) | null>(null);
+  const profileReady = useRef(false);
+  const profileWaiters = useRef<Array<() => void>>([]);
   const userRef = useRef(user);
   const unlockedRef = useRef(unlocked);
   userRef.current = user;
@@ -51,7 +54,12 @@ export default function CalculatorEntryGate() {
         setUser(saved);
         setForm(saved);
       })
-      .catch(() => undefined);
+      .catch(() => undefined)
+      .finally(() => {
+        if (cancelled) return;
+        profileReady.current = true;
+        profileWaiters.current.splice(0).forEach((resolve) => resolve());
+      });
     return () => {
       cancelled = true;
     };
@@ -63,8 +71,11 @@ export default function CalculatorEntryGate() {
     pending.current = null;
   }, []);
 
-  const requestReport = useCallback(() => {
-    if (unlockedRef.current && userRef.current) return Promise.resolve(userRef.current);
+  const requestReport = useCallback(async () => {
+    if (!profileReady.current) {
+      await new Promise<void>((resolve) => profileWaiters.current.push(resolve));
+    }
+    if (unlockedRef.current && userRef.current) return userRef.current;
     return new Promise<CalculatorUser | null>((resolve) => {
       pending.current?.(null);
       pending.current = resolve;
@@ -108,6 +119,7 @@ export default function CalculatorEntryGate() {
       };
       setUser(saved);
       setUnlocked(true);
+      sessionStorage.setItem(UNLOCK_KEY, "1");
       setOpen(false);
       const resolve = pending.current;
       pending.current = null;
