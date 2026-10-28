@@ -143,6 +143,21 @@ async function createFormSubmission(request, response) {
     `INSERT INTO form_submissions (form_key, name, email, phone, fields, source_path) VALUES (?, ?, ?, ?, ?, ?)`,
     [formKey, fields.name || null, fields.email || null, fields.phone || null, JSON.stringify(fields), sourcePath],
   );
+  if (formKey === "mutual-fund-advisor") {
+    await sendStaffCopy({
+      subject: `Mutual Fund Advisor: ${fields.name}`,
+      text: [
+        "A mutual fund advisor request was submitted.",
+        "",
+        `Name: ${fields.name}`,
+        `Phone: ${fields.phone}`,
+        `Email: ${fields.email}`,
+        `Preferred time: ${fields.time || "—"}`,
+        `Notes: ${fields.notes || "—"}`,
+        `Page: ${sourcePath || "—"}`,
+      ].join("\n"),
+    });
+  }
   if (formKey === "book-a-review") {
     await sendStaffCopy({
       subject: `Book a Review: ${fields.name}`,
@@ -207,6 +222,15 @@ function readFields(formKey, raw) {
   }
   if (formKey === "seminar-investing" || formKey === "seminar-life-stress" || formKey === "seminar-retirement") {
     return { email: requireEmail(raw.email) };
+  }
+  if (formKey === "mutual-fund-advisor") {
+    return {
+      name: requireName(raw.name),
+      phone: flexiblePhone(raw.phone),
+      email: requireEmail(raw.email),
+      time: text(raw.time, 120),
+      notes: text(raw.notes, 2000),
+    };
   }
   throw new HttpError(400, "Choose a form.");
 }
