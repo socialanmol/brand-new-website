@@ -175,6 +175,13 @@ const ADVISORY_TEAM: TeamMember[] = [
     monogram: "V",
     bio: "Vaibhavi a talented women, having great powers to overcome any obstacles in her life at MyAnmol.",
   },
+  {
+    name: "Meghana Jain",
+    role: "Mutual Funds",
+    department: "Customer Support Manager",
+    monogram: "MJ",
+    bio: "At MyAnmol, she brings invaluable perspective and stability to strategic decision-making. A professional with 10 years of experience in broking services and insurance, building trusted financial partnerships and guiding clients toward secure, long-term wealth growth.",
+  },
 ];
 
 export default function OurTeam() {
