@@ -1,6 +1,6 @@
 import React from "react";
 
-const WHATSAPP_NUMBER = "919742826665";
+const WHATSAPP_NUMBER = "919986011100";
 const DEFAULT_MESSAGE = "Hi MyAnmol team, I have a query: ";
 
 interface WhatsAppFloatProps {
