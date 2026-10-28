@@ -194,10 +194,19 @@ export default function MutualFundsHub() {
   useEffect(() => {
     let ignore = false;
     loadMonthNames()
-      .then((names) => {
+      .then(async (names) => {
         if (ignore) return;
         setMonths(names);
-        setMonth(names[0] ?? "");
+        let chosen = names[0] ?? "";
+        for (const name of names) {
+          const rows = await loadSchemes(name);
+          if (ignore) return;
+          if (rows.length > 0) {
+            chosen = name;
+            break;
+          }
+        }
+        setMonth(chosen);
       })
       .catch(() => {
         if (!ignore) setListStatus("error");
