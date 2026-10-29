@@ -578,7 +578,7 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
   };
 
   const signInStyle = (compact: boolean): React.CSSProperties => compact
-    ? { fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none', background: 'transparent', cursor: 'pointer', width: '100%' }
+    ? { fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none', background: 'transparent', cursor: 'pointer', width: '100%', minHeight: 48, boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: 0, lineHeight: 1.2, appearance: 'none', WebkitAppearance: 'none' }
     : { fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.72)', padding: '6px 12px', borderRadius: 7, border: '1px solid rgba(255,255,255,.15)', textDecoration: 'none', whiteSpace: 'nowrap', background: 'transparent', cursor: 'pointer' };
 
   const signInControl = (compact: boolean) => {
@@ -690,10 +690,10 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <Link to="/contact"
                   onClick={() => setMobileOpen(false)}
-                  style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>
+                  style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', minHeight: 48 }}>
                   Contact Us
                 </Link>
-                <div onClick={() => setMobileOpen(false)}>{signInControl(true)}</div>
+                <div onClick={() => setMobileOpen(false)} style={{ display: 'flex', minWidth: 0 }}>{signInControl(true)}</div>
               </div>
               <Link to="/investment-services"
                 onClick={() => setMobileOpen(false)}
