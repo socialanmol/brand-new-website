@@ -10,6 +10,7 @@ import TermInsurance from '../pages/TermInsurance';
 import LifeInsurance from '../pages/LifeInsurance';
 import Resources from '../pages/Resources';
 import ArticlesInsights from '../pages/ArticlesInsights';
+import FinancialFoundationBlog from '../pages/financial_foundation_blog_component';
 import NewsAndMarketingHub from '../pages/news_and_marketing_hub';
 import ForArmedForces from '../pages/ForArmedForces';
 import ForBusinessOwners from '../pages/ForBusinessOwners';
@@ -106,6 +107,7 @@ export const router = createBrowserRouter([
       { path: 'insights/learn', Component: Resources },
       { path: 'insights/articles', Component: ArticlesInsights },
       { path: 'articles', Component: ArticlesInsights },
+      { path: 'insights/articles/financial-foundation', Component: FinancialFoundationBlog },
       { path: 'insights/news-and-marketing', Component: NewsAndMarketingHub },
 
       { path: 'financial-wellbeing', Component: FinancialWellnessThemed },

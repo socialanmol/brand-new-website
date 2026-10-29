@@ -15,6 +15,16 @@ interface ArticlePost {
 
 const ARTICLE_POSTS: ArticlePost[] = [
   {
+    title: "Building a Strong Financial Foundation for Your Future",
+    cat: "financial-planning",
+    catLabel: "Financial Planning",
+    date: "Oct 3, 2023",
+    readTime: "6 min read",
+    icon: "🧱",
+    gradient: "from-[#1A3B9F] to-[#0D1E52]",
+    href: "/insights/articles/financial-foundation",
+  },
+  {
     title: "A Good Road Map Can Point You in the Right Direction",
     cat: "financial-planning",
     catLabel: "Financial Planning",
