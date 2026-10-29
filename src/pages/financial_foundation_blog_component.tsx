@@ -7,8 +7,8 @@ export default function FinancialFoundationBlog() {
   };
 
   return (
-    <article className="font-['Montserrat',sans-serif] bg-white text-[#111827] antialiased min-h-screen py-12 px-5 sm:px-8">
-      <div className="max-w-[800px] mx-auto space-y-10">
+    <article className="font-['Montserrat',sans-serif] bg-white text-[#111827] antialiased min-h-screen py-12">
+      <div className="w-full max-w-[1180px] mx-auto px-6 space-y-10">
         
         {/* Header Navigation / Action Bar */}
         <div className="flex justify-between items-center flex-wrap gap-4 border-b border-[#E3E8F4] pb-6">
@@ -55,7 +55,7 @@ export default function FinancialFoundationBlog() {
             Before you create a roadmap for your financial future, you need to understand where you currently stand. There are four things to consider when assessing your current financial situation:
           </p>
           
-          <ul className="grid grid-cols-1 gap-3 my-4">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-4">
             <li className="bg-[#F8FAFE] border border-[#E3E8F4] p-4 rounded-[12px] flex items-start gap-3">
               <span className="w-2 h-2 rounded-full bg-[#6AA32A] mt-2 flex-shrink-0"></span>
               <span className="text-sm text-[#374151]"><strong>Income:</strong> What is your monthly take-home pay?</span>
