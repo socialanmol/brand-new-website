@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router';
 import logoSrc from '@/imports/myanmolylogo.png';
 
@@ -533,7 +533,13 @@ type SignedInUser = { name: string; email: string };
 export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
   const [openIdx, setOpenIdx]     = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(NAV.length);
+  const [navReady, setNavReady] = useState(false);
   const [scrolled, setScrolled]   = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<SignedInUser | null>(null);
   const [googleReady, setGoogleReady] = useState(false);
   const [authNote, setAuthNote] = useState('');
@@ -553,7 +559,75 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
 
   useEffect(() => {
     setMobileOpen(false);
+    setMoreOpen(false);
   }, [location.pathname]);
+
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    const measureBox = measureRef.current;
+    if (!nav || !measureBox) return;
+
+    const measure = () => {
+      const currentNav = navRef.current;
+      const currentMeasure = measureRef.current;
+      if (!currentNav || !currentMeasure) return;
+      if (getComputedStyle(currentNav).display === 'none') {
+        setVisibleCount(NAV.length);
+        setNavReady(true);
+        return;
+      }
+      const available = currentNav.clientWidth;
+      const widths = NAV.map((entry) => {
+        currentMeasure.textContent = entry.label;
+        const chevron = entry.kind === 'drop' ? 13 : 0;
+        return currentMeasure.offsetWidth + chevron;
+      });
+      const moreWidth = 44;
+      let used = 0;
+      let count = 0;
+      for (let index = 0; index < widths.length; index += 1) {
+        const reserve = index < widths.length - 1 ? moreWidth : 0;
+        if (used + widths[index] + reserve > available + 1) break;
+        used += widths[index];
+        count += 1;
+      }
+      setVisibleCount(count);
+      setNavReady(true);
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(nav);
+    window.addEventListener('resize', measure);
+    window.visualViewport?.addEventListener('resize', measure);
+    document.fonts?.ready.then(measure).catch(() => {});
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', measure);
+      window.visualViewport?.removeEventListener('resize', measure);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (visibleCount >= NAV.length) setMoreOpen(false);
+  }, [visibleCount]);
+
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    if (!nav || getComputedStyle(nav).display === 'none') return;
+    if (nav.scrollWidth > nav.clientWidth + 1 && visibleCount > 0) {
+      setVisibleCount(visibleCount - 1);
+    }
+  }, [visibleCount, navReady]);
+
+  useEffect(() => {
+    if (!moreOpen) return;
+    const closeOnOutside = (event: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(event.target as Node)) setMoreOpen(false);
+    };
+    document.addEventListener('mousedown', closeOnOutside);
+    return () => document.removeEventListener('mousedown', closeOnOutside);
+  }, [moreOpen]);
 
   useEffect(() => {
     let cancelled = false;
@@ -592,7 +666,11 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
   };
 
   const closeAll = useCallback(() => setOpenIdx(null), []);
-  const toggle   = (i: number) => setOpenIdx(p => p === i ? null : i);
+  const toggle   = (i: number) => {
+    setMoreOpen(false);
+    setOpenIdx(p => p === i ? null : i);
+  };
+  const overflowEntries = NAV.slice(visibleCount);
 
   return (
     <>
@@ -602,6 +680,12 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
         boxShadow: scrolled ? '0 3px 24px rgba(9,21,64,.45)' : 'none',
         transition: 'box-shadow .3s',
       }}>
+        <span
+          ref={measureRef}
+          aria-hidden="true"
+          style={{ position: 'absolute', visibility: 'hidden', pointerEvents: 'none', display: 'inline-flex', alignItems: 'center', padding: '5px 8px', fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, whiteSpace: 'nowrap' }}
+        />
+
         {/* ── SINGLE ROW ── */}
         <div style={{ display: 'flex', alignItems: 'center', height: 58, padding: '0 20px', gap: 12 }}>
 
@@ -620,19 +704,47 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
 
           {/* Nav items — flex-1, no wrap, overflow hidden (clips gracefully) */}
           <nav
+            ref={navRef}
             className="hidden lg:flex"
-            style={{ flex: 1, alignItems: 'center', gap: 0, overflow: 'visible', minWidth: 0 }}
+            aria-label="Primary"
+            style={{ flex: 1, alignItems: 'center', gap: 0, overflow: navReady ? 'visible' : 'hidden', minWidth: 0, position: 'relative' }}
           >
             {NAV.map((entry, i) => (
-              <NavItem
-                key={entry.label}
-                entry={entry}
-                index={i}
-                openIdx={openIdx}
-                onToggle={toggle}
-                onClose={closeAll}
-              />
+              i < visibleCount ? (
+                <NavItem
+                  key={entry.label}
+                  entry={entry}
+                  index={i}
+                  openIdx={openIdx}
+                  onToggle={toggle}
+                  onClose={closeAll}
+                />
+              ) : null
             ))}
+            {navReady && overflowEntries.length > 0 && (
+              <div ref={moreRef} style={{ marginLeft: 'auto', position: 'relative', flexShrink: 0 }}>
+                <button
+                  type="button"
+                  onClick={() => { setOpenIdx(null); setMoreOpen((open) => !open); }}
+                  aria-label="More menu"
+                  aria-expanded={moreOpen}
+                  style={{ background: moreOpen ? 'rgba(255,255,255,.16)' : 'rgba(255,255,255,.08)', border: 'none', borderRadius: 8, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}
+                >
+                  <svg style={{ width: 17, height: 17 }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    {moreOpen
+                      ? <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      : <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />}
+                  </svg>
+                </button>
+                {moreOpen && (
+                  <div style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, width: 320, maxHeight: 'min(70vh, 560px)', overflowY: 'auto', background: '#091540', border: '1px solid rgba(255,255,255,.09)', borderRadius: 14, boxShadow: '0 20px 50px rgba(9,21,64,.55)', zIndex: 650 }}>
+                    {overflowEntries.map((entry) => (
+                      <MobileEntry key={entry.label} entry={entry} onClose={() => setMoreOpen(false)} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </nav>
 
           {/* Spacer on small screens */}
