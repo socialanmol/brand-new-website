@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AdvisorBookingModal from "../components/AdvisorBookingModal";
+import { saveForm } from "../lib/saveForm";
 
 interface MutualFundScheme {
   id: string;
@@ -73,6 +74,9 @@ const FAQS = [
   { q: "Are mutual fund investments safe?", a: "Mutual funds are subject to market risks, but professional fund management and diversification significantly lower individual stock-picking risks. All funds on our platform are regulated by SEBI." },
 ];
 const MONTH_INDEX = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+const EMPTY_SIP_REQUEST = { name: "", crn: "", phone: "", email: "", amount: "" };
+
+const sipFieldClass = "w-full bg-white border border-[#E3E8F4] rounded-[8px] px-4 h-11 text-sm font-medium text-[#111827] outline-0 focus:border-[#1A3B9F]";
 
 function monthSortKey(label: string) {
   const match = label.trim().match(/^([A-Za-z]+)\s+(\d{4})$/);
@@ -183,8 +187,10 @@ export default function MutualFundsHub() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [investModalScheme, setInvestModalScheme] = useState<MutualFundScheme | null>(null);
-  const [sipAmount, setSipAmount] = useState<number>(5000);
-  const [successMsg, setSuccessMsg] = useState(false);
+  const [sipRequest, setSipRequest] = useState(EMPTY_SIP_REQUEST);
+  const [sipSaving, setSipSaving] = useState(false);
+  const [sipError, setSipError] = useState("");
+  const [sipSaved, setSipSaved] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeAssetTab, setActiveAssetTab] = useState<AssetClass>("equity");
@@ -254,13 +260,56 @@ export default function MutualFundsHub() {
   const showingFeatured = searchQuery.trim() === "" && selectedCategory === "All";
   const displayedSchemes = showingFeatured ? filteredSchemes.slice(0, 6) : filteredSchemes;
 
-  const handleStartSip = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSuccessMsg(true);
-    setTimeout(() => {
-      setSuccessMsg(false);
-      setInvestModalScheme(null);
-    }, 2500);
+  const openSipRequest = (scheme: MutualFundScheme) => {
+    setSipError("");
+    setSipSaved(false);
+    setSipSaving(false);
+    setSipRequest({
+      ...EMPTY_SIP_REQUEST,
+      amount: scheme.minSip != null ? String(scheme.minSip) : "",
+    });
+    setInvestModalScheme(scheme);
+  };
+
+  const closeSipRequest = () => {
+    setInvestModalScheme(null);
+    setSipSaved(false);
+    setSipError("");
+    setSipSaving(false);
+  };
+
+  const updateSipRequest = (key: keyof typeof EMPTY_SIP_REQUEST) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSipRequest((current) => ({ ...current, [key]: event.target.value }));
+  };
+
+  const handleStartSip = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!investModalScheme || sipSaving) return;
+    const amount = sipRequest.amount.replace(/[₹,\s]/g, "");
+    if (!/^\d+(\.\d{1,2})?$/.test(amount) || Number(amount) <= 0) {
+      setSipError("Enter the SIP amount.");
+      return;
+    }
+    setSipSaving(true);
+    setSipError("");
+    try {
+      await saveForm("mutual-fund-sip", {
+        name: sipRequest.name.trim(),
+        crn: sipRequest.crn.trim(),
+        phone: sipRequest.phone.trim(),
+        email: sipRequest.email.trim(),
+        amount,
+        scheme: investModalScheme.name,
+        fundHouse: investModalScheme.fundHouse,
+        month,
+      });
+      setSipSaved(true);
+      setSipRequest(EMPTY_SIP_REQUEST);
+    } catch (submitError) {
+      setSipError(submitError instanceof Error ? submitError.message : "We could not save your details. Please try again.");
+    } finally {
+      setSipSaving(false);
+    }
   };
 
   return (
@@ -561,7 +610,8 @@ export default function MutualFundsHub() {
                       : scheme.fundHouse}
                   </div>
                   <button
-                    onClick={() => { setInvestModalScheme(scheme); setSipAmount(scheme.minSip ?? 5000); }}
+                    type="button"
+                    onClick={() => openSipRequest(scheme)}
                     className="h-10 px-5 rounded-xl bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
                   >
                     Invest SIP →
@@ -730,62 +780,83 @@ export default function MutualFundsHub() {
         <AdvisorBookingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
         {investModalScheme && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
-            <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-[500px] overflow-hidden p-6 sm:p-8 border border-[#E3E8F4] space-y-6">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="sip-request-title"
+              className="bg-white rounded-[24px] shadow-2xl w-full max-w-[500px] max-h-[92vh] overflow-y-auto p-6 sm:p-8 border border-[#E3E8F4] space-y-5"
+            >
 
               <div className="flex justify-between items-center">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-[#6AA32A] bg-[#EFF8E2] px-3 py-1 rounded-full">
-                  Quick SIP Setup (Regular Growth)
+                  SIP registration
                 </span>
                 <button
-                  onClick={() => setInvestModalScheme(null)}
+                  type="button"
+                  onClick={closeSipRequest}
                   className="w-8 h-8 rounded-full bg-[#EEF2FB] text-[#6B7280] hover:text-[#111827] flex items-center justify-center cursor-pointer transition-colors border-0 font-bold"
+                  aria-label="Close"
                 >
                   ✕
                 </button>
               </div>
 
               <div className="space-y-1">
-                <h3 className="font-[var(--fd)] text-xl font-bold text-[#091540]">
+                <h3 id="sip-request-title" className="font-[var(--fd)] text-xl font-bold text-[#091540]">
                   {investModalScheme.name}
                 </h3>
                 <p className="text-xs text-[#6B7280]">{investModalScheme.fundHouse}</p>
               </div>
 
-              {successMsg ? (
-                <div className="text-center py-8 space-y-3">
+              {sipSaved ? (
+                <div className="text-center py-6 space-y-4">
                   <div className="w-14 h-14 bg-[#EFF8E2] text-[#6AA32A] rounded-full flex items-center justify-center mx-auto text-2xl font-bold shadow-sm">
                     ✓
                   </div>
-                  <h4 className="font-[var(--fd)] text-lg font-bold text-[#091540]">SIP Order Initiated Successfully!</h4>
-                  <p className="text-xs text-[#6B7280]">Our wealth desk will reach out to complete your regular growth mandate setup.</p>
+                  <p className="text-sm text-[#091540] leading-relaxed font-medium">
+                    thankyou for requesting for the SIP registration for the scheme. Your RM shall contact you for further details.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={closeSipRequest}
+                    className="h-11 px-6 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-sm cursor-pointer border-0"
+                  >
+                    Close
+                  </button>
                 </div>
               ) : (
-                <form onSubmit={handleStartSip} className="space-y-5">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-[#374151] block">Monthly SIP Amount (₹)</label>
-                    <input
-                      type="number"
-                      min={investModalScheme.minSip ?? 500}
-                      step="500"
-                      value={sipAmount}
-                      onChange={(e) => setSipAmount(Number(e.target.value))}
-                      className="w-full bg-[#EEF2FB] border border-[#E3E8F4] rounded-[8px] px-4 h-12 text-base font-extrabold text-[#1A3B9F] outline-0 focus:border-[#1A3B9F]"
-                    />
+                <form onSubmit={handleStartSip} className="space-y-3">
+                  <label className="block space-y-1.5">
+                    <span className="text-xs font-bold text-[#374151]">Name</span>
+                    <input required minLength={2} name="name" autoComplete="name" value={sipRequest.name} onChange={updateSipRequest("name")} className={sipFieldClass} />
+                  </label>
+                  <label className="block space-y-1.5">
+                    <span className="text-xs font-bold text-[#374151]">CRN (if already have)</span>
+                    <input name="crn" value={sipRequest.crn} onChange={updateSipRequest("crn")} className={sipFieldClass} />
+                  </label>
+                  <label className="block space-y-1.5">
+                    <span className="text-xs font-bold text-[#374151]">Contact number</span>
+                    <input required name="phone" type="tel" autoComplete="tel" inputMode="tel" value={sipRequest.phone} onChange={updateSipRequest("phone")} className={sipFieldClass} />
+                  </label>
+                  <label className="block space-y-1.5">
+                    <span className="text-xs font-bold text-[#374151]">Email</span>
+                    <input required name="email" type="email" autoComplete="email" value={sipRequest.email} onChange={updateSipRequest("email")} className={sipFieldClass} />
+                  </label>
+                  <label className="block space-y-1.5">
+                    <span className="text-xs font-bold text-[#374151]">Amount</span>
+                    <input required name="amount" inputMode="decimal" value={sipRequest.amount} onChange={updateSipRequest("amount")} className={sipFieldClass} />
                     {investModalScheme.minSip != null && (
                       <p className="text-[11px] text-[#6B7280]">Minimum SIP amount is ₹{investModalScheme.minSip.toLocaleString("en-IN")}</p>
                     )}
-                  </div>
-
-                  <div className="bg-[#FFFDF0] border border-[#FFE8A3] rounded-[12px] p-4 text-xs text-[#856404] leading-relaxed">
-                    <b>Note:</b> By initiating this Regular SIP, you unlock dedicated advisor support and annual portfolio reviews.
-                  </div>
-
+                  </label>
+                  {sipError && <p className="text-xs font-semibold text-[#B42318]">{sipError}</p>}
                   <button
                     type="submit"
-                    className="w-full h-12 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-sm hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
+                    disabled={sipSaving}
+                    className="w-full h-12 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-sm hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0 disabled:opacity-60"
                   >
-                    Confirm & Start SIP (₹{sipAmount.toLocaleString("en-IN")} / mo) →
+                    {sipSaving ? "Submitting..." : "Submit scheme"}
                   </button>
                 </form>
               )}

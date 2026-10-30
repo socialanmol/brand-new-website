@@ -158,6 +158,24 @@ async function createFormSubmission(request, response) {
       ].join("\n"),
     });
   }
+  if (formKey === "mutual-fund-sip") {
+    await sendStaffCopy({
+      subject: `SIP Registration: ${fields.name}`,
+      text: [
+        "A mutual fund SIP registration request was submitted.",
+        "",
+        `Name: ${fields.name}`,
+        `CRN: ${fields.crn || "—"}`,
+        `Phone: ${fields.phone}`,
+        `Email: ${fields.email}`,
+        `Amount: ${fields.amount}`,
+        `Scheme: ${fields.scheme}`,
+        `Fund house: ${fields.fundHouse || "—"}`,
+        `Month: ${fields.month || "—"}`,
+        `Page: ${sourcePath || "—"}`,
+      ].join("\n"),
+    });
+  }
   if (formKey === "book-a-review") {
     await sendStaffCopy({
       subject: `Book a Review: ${fields.name}`,
@@ -232,7 +250,27 @@ function readFields(formKey, raw) {
       notes: text(raw.notes, 2000),
     };
   }
+  if (formKey === "mutual-fund-sip") {
+    return {
+      name: requireName(raw.name),
+      crn: text(raw.crn, 40),
+      phone: flexiblePhone(raw.phone),
+      email: requireEmail(raw.email),
+      amount: sipAmount(raw.amount),
+      scheme: requiredLine(raw.scheme, "Choose a scheme."),
+      fundHouse: text(raw.fundHouse, 160),
+      month: text(raw.month, 40),
+    };
+  }
   throw new HttpError(400, "Choose a form.");
+}
+
+function sipAmount(value) {
+  const amount = text(value, 20).replace(/[₹,\s]/g, "");
+  if (!/^\d+(\.\d{1,2})?$/.test(amount) || Number(amount) <= 0) {
+    throw new HttpError(400, "Enter the SIP amount.");
+  }
+  return amount;
 }
 
 function requiredLine(value, message) {
