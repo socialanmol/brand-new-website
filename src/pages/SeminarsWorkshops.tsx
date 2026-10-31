@@ -35,6 +35,30 @@ export default function SeminarsWorkshops() {
           <div className="grid grid-cols-1 md:grid-cols-2 bg-white border border-[rgba(26,59,159,0.12)] rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all">
             <div
               className="min-h-[240px] bg-cover bg-center"
+              style={{ backgroundImage: "url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&q=80')" }}
+            />
+            <div className="p-8 sm:p-10 flex flex-col justify-center">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#1A3B9F] bg-[#EEF2FB] px-3 py-1 rounded-full inline-block mb-4 w-fit">
+                19 November · 7:00 PM IST
+              </span>
+              <h3 className="font-[var(--fd)] text-2xl font-bold text-[#091540] mb-3">
+                Mutual Funds 101: Everything a beginner needs to know
+              </h3>
+              <p className="text-sm sm:text-base text-[#4B5563] font-light leading-relaxed mb-6">
+                Demystifying mutual funds, SIPs, and asset compounding for first-time investors.
+              </p>
+              <Link
+                to="/insights/seminars/mutual-funds-101"
+                className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-xs px-6 py-3 rounded-full transition-all shadow-sm w-fit"
+              >
+                Learn More →
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 bg-white border border-[rgba(26,59,159,0.12)] rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all">
+            <div
+              className="min-h-[240px] bg-cover bg-center"
               style={{ backgroundImage: "url('https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=800&q=80')" }}
             />
             <div className="p-8 sm:p-10 flex flex-col justify-center">

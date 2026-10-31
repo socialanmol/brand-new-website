@@ -158,6 +158,20 @@ async function createFormSubmission(request, response) {
       ].join("\n"),
     });
   }
+  if (formKey === "seminar-mutual-funds-101") {
+    await sendStaffCopy({
+      subject: `Mutual Funds 101 webinar: ${fields.name}`,
+      text: [
+        "A Mutual Funds 101 webinar registration was submitted.",
+        "",
+        `Name: ${fields.name}`,
+        `Email: ${fields.email}`,
+        `Phone: ${fields.phone}`,
+        `Profession: ${fields.profession || "—"}`,
+        `Page: ${sourcePath || "—"}`,
+      ].join("\n"),
+    });
+  }
   if (formKey === "mutual-fund-sip") {
     await sendStaffCopy({
       subject: `SIP Registration: ${fields.name}`,
@@ -240,6 +254,14 @@ function readFields(formKey, raw) {
   }
   if (formKey === "seminar-investing" || formKey === "seminar-life-stress" || formKey === "seminar-retirement") {
     return { email: requireEmail(raw.email) };
+  }
+  if (formKey === "seminar-mutual-funds-101") {
+    return {
+      name: requireName(raw.name),
+      email: requireEmail(raw.email),
+      phone: flexiblePhone(raw.phone),
+      profession: text(raw.profession, 80),
+    };
   }
   if (formKey === "mutual-fund-advisor") {
     return {
