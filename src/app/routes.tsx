@@ -10,10 +10,12 @@ import TermInsurance from '../pages/TermInsurance';
 import LifeInsurance from '../pages/LifeInsurance';
 import Resources from '../pages/Resources';
 import ArticlesInsights from '../pages/ArticlesInsights';
+import FinancialFoundationBlog from '../pages/financial_foundation_blog_component';
 import NewsAndMarketingHub from '../pages/news_and_marketing_hub';
 import ForArmedForces from '../pages/ForArmedForces';
 import ForBusinessOwners from '../pages/ForBusinessOwners';
 import SeminarsWorkshops from '../pages/SeminarsWorkshops';
+import SampleWebinarPage from '../pages/SampleWebinarPage';
 import SeminarRetirementEstate from '../pages/SeminarRetirementEstate';
 import SeminarInvestingPlanning from '../pages/SeminarInvestingPlanning';
 import SeminarLifeStress from '../pages/SeminarLifeStress';
@@ -106,6 +108,7 @@ export const router = createBrowserRouter([
       { path: 'insights/learn', Component: Resources },
       { path: 'insights/articles', Component: ArticlesInsights },
       { path: 'articles', Component: ArticlesInsights },
+      { path: 'insights/articles/financial-foundation', Component: FinancialFoundationBlog },
       { path: 'insights/news-and-marketing', Component: NewsAndMarketingHub },
 
       { path: 'financial-wellbeing', Component: FinancialWellnessThemed },
@@ -126,6 +129,8 @@ export const router = createBrowserRouter([
       
       { path: 'insights/seminars', Component: SeminarsWorkshops },
       { path: 'seminars', Component: SeminarsWorkshops },
+      { path: 'insights/seminars/manage-your-salary', Component: SampleWebinarPage },
+      { path: 'insights/seminars/mutual-funds-101', Component: SampleWebinarPage },
       { path: 'insights/seminars/retirement-estate-planning', Component: SeminarRetirementEstate },
       { path: 'insights/seminars/investing-financial-planning', Component: SeminarInvestingPlanning },
       { path: 'insights/seminars/life-stress-management', Component: SeminarLifeStress },

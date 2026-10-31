@@ -100,7 +100,7 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
     return html.replace(`<!-- ${slotName} -->`, content)
   }
 
-  const title = config.title ?? "MyAnmol Share"
+  const title = config.title ?? "MyAnmol - one stop solution for all financial services"
   const description = config.description ?? ''
   const favicon = config.icons?.icon ?? "/favicon.png"
   const socialImage = config.openGraph?.image ?? ''

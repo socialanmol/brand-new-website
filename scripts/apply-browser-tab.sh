@@ -1,5 +1,5 @@
 #!/bin/bash
-# Point the live site tab at "MyAnmol Share" and the M logo.
+# Point the live site tab at the MyAnmol title and the M logo.
 # Safe to run more than once. Uses the file Nginx is actually serving.
 set -euo pipefail
 
@@ -31,11 +31,11 @@ for root in "${CANDIDATES[@]}"; do
     *" $real "*) continue ;;
   esac
   seen="$seen$real "
-  if ! grep -q "Figma Make App\|MyAnmol Share" "$real"; then
+  if ! grep -q "Figma Make App\|MyAnmol Share\|MyAnmol - one stop solution for all financial services" "$real"; then
     continue
   fi
   echo "Updating $real"
-  sed -i 's/Figma Make App/MyAnmol Share/g' "$real"
+  sed -i 's/Figma Make App/MyAnmol - one stop solution for all financial services/g; s/MyAnmol Share/MyAnmol - one stop solution for all financial services/g' "$real"
   if ! grep -q 'rel="icon"' "$real"; then
     sed -i 's#</title>#</title>\n    <link rel="icon" href="/favicon.png?v=2">#' "$real"
   fi
@@ -52,12 +52,12 @@ for root in "${CANDIDATES[@]}"; do
 done
 
 if [[ $updated -eq 0 ]]; then
-  echo "Could not find a live index.html that still says Figma Make App."
+  echo "Could not find a live index.html for the MyAnmol tab title."
   echo "Folders checked:"
   printf '  %s\n' "${CANDIDATES[@]:-(none)}"
   exit 1
 fi
 
-echo "The live tab title is now MyAnmol Share."
+echo "The live tab title is now MyAnmol - one stop solution for all financial services."
 echo "Reload http://35.200.200.110"
 echo "If the old globe icon is still there, hard-refresh the page."
