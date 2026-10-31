@@ -129,6 +129,7 @@ export const router = createBrowserRouter([
       
       { path: 'insights/seminars', Component: SeminarsWorkshops },
       { path: 'seminars', Component: SeminarsWorkshops },
+      { path: 'insights/seminars/manage-your-salary', Component: SampleWebinarPage },
       { path: 'insights/seminars/mutual-funds-101', Component: SampleWebinarPage },
       { path: 'insights/seminars/retirement-estate-planning', Component: SeminarRetirementEstate },
       { path: 'insights/seminars/investing-financial-planning', Component: SeminarInvestingPlanning },

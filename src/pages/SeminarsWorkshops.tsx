@@ -39,16 +39,16 @@ export default function SeminarsWorkshops() {
             />
             <div className="p-8 sm:p-10 flex flex-col justify-center">
               <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#1A3B9F] bg-[#EEF2FB] px-3 py-1 rounded-full inline-block mb-4 w-fit">
-                19 November · 7:00 PM IST
+                November 12 and 16 · 6:30 PM IST
               </span>
               <h3 className="font-[var(--fd)] text-2xl font-bold text-[#091540] mb-3">
-                Mutual Funds 101: Everything a beginner needs to know
+                How to manage your salary better: Save, Spend &amp; Invest
               </h3>
               <p className="text-sm sm:text-base text-[#4B5563] font-light leading-relaxed mb-6">
-                Demystifying mutual funds, SIPs, and asset compounding for first-time investors.
+                A practical masterclass for young earners on take-home pay, budgeting, and healthy cash flow habits.
               </p>
               <Link
-                to="/insights/seminars/mutual-funds-101"
+                to="/insights/seminars/manage-your-salary"
                 className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-xs px-6 py-3 rounded-full transition-all shadow-sm w-fit"
               >
                 Learn More →

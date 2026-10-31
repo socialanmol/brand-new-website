@@ -160,14 +160,16 @@ async function createFormSubmission(request, response) {
   }
   if (formKey === "seminar-mutual-funds-101") {
     await sendStaffCopy({
-      subject: `Mutual Funds 101 webinar: ${fields.name}`,
+      subject: `Salary webinar: ${fields.name}`,
       text: [
-        "A Mutual Funds 101 webinar registration was submitted.",
+        "A Save, Spend and Invest webinar registration was submitted.",
         "",
         `Name: ${fields.name}`,
         `Email: ${fields.email}`,
         `Phone: ${fields.phone}`,
-        `Profession: ${fields.profession || "—"}`,
+        `Location: ${fields.location || "—"}`,
+        `Slot: ${fields.slot || "—"}`,
+        `Poll: ${fields.poll || "—"}`,
         `Page: ${sourcePath || "—"}`,
       ].join("\n"),
     });
@@ -260,7 +262,9 @@ function readFields(formKey, raw) {
       name: requireName(raw.name),
       email: requireEmail(raw.email),
       phone: flexiblePhone(raw.phone),
-      profession: text(raw.profession, 80),
+      location: requiredLine(raw.location, "Enter your location."),
+      slot: requiredLine(raw.slot, "Choose a time slot."),
+      poll: requiredLine(raw.poll, "Choose an answer."),
     };
   }
   if (formKey === "mutual-fund-advisor") {
