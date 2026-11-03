@@ -40,6 +40,18 @@ const INTERESTS = new Set([
   "Other",
 ]);
 
+function readInterests(value) {
+  const raw = Array.isArray(value) ? value : String(value ?? "").split(",");
+  const chosen = [];
+  for (const item of raw) {
+    const label = text(item, 80);
+    if (!label) continue;
+    if (!INTERESTS.has(label)) throw new HttpError(400, "Choose an interest from the list.");
+    if (!chosen.includes(label)) chosen.push(label);
+  }
+  return chosen.join(", ");
+}
+
 const VISITOR_COOKIE = "ma_vid";
 const SESSION_COOKIE = "ma_session";
 const OAUTH_COOKIE = "ma_oauth_state";
@@ -98,8 +110,7 @@ async function createLead(request, response) {
   const phone = requirePhone(body.phone);
   const email = requireEmail(body.email);
   const city = text(body.city, 120) || null;
-  const interest = text(body.interest, 120);
-  if (interest && !INTERESTS.has(interest)) throw new HttpError(400, "Choose an interest from the list.");
+  const interest = readInterests(body.interests ?? body.interest);
   const sourcePath = safePath(body.sourcePath) || null;
 
   const [result] = await query(
@@ -115,7 +126,7 @@ async function createLead(request, response) {
       `Phone: ${phone}`,
       `Email: ${email}`,
       `City: ${city || "—"}`,
-      `Interest: ${interest || "—"}`,
+      `Interests: ${interest || "—"}`,
       `Page: ${sourcePath || "—"}`,
     ].join("\n"),
   });

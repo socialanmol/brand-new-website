@@ -7,7 +7,7 @@ const STATEMENTS = [
     phone VARCHAR(20) NOT NULL,
     email VARCHAR(190) NOT NULL,
     city VARCHAR(120) NULL,
-    interest VARCHAR(120) NULL,
+    interest VARCHAR(400) NULL,
     source_path VARCHAR(255) NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_leads_created (created_at)
@@ -108,6 +108,7 @@ export async function migrate() {
     await db.query(statement);
   }
   await db.query("ALTER TABLE users MODIFY google_sub VARCHAR(255) NOT NULL");
+  await db.query("ALTER TABLE leads MODIFY interest VARCHAR(400) NULL");
   await ensureIndex(db, "form_submissions", "idx_form_submissions_key", "form_key");
   await ensureIndex(db, "leads", "idx_leads_created", "created_at");
   await ensureIndex(db, "contact_messages", "idx_contact_created", "created_at");

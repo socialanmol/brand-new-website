@@ -130,11 +130,17 @@ const INTERESTS = [
 ];
 
 export function GetStartedModal({ onClose }: { onClose: () => void }) {
-  const [form, setForm] = useState({ name: '', phone: '', email: '', city: '', interest: '' });
+  const [form, setForm] = useState({ name: '', phone: '', email: '', city: '', interests: [] as string[] });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const upd = (k: keyof typeof form, v: string) => setForm(f => ({ ...f, [k]: v }));
+  const upd = (k: 'name' | 'phone' | 'email' | 'city', v: string) => setForm(f => ({ ...f, [k]: v }));
+  const toggleInterest = (interest: string) => setForm(current => ({
+    ...current,
+    interests: current.interests.includes(interest)
+      ? current.interests.filter(item => item !== interest)
+      : [...current.interests, interest],
+  }));
 
   const submitLead = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -186,7 +192,7 @@ export function GetStartedModal({ onClose }: { onClose: () => void }) {
       style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
     >
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(9,21,64,.8)', backdropFilter: 'blur(6px)' }} onClick={onClose} />
-      <div style={{ position: 'relative', zIndex: 1, background: '#fff', borderRadius: 24, width: '100%', maxWidth: 460, boxShadow: '0 32px 80px rgba(9,21,64,.4)', overflow: 'hidden' }}>
+      <div style={{ position: 'relative', zIndex: 1, background: '#fff', borderRadius: 24, width: '100%', maxWidth: 460, maxHeight: 'min(92vh, 760px)', overflow: 'auto', boxShadow: '0 32px 80px rgba(9,21,64,.4)' }}>
         {/* Header */}
         <div style={{ background: 'linear-gradient(135deg,#091540,#1A3B9F)', padding: '24px 28px 20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -230,18 +236,35 @@ export function GetStartedModal({ onClose }: { onClose: () => void }) {
                 <input style={inputStyle} type="email" value={form.email} onChange={e => upd('email', e.target.value)} placeholder="you@example.com" required
                   onFocus={e => (e.target.style.borderColor = '#1A3B9F')} onBlur={e => (e.target.style.borderColor = 'rgba(26,59,159,.18)')} />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                <div>
-                  <label style={labelStyle}>City</label>
-                  <input style={inputStyle} type="text" value={form.city} onChange={e => upd('city', e.target.value)} placeholder="Your city"
-                    onFocus={e => (e.target.style.borderColor = '#1A3B9F')} onBlur={e => (e.target.style.borderColor = 'rgba(26,59,159,.18)')} />
-                </div>
-                <div>
-                  <label style={labelStyle}>Interest</label>
-                  <select style={{ ...inputStyle, cursor: 'pointer' }} value={form.interest} onChange={e => upd('interest', e.target.value)}>
-                    <option value="">Select…</option>
-                    {INTERESTS.map(i => <option key={i}>{i}</option>)}
-                  </select>
+              <div>
+                <label style={labelStyle}>City</label>
+                <input style={inputStyle} type="text" value={form.city} onChange={e => upd('city', e.target.value)} placeholder="Your city"
+                  onFocus={e => (e.target.style.borderColor = '#1A3B9F')} onBlur={e => (e.target.style.borderColor = 'rgba(26,59,159,.18)')} />
+              </div>
+              <div>
+                <label style={labelStyle}>Interests</label>
+                <p style={{ margin: '0 0 8px', fontFamily: 'var(--fs)', fontSize: 12, color: '#6B7280' }}>Select all that apply.</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {INTERESTS.map(interest => {
+                    const selected = form.interests.includes(interest);
+                    return (
+                      <button
+                        key={interest}
+                        type="button"
+                        aria-pressed={selected}
+                        onClick={() => toggleInterest(interest)}
+                        style={{
+                          fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, lineHeight: 1.3,
+                          padding: '7px 10px', borderRadius: 999, cursor: 'pointer',
+                          border: selected ? '1.5px solid #1A3B9F' : '1.5px solid rgba(26,59,159,.18)',
+                          background: selected ? '#EEF2FB' : '#F8FAFE',
+                          color: selected ? '#1A3B9F' : '#374151',
+                        }}
+                      >
+                        {interest}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
               {error && (
