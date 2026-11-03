@@ -528,8 +528,6 @@ function MobileNestedEntry({ item, onClose }: { item: NestedGroup; onClose: () =
 
 /* ─── MAIN HEADER ────────────────────────────────────────────────────────────── */
 
-type SignedInUser = { name: string; email: string };
-
 export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
   const [openIdx, setOpenIdx]     = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -540,9 +538,6 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
   const navRef = useRef<HTMLElement>(null);
   const measureRef = useRef<HTMLSpanElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
-  const [user, setUser] = useState<SignedInUser | null>(null);
-  const [googleReady, setGoogleReady] = useState(false);
-  const [authNote, setAuthNote] = useState('');
   const location = useLocation();
 
   useEffect(() => {
@@ -550,12 +545,6 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
     window.addEventListener('scroll', h, { passive: true });
     return () => window.removeEventListener('scroll', h);
   }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    if (params.get('auth') === 'unavailable') setAuthNote('Google sign-in is not configured yet.');
-    if (params.get('auth') === 'failed') setAuthNote('Google sign-in could not be completed.');
-  }, [location.search]);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -628,42 +617,6 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
     document.addEventListener('mousedown', closeOnOutside);
     return () => document.removeEventListener('mousedown', closeOnOutside);
   }, [moreOpen]);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetch('/api/auth/me', { credentials: 'include' })
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data: { user?: SignedInUser | null } | null) => {
-        if (!cancelled) setUser(data?.user ?? null);
-      })
-      .catch(() => { if (!cancelled) setUser(null); });
-    fetch('/api/auth/config')
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data: { google?: boolean } | null) => {
-        if (!cancelled) setGoogleReady(Boolean(data?.google));
-      })
-      .catch(() => { if (!cancelled) setGoogleReady(false); });
-    return () => { cancelled = true; };
-  }, []);
-
-  const signOut = async () => {
-    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-    setUser(null);
-  };
-
-  const signInStyle = (compact: boolean): React.CSSProperties => compact
-    ? { fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none', background: 'transparent', cursor: 'pointer', width: '100%', minHeight: 48, boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: 0, lineHeight: 1.2, appearance: 'none', WebkitAppearance: 'none' }
-    : { fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.72)', padding: '6px 12px', borderRadius: 7, border: '1px solid rgba(255,255,255,.15)', textDecoration: 'none', whiteSpace: 'nowrap', background: 'transparent', cursor: 'pointer' };
-
-  const signInControl = (compact: boolean) => {
-    if (user) {
-      return <button type="button" onClick={signOut} style={signInStyle(compact)}>{user.name.split(' ')[0]} · Sign out</button>;
-    }
-    if (!googleReady) {
-      return <button type="button" style={signInStyle(compact)} onClick={() => setAuthNote('Google sign-in is not configured yet.')}>Sign in</button>;
-    }
-    return <a href="/api/auth/google" style={signInStyle(compact)}>Sign in</a>;
-  };
 
   const closeAll = useCallback(() => setOpenIdx(null), []);
   const toggle   = (i: number) => {
@@ -759,7 +712,6 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
               onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,.72)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.15)'; }}>
               Contact Us
             </Link>
-            <div className="hidden lg:inline-flex">{signInControl(false)}</div>
             <Link to="/investment-services"
               className="hidden lg:inline-flex"
               style={{ fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.72)', padding: '6px 12px', borderRadius: 7, border: '1px solid rgba(255,255,255,.15)', textDecoration: 'none', whiteSpace: 'nowrap', transition: 'all .15s' }}
@@ -799,14 +751,11 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
               <MobileEntry key={entry.label} entry={entry} onClose={() => setMobileOpen(false)} />
             ))}
             <div style={{ padding: '14px 20px 40px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                <Link to="/contact"
-                  onClick={() => setMobileOpen(false)}
-                  style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', minHeight: 48 }}>
-                  Contact Us
-                </Link>
-                <div onClick={() => setMobileOpen(false)} style={{ display: 'flex', minWidth: 0 }}>{signInControl(true)}</div>
-              </div>
+              <Link to="/contact"
+                onClick={() => setMobileOpen(false)}
+                style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>
+                Contact Us
+              </Link>
               <Link to="/investment-services"
                 onClick={() => setMobileOpen(false)}
                 style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>
@@ -817,11 +766,6 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
                 Get Started
               </button>
             </div>
-          </div>
-        )}
-        {authNote && (
-          <div style={{ background: '#FEF3C7', color: '#78350F', textAlign: 'center', fontFamily: 'var(--fs)', fontSize: 13, fontWeight: 700, padding: '8px 16px' }}>
-            {authNote}
           </div>
         )}
       </header>
