@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import { migrate } from "./server/db.mjs";
 import { HttpError, json } from "./server/http.mjs";
 import { loadEnv } from "./server/load-env.mjs";
+import { syncGetStartedSheet } from "./server/google-sheet.mjs";
 import { handleRequest } from "./server/router.mjs";
 
 loadEnv();
@@ -32,4 +33,7 @@ const server = createServer(async (request, response) => {
 
 server.listen(port, "127.0.0.1", () => {
   console.log(`API listening on 127.0.0.1:${port}`);
+  syncGetStartedSheet().catch((error) => {
+    console.error("Get Started sheet sync failed:", error instanceof Error ? error.message : "unknown");
+  });
 });
