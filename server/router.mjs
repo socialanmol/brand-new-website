@@ -1,7 +1,6 @@
 import { createHash } from "node:crypto";
 import { getPool, pingDatabase } from "./db.mjs";
 import { mailConfigured, sendReport, sendStaffCopy } from "./mail.mjs";
-import { copyGetStartedLead } from "./google-sheet.mjs";
 import { acceptedGoogleProfile } from "./google-profile.mjs";
 import { assertSameOrigin, rateLimit } from "./guard.mjs";
 import {
@@ -131,20 +130,6 @@ async function createLead(request, response) {
       `Page: ${sourcePath || "—"}`,
     ].join("\n"),
   });
-  try {
-    await copyGetStartedLead({
-      id: result.insertId,
-      name,
-      phone,
-      email,
-      city,
-      interest,
-      sourcePath,
-      createdAt: new Date(),
-    });
-  } catch (error) {
-    console.error("Get Started sheet copy failed:", error instanceof Error ? error.message : "unknown");
-  }
   json(response, 201, { id: result.insertId });
 }
 
