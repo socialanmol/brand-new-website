@@ -6,24 +6,25 @@ export function getStartedAlertName(lead) {
 }
 
 export function getStartedSanchayBody(lead) {
-  const fields = {
-    last_name: getStartedAlertName(lead),
-    phone_primary: lead.phone,
-    email_primary: lead.email,
+  const note = [
+    `City: ${lead.city || "—"}`,
+    `Page: ${lead.sourcePath || "—"}`,
+    `Interests: ${lead.interest || "—"}`,
+  ].join("\n");
+  const body = {
+    module_name: "Lead",
+    name: getStartedAlertName(lead),
+    phone: lead.phone,
+    email: lead.email,
     status: process.env.SANCHAY_LEAD_STATUS || "New",
     lead_source: process.env.SANCHAY_LEAD_SOURCE || "Website",
-    description: [
-      `City: ${lead.city || "—"}`,
-      `Page: ${lead.sourcePath || "—"}`,
-      `Interests: ${lead.interest || "—"}`,
-    ].join("\n"),
+    description: note,
+    comment: note,
   };
-  if (process.env.SANCHAY_PRODUCT) fields.product_sub_category = process.env.SANCHAY_PRODUCT;
-  if (process.env.SANCHAY_ASSIGNED_USER_ID) fields.assigned_user_id = process.env.SANCHAY_ASSIGNED_USER_ID;
-  return {
-    module_name: "Lead",
-    name_value_list: fields,
-  };
+  if (lead.city) body.city = lead.city;
+  if (process.env.SANCHAY_PRODUCT) body.product_sub_category = process.env.SANCHAY_PRODUCT;
+  if (process.env.SANCHAY_ASSIGNED_USER_ID) body.assigned_user_id = process.env.SANCHAY_ASSIGNED_USER_ID;
+  return body;
 }
 
 export function sanchaySaveUrl() {
@@ -64,12 +65,18 @@ export async function copyGetStartedLead(lead) {
     });
     const body = await response.json().catch(() => ({}));
     const status = Number(body?.status || response.status);
+    const savedName = String(body?.response_data?.name || "").trim();
+    const savedId = String(body?.response_data?.id || "").trim();
     if (!response.ok || status >= 400) {
       console.error("Sanchay lead copy failed:", body?.message || response.status);
       return { ok: false, skipped: false };
     }
-    console.log("Sanchay lead copy saved");
-    return { ok: true, skipped: false };
+    if (!savedName) {
+      console.error("Sanchay lead copy failed: CRM saved a lead with a blank name");
+      return { ok: false, skipped: false };
+    }
+    console.log(`Sanchay lead copy saved ${savedId}`);
+    return { ok: true, skipped: false, id: savedId };
   } catch (error) {
     console.error("Sanchay lead copy failed:", error instanceof Error ? error.message : "unknown");
     return { ok: false, skipped: false };
