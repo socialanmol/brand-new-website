@@ -66,7 +66,7 @@ const DEFAULT_SOCIALS: SocialLink[] = [
   },
   {
     network: "whatsapp",
-    href: "https://wa.me/919742826665",
+    href: "https://wa.me/919986011100",
     label: "WhatsApp",
   },
 ]

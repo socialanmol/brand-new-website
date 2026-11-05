@@ -57,13 +57,6 @@ const FOUNDERS: TeamMember[] = [
     monogram: "SB",
     bio: "At MyAnmol, she brings invaluable perspective and stability to strategic decision-making.",
   },
-  {
-    name: "Chayan Agarwal",
-    role: "SDE & DM",
-    department: "SDE & DM",
-    monogram: "CA",
-    bio: "At MyAnmol, he brings invaluable perspective and stability to strategic decision-making by working on the website and handling the marketing.",
-  },
 ];
 
 const SENIOR_LEADERSHIP: TeamMember[] = [

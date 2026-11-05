@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router';
 import logoSrc from '@/imports/myanmolylogo.png';
 
@@ -130,11 +130,17 @@ const INTERESTS = [
 ];
 
 export function GetStartedModal({ onClose }: { onClose: () => void }) {
-  const [form, setForm] = useState({ name: '', phone: '', email: '', city: '', interest: '' });
+  const [form, setForm] = useState({ name: '', phone: '', email: '', city: '', interests: [] as string[] });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const upd = (k: keyof typeof form, v: string) => setForm(f => ({ ...f, [k]: v }));
+  const upd = (k: 'name' | 'phone' | 'email' | 'city', v: string) => setForm(f => ({ ...f, [k]: v }));
+  const toggleInterest = (interest: string) => setForm(current => ({
+    ...current,
+    interests: current.interests.includes(interest)
+      ? current.interests.filter(item => item !== interest)
+      : [...current.interests, interest],
+  }));
 
   const submitLead = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -186,7 +192,7 @@ export function GetStartedModal({ onClose }: { onClose: () => void }) {
       style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
     >
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(9,21,64,.8)', backdropFilter: 'blur(6px)' }} onClick={onClose} />
-      <div style={{ position: 'relative', zIndex: 1, background: '#fff', borderRadius: 24, width: '100%', maxWidth: 460, boxShadow: '0 32px 80px rgba(9,21,64,.4)', overflow: 'hidden' }}>
+      <div style={{ position: 'relative', zIndex: 1, background: '#fff', borderRadius: 24, width: '100%', maxWidth: 460, maxHeight: 'min(92vh, 760px)', overflow: 'auto', boxShadow: '0 32px 80px rgba(9,21,64,.4)' }}>
         {/* Header */}
         <div style={{ background: 'linear-gradient(135deg,#091540,#1A3B9F)', padding: '24px 28px 20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -230,18 +236,35 @@ export function GetStartedModal({ onClose }: { onClose: () => void }) {
                 <input style={inputStyle} type="email" value={form.email} onChange={e => upd('email', e.target.value)} placeholder="you@example.com" required
                   onFocus={e => (e.target.style.borderColor = '#1A3B9F')} onBlur={e => (e.target.style.borderColor = 'rgba(26,59,159,.18)')} />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                <div>
-                  <label style={labelStyle}>City</label>
-                  <input style={inputStyle} type="text" value={form.city} onChange={e => upd('city', e.target.value)} placeholder="Your city"
-                    onFocus={e => (e.target.style.borderColor = '#1A3B9F')} onBlur={e => (e.target.style.borderColor = 'rgba(26,59,159,.18)')} />
-                </div>
-                <div>
-                  <label style={labelStyle}>Interest</label>
-                  <select style={{ ...inputStyle, cursor: 'pointer' }} value={form.interest} onChange={e => upd('interest', e.target.value)}>
-                    <option value="">Select…</option>
-                    {INTERESTS.map(i => <option key={i}>{i}</option>)}
-                  </select>
+              <div>
+                <label style={labelStyle}>City</label>
+                <input style={inputStyle} type="text" value={form.city} onChange={e => upd('city', e.target.value)} placeholder="Your city"
+                  onFocus={e => (e.target.style.borderColor = '#1A3B9F')} onBlur={e => (e.target.style.borderColor = 'rgba(26,59,159,.18)')} />
+              </div>
+              <div>
+                <label style={labelStyle}>Interests</label>
+                <p style={{ margin: '0 0 8px', fontFamily: 'var(--fs)', fontSize: 12, color: '#6B7280' }}>Select all that apply.</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {INTERESTS.map(interest => {
+                    const selected = form.interests.includes(interest);
+                    return (
+                      <button
+                        key={interest}
+                        type="button"
+                        aria-pressed={selected}
+                        onClick={() => toggleInterest(interest)}
+                        style={{
+                          fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, lineHeight: 1.3,
+                          padding: '7px 10px', borderRadius: 999, cursor: 'pointer',
+                          border: selected ? '1.5px solid #1A3B9F' : '1.5px solid rgba(26,59,159,.18)',
+                          background: selected ? '#EEF2FB' : '#F8FAFE',
+                          color: selected ? '#1A3B9F' : '#374151',
+                        }}
+                      >
+                        {interest}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
               {error && (
@@ -528,15 +551,16 @@ function MobileNestedEntry({ item, onClose }: { item: NestedGroup; onClose: () =
 
 /* ─── MAIN HEADER ────────────────────────────────────────────────────────────── */
 
-type SignedInUser = { name: string; email: string };
-
 export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
   const [openIdx, setOpenIdx]     = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(NAV.length);
+  const [navReady, setNavReady] = useState(false);
   const [scrolled, setScrolled]   = useState(false);
-  const [user, setUser] = useState<SignedInUser | null>(null);
-  const [googleReady, setGoogleReady] = useState(false);
-  const [authNote, setAuthNote] = useState('');
+  const navRef = useRef<HTMLElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -546,53 +570,83 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
   }, []);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    if (params.get('auth') === 'unavailable') setAuthNote('Google sign-in is not configured yet.');
-    if (params.get('auth') === 'failed') setAuthNote('Google sign-in could not be completed.');
-  }, [location.search]);
-
-  useEffect(() => {
     setMobileOpen(false);
+    setMoreOpen(false);
   }, [location.pathname]);
 
-  useEffect(() => {
-    let cancelled = false;
-    fetch('/api/auth/me', { credentials: 'include' })
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data: { user?: SignedInUser | null } | null) => {
-        if (!cancelled) setUser(data?.user ?? null);
-      })
-      .catch(() => { if (!cancelled) setUser(null); });
-    fetch('/api/auth/config')
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data: { google?: boolean } | null) => {
-        if (!cancelled) setGoogleReady(Boolean(data?.google));
-      })
-      .catch(() => { if (!cancelled) setGoogleReady(false); });
-    return () => { cancelled = true; };
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    const measureBox = measureRef.current;
+    if (!nav || !measureBox) return;
+
+    const measure = () => {
+      const currentNav = navRef.current;
+      const currentMeasure = measureRef.current;
+      if (!currentNav || !currentMeasure) return;
+      if (getComputedStyle(currentNav).display === 'none') {
+        setVisibleCount(NAV.length);
+        setNavReady(true);
+        return;
+      }
+      const available = currentNav.clientWidth;
+      const widths = NAV.map((entry) => {
+        currentMeasure.textContent = entry.label;
+        const chevron = entry.kind === 'drop' ? 13 : 0;
+        return currentMeasure.offsetWidth + chevron;
+      });
+      const moreWidth = 44;
+      let used = 0;
+      let count = 0;
+      for (let index = 0; index < widths.length; index += 1) {
+        const reserve = index < widths.length - 1 ? moreWidth : 0;
+        if (used + widths[index] + reserve > available + 1) break;
+        used += widths[index];
+        count += 1;
+      }
+      setVisibleCount(count);
+      setNavReady(true);
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(nav);
+    window.addEventListener('resize', measure);
+    window.visualViewport?.addEventListener('resize', measure);
+    document.fonts?.ready.then(measure).catch(() => {});
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', measure);
+      window.visualViewport?.removeEventListener('resize', measure);
+    };
   }, []);
 
-  const signOut = async () => {
-    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-    setUser(null);
-  };
+  useEffect(() => {
+    if (visibleCount >= NAV.length) setMoreOpen(false);
+  }, [visibleCount]);
 
-  const signInStyle = (compact: boolean): React.CSSProperties => compact
-    ? { fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none', background: 'transparent', cursor: 'pointer', width: '100%' }
-    : { fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.72)', padding: '6px 12px', borderRadius: 7, border: '1px solid rgba(255,255,255,.15)', textDecoration: 'none', whiteSpace: 'nowrap', background: 'transparent', cursor: 'pointer' };
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    if (!nav || getComputedStyle(nav).display === 'none') return;
+    if (nav.scrollWidth > nav.clientWidth + 1 && visibleCount > 0) {
+      setVisibleCount(visibleCount - 1);
+    }
+  }, [visibleCount, navReady]);
 
-  const signInControl = (compact: boolean) => {
-    if (user) {
-      return <button type="button" onClick={signOut} style={signInStyle(compact)}>{user.name.split(' ')[0]} · Sign out</button>;
-    }
-    if (!googleReady) {
-      return <button type="button" style={signInStyle(compact)} onClick={() => setAuthNote('Google sign-in is not configured yet.')}>Sign in</button>;
-    }
-    return <a href="/api/auth/google" style={signInStyle(compact)}>Sign in</a>;
-  };
+  useEffect(() => {
+    if (!moreOpen) return;
+    const closeOnOutside = (event: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(event.target as Node)) setMoreOpen(false);
+    };
+    document.addEventListener('mousedown', closeOnOutside);
+    return () => document.removeEventListener('mousedown', closeOnOutside);
+  }, [moreOpen]);
 
   const closeAll = useCallback(() => setOpenIdx(null), []);
-  const toggle   = (i: number) => setOpenIdx(p => p === i ? null : i);
+  const toggle   = (i: number) => {
+    setMoreOpen(false);
+    setOpenIdx(p => p === i ? null : i);
+  };
+  const overflowEntries = NAV.slice(visibleCount);
 
   return (
     <>
@@ -602,6 +656,12 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
         boxShadow: scrolled ? '0 3px 24px rgba(9,21,64,.45)' : 'none',
         transition: 'box-shadow .3s',
       }}>
+        <span
+          ref={measureRef}
+          aria-hidden="true"
+          style={{ position: 'absolute', visibility: 'hidden', pointerEvents: 'none', display: 'inline-flex', alignItems: 'center', padding: '5px 8px', fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, whiteSpace: 'nowrap' }}
+        />
+
         {/* ── SINGLE ROW ── */}
         <div style={{ display: 'flex', alignItems: 'center', height: 58, padding: '0 20px', gap: 12 }}>
 
@@ -620,19 +680,47 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
 
           {/* Nav items — flex-1, no wrap, overflow hidden (clips gracefully) */}
           <nav
+            ref={navRef}
             className="hidden lg:flex"
-            style={{ flex: 1, alignItems: 'center', gap: 0, overflow: 'visible', minWidth: 0 }}
+            aria-label="Primary"
+            style={{ flex: 1, alignItems: 'center', gap: 0, overflow: navReady ? 'visible' : 'hidden', minWidth: 0, position: 'relative' }}
           >
             {NAV.map((entry, i) => (
-              <NavItem
-                key={entry.label}
-                entry={entry}
-                index={i}
-                openIdx={openIdx}
-                onToggle={toggle}
-                onClose={closeAll}
-              />
+              i < visibleCount ? (
+                <NavItem
+                  key={entry.label}
+                  entry={entry}
+                  index={i}
+                  openIdx={openIdx}
+                  onToggle={toggle}
+                  onClose={closeAll}
+                />
+              ) : null
             ))}
+            {navReady && overflowEntries.length > 0 && (
+              <div ref={moreRef} style={{ marginLeft: 'auto', position: 'relative', flexShrink: 0 }}>
+                <button
+                  type="button"
+                  onClick={() => { setOpenIdx(null); setMoreOpen((open) => !open); }}
+                  aria-label="More menu"
+                  aria-expanded={moreOpen}
+                  style={{ background: moreOpen ? 'rgba(255,255,255,.16)' : 'rgba(255,255,255,.08)', border: 'none', borderRadius: 8, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}
+                >
+                  <svg style={{ width: 17, height: 17 }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    {moreOpen
+                      ? <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      : <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />}
+                  </svg>
+                </button>
+                {moreOpen && (
+                  <div style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, width: 320, maxHeight: 'min(70vh, 560px)', overflowY: 'auto', background: '#091540', border: '1px solid rgba(255,255,255,.09)', borderRadius: 14, boxShadow: '0 20px 50px rgba(9,21,64,.55)', zIndex: 650 }}>
+                    {overflowEntries.map((entry) => (
+                      <MobileEntry key={entry.label} entry={entry} onClose={() => setMoreOpen(false)} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </nav>
 
           {/* Spacer on small screens */}
@@ -647,7 +735,6 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
               onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,.72)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.15)'; }}>
               Contact Us
             </Link>
-            <div className="hidden lg:inline-flex">{signInControl(false)}</div>
             <Link to="/investment-services"
               className="hidden lg:inline-flex"
               style={{ fontFamily: 'var(--fs)', fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.72)', padding: '6px 12px', borderRadius: 7, border: '1px solid rgba(255,255,255,.15)', textDecoration: 'none', whiteSpace: 'nowrap', transition: 'all .15s' }}
@@ -687,14 +774,11 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
               <MobileEntry key={entry.label} entry={entry} onClose={() => setMobileOpen(false)} />
             ))}
             <div style={{ padding: '14px 20px 40px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                <Link to="/contact"
-                  onClick={() => setMobileOpen(false)}
-                  style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>
-                  Contact Us
-                </Link>
-                <div onClick={() => setMobileOpen(false)}>{signInControl(true)}</div>
-              </div>
+              <Link to="/contact"
+                onClick={() => setMobileOpen(false)}
+                style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>
+                Contact Us
+              </Link>
               <Link to="/investment-services"
                 onClick={() => setMobileOpen(false)}
                 style={{ fontFamily: 'var(--fs)', fontSize: 14.5, fontWeight: 700, color: '#fff', padding: '13px', borderRadius: 10, border: '1px solid rgba(255,255,255,.18)', textAlign: 'center', textDecoration: 'none' }}>
@@ -705,11 +789,6 @@ export default function Header({ onGetStarted }: { onGetStarted: () => void }) {
                 Get Started
               </button>
             </div>
-          </div>
-        )}
-        {authNote && (
-          <div style={{ background: '#FEF3C7', color: '#78350F', textAlign: 'center', fontFamily: 'var(--fs)', fontSize: 13, fontWeight: 700, padding: '8px 16px' }}>
-            {authNote}
           </div>
         )}
       </header>

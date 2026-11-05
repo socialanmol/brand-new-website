@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { getPool, pingDatabase } from "./db.mjs";
 import { mailConfigured, sendReport, sendStaffCopy } from "./mail.mjs";
+import { copyGetStartedLead } from "./sanchay.mjs";
 import { acceptedGoogleProfile } from "./google-profile.mjs";
 import { assertSameOrigin, rateLimit } from "./guard.mjs";
 import {
@@ -39,6 +40,18 @@ const INTERESTS = new Set([
   "Gift City and Global Investments",
   "Other",
 ]);
+
+function readInterests(value) {
+  const raw = Array.isArray(value) ? value : String(value ?? "").split(",");
+  const chosen = [];
+  for (const item of raw) {
+    const label = text(item, 80);
+    if (!label) continue;
+    if (!INTERESTS.has(label)) throw new HttpError(400, "Choose an interest from the list.");
+    if (!chosen.includes(label)) chosen.push(label);
+  }
+  return chosen.join(", ");
+}
 
 const VISITOR_COOKIE = "ma_vid";
 const SESSION_COOKIE = "ma_session";
@@ -98,8 +111,7 @@ async function createLead(request, response) {
   const phone = requirePhone(body.phone);
   const email = requireEmail(body.email);
   const city = text(body.city, 120) || null;
-  const interest = text(body.interest, 120);
-  if (interest && !INTERESTS.has(interest)) throw new HttpError(400, "Choose an interest from the list.");
+  const interest = readInterests(body.interests ?? body.interest);
   const sourcePath = safePath(body.sourcePath) || null;
 
   const [result] = await query(
@@ -115,9 +127,17 @@ async function createLead(request, response) {
       `Phone: ${phone}`,
       `Email: ${email}`,
       `City: ${city || "—"}`,
-      `Interest: ${interest || "—"}`,
+      `Interests: ${interest || "—"}`,
       `Page: ${sourcePath || "—"}`,
     ].join("\n"),
+  });
+  await copyGetStartedLead({
+    name,
+    phone,
+    email,
+    city,
+    interest,
+    sourcePath,
   });
   json(response, 201, { id: result.insertId });
 }
@@ -143,6 +163,55 @@ async function createFormSubmission(request, response) {
     `INSERT INTO form_submissions (form_key, name, email, phone, fields, source_path) VALUES (?, ?, ?, ?, ?, ?)`,
     [formKey, fields.name || null, fields.email || null, fields.phone || null, JSON.stringify(fields), sourcePath],
   );
+  if (formKey === "mutual-fund-advisor") {
+    await sendStaffCopy({
+      subject: `Mutual Fund Advisor: ${fields.name}`,
+      text: [
+        "A mutual fund advisor request was submitted.",
+        "",
+        `Name: ${fields.name}`,
+        `Phone: ${fields.phone}`,
+        `Email: ${fields.email}`,
+        `Preferred time: ${fields.time || "—"}`,
+        `Notes: ${fields.notes || "—"}`,
+        `Page: ${sourcePath || "—"}`,
+      ].join("\n"),
+    });
+  }
+  if (formKey === "seminar-mutual-funds-101") {
+    await sendStaffCopy({
+      subject: `Salary webinar: ${fields.name}`,
+      text: [
+        "A Save, Spend and Invest webinar registration was submitted.",
+        "",
+        `Name: ${fields.name}`,
+        `Email: ${fields.email}`,
+        `Phone: ${fields.phone}`,
+        `Location: ${fields.location || "—"}`,
+        `Slot: ${fields.slot || "—"}`,
+        `Poll: ${fields.poll || "—"}`,
+        `Page: ${sourcePath || "—"}`,
+      ].join("\n"),
+    });
+  }
+  if (formKey === "mutual-fund-sip") {
+    await sendStaffCopy({
+      subject: `SIP Registration: ${fields.name}`,
+      text: [
+        "A mutual fund SIP registration request was submitted.",
+        "",
+        `Name: ${fields.name}`,
+        `CRN: ${fields.crn || "—"}`,
+        `Phone: ${fields.phone}`,
+        `Email: ${fields.email}`,
+        `Amount: ${fields.amount}`,
+        `Scheme: ${fields.scheme}`,
+        `Fund house: ${fields.fundHouse || "—"}`,
+        `Month: ${fields.month || "—"}`,
+        `Page: ${sourcePath || "—"}`,
+      ].join("\n"),
+    });
+  }
   if (formKey === "book-a-review") {
     await sendStaffCopy({
       subject: `Book a Review: ${fields.name}`,
@@ -208,7 +277,46 @@ function readFields(formKey, raw) {
   if (formKey === "seminar-investing" || formKey === "seminar-life-stress" || formKey === "seminar-retirement") {
     return { email: requireEmail(raw.email) };
   }
+  if (formKey === "seminar-mutual-funds-101") {
+    return {
+      name: requireName(raw.name),
+      email: requireEmail(raw.email),
+      phone: flexiblePhone(raw.phone),
+      location: requiredLine(raw.location, "Enter your location."),
+      slot: requiredLine(raw.slot, "Choose a time slot."),
+      poll: requiredLine(raw.poll, "Choose an answer."),
+    };
+  }
+  if (formKey === "mutual-fund-advisor") {
+    return {
+      name: requireName(raw.name),
+      phone: flexiblePhone(raw.phone),
+      email: requireEmail(raw.email),
+      time: text(raw.time, 120),
+      notes: text(raw.notes, 2000),
+    };
+  }
+  if (formKey === "mutual-fund-sip") {
+    return {
+      name: requireName(raw.name),
+      crn: text(raw.crn, 40),
+      phone: flexiblePhone(raw.phone),
+      email: requireEmail(raw.email),
+      amount: sipAmount(raw.amount),
+      scheme: requiredLine(raw.scheme, "Choose a scheme."),
+      fundHouse: text(raw.fundHouse, 160),
+      month: text(raw.month, 40),
+    };
+  }
   throw new HttpError(400, "Choose a form.");
+}
+
+function sipAmount(value) {
+  const amount = text(value, 20).replace(/[₹,\s]/g, "");
+  if (!/^\d+(\.\d{1,2})?$/.test(amount) || Number(amount) <= 0) {
+    throw new HttpError(400, "Enter the SIP amount.");
+  }
+  return amount;
 }
 
 function requiredLine(value, message) {
