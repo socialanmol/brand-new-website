@@ -1,6 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router';
 
-export default function DesignSystemToolkit() {
+export default function BlogPost() {
   const handleDownloadPDF = (e: React.MouseEvent) => {
     e.preventDefault();
     window.print();
@@ -8,185 +9,160 @@ export default function DesignSystemToolkit() {
 
   return (
     <div className="font-['Montserrat',sans-serif] bg-white text-[#111827] antialiased min-h-screen py-12 px-5 sm:px-8">
-      <div className="max-w-[1200px] mx-auto space-y-16">
-        {/* Header */}
-        <div className="flex justify-between items-center flex-wrap gap-4 border-b border-[#E3E8F4] pb-8">
-          <div>
-            <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.14em] text-[#6AA32A] bg-[#EFF8E2] px-3.5 py-1.5 rounded-full mb-3">
-              Design System &amp; Brand Tokens
-            </span>
-            <h1 className="font-['Montserrat',sans-serif] text-3xl sm:text-4xl font-extrabold text-[#091540]">
-              MyAnmol Font Styles, Colors &amp; Formatting Toolkit
-            </h1>
-          </div>
+      <div className="max-w-[850px] mx-auto space-y-10">
+        
+        {/* Navigation & Print Action */}
+        <div className="flex justify-between items-center flex-wrap gap-4">
+          <Link
+            to="/news"
+            className="inline-flex items-center gap-2 text-xs font-bold text-[#1A3B9F] bg-[#EEF2FB] px-4 py-2 rounded-[8px] hover:bg-[#dce5f8] transition-colors"
+          >
+            &larr; Back to News &amp; Updates
+          </Link>
           <button
             onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
+            className="inline-flex items-center gap-2 h-10 px-4 rounded-[8px] bg-white border border-[#E3E8F4] text-[#1A3B9F] font-extrabold text-xs hover:bg-[#EEF2FB] transition-all cursor-pointer shadow-sm"
           >
-            Download / Print Toolkit
+            Download PDF / Print
           </button>
         </div>
 
-        {/* 1. Color Palette */}
-        <div className="space-y-6">
-          <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540]">
-            1. Brand Color Palette &amp; Tokens
-          </h2>
-          <p className="text-xs sm:text-sm text-[#6B7280]">
-            Our color system is meticulously calibrated for high-trust executive financial services, combining deep navy blues with vibrant growth greens and warm accent tones.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-[#091540] text-white rounded-[16px] p-6 space-y-3 shadow-sm border border-black/10">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-white/70">Executive Navy</span>
-                <span className="text-xs font-mono bg-white/10 px-2.5 py-1 rounded">#091540</span>
-              </div>
-              <p className="text-xs text-white/80 font-light">
-                Primary background for hero headers, high-impact dark containers, and key conversion sections.
-              </p>
-            </div>
-
-            <div className="bg-[#1A3B9F] text-white rounded-[16px] p-6 space-y-3 shadow-sm border border-black/10">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-white/70">Primary Blue</span>
-                <span className="text-xs font-mono bg-white/10 px-2.5 py-1 rounded">#1A3B9F</span>
-              </div>
-              <p className="text-xs text-white/80 font-light">
-                Primary interactive buttons, active tab borders, prominent headings, and trust anchors.
-              </p>
-            </div>
-
-            <div className="bg-[#6AA32A] text-white rounded-[16px] p-6 space-y-3 shadow-sm border border-black/10">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-white/70">Growth Green</span>
-                <span className="text-xs font-mono bg-white/10 px-2.5 py-1 rounded">#6AA32A / #8DC63F</span>
-              </div>
-              <p className="text-xs text-white/80 font-light">
-                Positive returns, success badges, primary call-to-action highlights, and wealth growth markers.
-              </p>
-            </div>
-
-            <div className="bg-[#EEF2FB] text-[#091540] rounded-[16px] p-6 space-y-3 shadow-sm border border-[#C5D3F2]">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#1A3B9F]">Surface Blue / Input BG</span>
-                <span className="text-xs font-mono bg-[#1A3B9F]/10 px-2.5 py-1 rounded">#EEF2FB</span>
-              </div>
-              <p className="text-xs text-[#374151] font-light">
-                Form input backgrounds, subtle card containers, table headers, and step backgrounds.
-              </p>
-            </div>
-
-            <div className="bg-[#FFFDF0] text-[#856404] rounded-[16px] p-6 space-y-3 shadow-sm border border-[#FFE8A3]">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider">Highlight Gold / Warning</span>
-                <span className="text-xs font-mono bg-[#FFE8A3]/50 px-2.5 py-1 rounded">#FFC107 / #FFFDF0</span>
-              </div>
-              <p className="text-xs text-[#374151] font-light">
-                Principal amount indicators in charts, warning notices, and featured highlight cards.
-              </p>
-            </div>
-
-            <div className="bg-[#F8FAFE] text-[#374151] rounded-[16px] p-6 space-y-3 shadow-sm border border-[#E3E8F4]">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280]">Neutral Border &amp; Card</span>
-                <span className="text-xs font-mono bg-[#E3E8F4] px-2.5 py-1 rounded">#E3E8F4 / #F8FAFE</span>
-              </div>
-              <p className="text-xs text-[#6B7280] font-light">
-                Card borders, divider lines, light background wrappers, and secondary table rows.
-              </p>
-            </div>
+        {/* Blog Header */}
+        <div className="space-y-4 border-b border-[#E3E8F4] pb-8">
+          <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.14em] text-[#6AA32A] bg-[#EFF8E2] px-3.5 py-1.5 rounded-full">
+            Financial Education &bull; MyAnmol Insights
+          </span>
+          <h1 className="font-['Montserrat',sans-serif] text-3xl sm:text-5xl font-bold text-[#091540] leading-tight">
+            Building a Resilient Financial Foundation: A Practical Roadmap
+          </h1>
+          <div className="flex items-center gap-4 text-xs text-[#6B7280] pt-2 flex-wrap">
+            <div>By: <b>MyAnmol Wealth Advisory Desk</b></div>
+            <div>&bull;</div>
+            <div>AMFI-Registered Distributor (ARN: 114893)</div>
+            <div>&bull;</div>
+            <div>6 min read</div>
           </div>
         </div>
 
-        {/* 2. Typography Styles */}
-        <div className="space-y-6 pt-6 border-t border-[#E3E8F4]">
-          <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540]">
-            2. Typography &amp; Font Styles
-          </h2>
-          <p className="text-xs sm:text-sm text-[#6B7280]">
-            Our typography hierarchy uses clean geometric sans-serif for optimal legibility across digital interfaces and financial calculators.
+        {/* Blog Body Content */}
+        <div className="space-y-6 text-sm sm:text-base text-[#374151] leading-relaxed font-light">
+          <p>
+            Financial planning often sounds intimidating, largely because the industry wraps simple money habits in complex jargon. A common misconception is that you need substantial wealth before creating a plan; in reality, disciplined planning is the exact vehicle that creates financial stability in the first place.
+          </p>
+          <p>
+            Building a lasting foundation doesn&apos;t require overhauling your life overnight. It comes down to four deliberate steps: taking inventory, setting focused goals, structuring cash flow, and building a safety buffer.
           </p>
 
-          <div className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-8 space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pb-6 border-b border-[#E3E8F4]">
-              <div>
-                <span className="text-xs font-bold text-[#1A3B9F] uppercase tracking-wider block mb-1">Primary Font Family</span>
-                <div className="text-lg font-extrabold text-[#091540]">Montserrat</div>
-                <div className="text-xs text-[#6B7280] mt-1">Used for all headings, body text, UI buttons, and navigation.</div>
-              </div>
-              <div>
-                <span className="text-xs font-bold text-[#1A3B9F] uppercase tracking-wider block mb-1">Display / Serif Font</span>
-                <div className="text-lg font-extrabold text-[#091540] font-serif">Playfair Display</div>
-                <div className="text-xs text-[#6B7280] mt-1">Used selectively for editorial headings and pull quotes.</div>
-              </div>
-              <div>
-                <span className="text-xs font-bold text-[#1A3B9F] uppercase tracking-wider block mb-1">Monospace / Input Font</span>
-                <div className="text-lg font-mono font-extrabold text-[#091540]">Nunito Sans / Mono</div>
-                <div className="text-xs text-[#6B7280] mt-1">Used for currency inputs, numerical values, and calculations.</div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex justify-between items-center flex-wrap gap-2">
-                <span className="text-xs font-bold text-[#6B7280]">H1 Heading Token</span>
-                <span className="text-xs font-mono bg-white px-2 py-1 rounded border border-[#E3E8F4]">text-3xl sm:text-5xl font-extrabold tracking-tight</span>
-              </div>
-              <div className="flex justify-between items-center flex-wrap gap-2">
-                <span className="text-xs font-bold text-[#6B7280]">H2 Section Heading</span>
-                <span className="text-xs font-mono bg-white px-2 py-1 rounded border border-[#E3E8F4]">text-2xl sm:text-3xl font-bold</span>
-              </div>
-              <div className="flex justify-between items-center flex-wrap gap-2">
-                <span className="text-xs font-bold text-[#6B7280]">Body Text Token</span>
-                <span className="text-xs font-mono bg-white px-2 py-1 rounded border border-[#E3E8F4]">text-sm sm:text-base text-[#374151] font-light</span>
-              </div>
-              <div className="flex justify-between items-center flex-wrap gap-2">
-                <span className="text-xs font-bold text-[#6B7280]">Button / CTA Token</span>
-                <span className="text-xs font-mono bg-white px-2 py-1 rounded border border-[#E3E8F4]">font-extrabold text-xs tracking-wider uppercase</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 3. Formatting & Component Toolkit */}
-        <div className="space-y-6 pt-6 border-t border-[#E3E8F4]">
-          <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540]">
-            3. Formatting &amp; Component Toolkit
+          <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540] pt-4">
+            1. Take a Clean Financial Inventory
           </h2>
-          <p className="text-xs sm:text-sm text-[#6B7280]">
-            Standardized UI blocks used across all calculators, hubs, and modal workflows.
+          <p>
+            Before setting a target, you need an unfiltered view of where your money currently goes. Audit your cash flow across four core pillars:
           </p>
+          <ul className="space-y-3 bg-[#EEF2FB]/50 border border-[#E3E8F4] p-6 rounded-[16px] text-xs sm:text-sm list-none">
+            <li><b>Document exact take-home pay</b> after taxes and statutory deductions. Account for variable income separately if you rely on performance bonuses or freelance work.</li>
+            <li><b>Track 60-90 days of actual spending.</b> Differentiate between non-negotiables (rent, utilities, groceries, EMIs) and lifestyle expenses (dining, entertainment, subscriptions).</li>
+            <li><b>Catalog all unsecured loans,</b> personal loans, and credit card balances. Note their respective interest rates &mdash; high-cost debt must always take top repayment priority.</li>
+            <li><b>Identify capital currently held</b> in low-yield savings accounts, fixed deposits, or liquid instruments that can be accessed immediately.</li>
+          </ul>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white border border-[#E3E8F4] rounded-[20px] p-6 space-y-3">
-              <h3 className="font-bold text-sm text-[#1A3B9F]">📊 Interactive Donut &amp; Stacked Bar Charts</h3>
-              <p className="text-xs text-[#6B7280] leading-relaxed">
-                SVG-based responsive donut charts with custom stroke-dasharray calculations for principal vs. interest breakdown, and yearly amortization stacked bar/line charts.
-              </p>
-            </div>
+          <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540] pt-4">
+            2. Prioritize Focused, Measurable Goals
+          </h2>
+          <p>
+            Trying to fund six different objectives at once often leads to fragmented capital and slow progress. A more effective strategy is prioritizing 2 &ndash; 3 key milestones based on urgency and impact.
+          </p>
+          <p>
+            Every goal should be defined by three parameters:
+          </p>
+          <ol className="space-y-1 list-decimal pl-5">
+            <li>Short-term (under 1 year), medium-term (1&ndash;5 years), or long-term (5+ years).</li>
+            <li>A specific target amount adjusted for estimated inflation.</li>
+            <li>Matching the time horizon to the appropriate asset class (e.g., liquid/debt instruments for short-term needs, equity-oriented mutual funds for horizons beyond 5-7 years).</li>
+          </ol>
 
-            <div className="bg-white border border-[#E3E8F4] rounded-[20px] p-6 space-y-3">
-              <h3 className="font-bold text-sm text-[#1A3B9F]">🎛️ Dual Slider &amp; Text Input Controls</h3>
-              <p className="text-xs text-[#6B7280] leading-relaxed">
-                Synchronized range sliders and formatted Indian currency input fields (`en-IN`) with automatic clamping and error boundaries.
-              </p>
-            </div>
-
-            <div className="bg-white border border-[#E3E8F4] rounded-[20px] shadow-sm p-6 space-y-3">
-              <h3 className="font-bold text-sm text-[#1A3B9F]">💬 2-Step Advisor Booking Modal</h3>
-              <p className="text-xs text-[#6B7280] leading-relaxed">
-                Step 1 lead capture form feeding into Step 2 interactive expert advisor card carousel with 6 verified mentors and availability badges.
-              </p>
-            </div>
-
-            <div className="bg-white border border-[#E3E8F4] rounded-[20px] shadow-sm p-6 space-y-3">
-              <h3 className="font-bold text-sm text-[#1A3B9F]">📄 CSV / PDF Export &amp; Print Utilities</h3>
-              <p className="text-xs text-[#6B7280] leading-relaxed">
-                Instant browser print styling and CSV data export handlers integrated into every calculator and report card.
-              </p>
-            </div>
+          {/* Table from PDF */}
+          <div className="my-6 overflow-x-auto border border-[#E3E8F4] rounded-[16px]">
+            <table className="w-full text-left text-xs sm:text-sm border-collapse">
+              <thead>
+                <tr className="bg-[#EEF2FB] text-[#091540] border-b border-[#E3E8F4] font-bold">
+                  <th className="p-3.5 pl-5">Goal Type</th>
+                  <th className="p-3.5">Typical Horizon</th>
+                  <th className="p-3.5">Recommended Asset Focus</th>
+                  <th className="p-3.5 pr-5">Priority Level</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E3E8F4] text-[#374151]">
+                <tr>
+                  <td className="p-3.5 pl-5 font-bold">Emergency Buffer</td>
+                  <td className="p-3.5">Immediate</td>
+                  <td className="p-3.5">Liquid Mutual Funds / Sweep-in FDs</td>
+                  <td className="p-3.5 pr-5 font-semibold text-[#1A3B9F]">Non-negotiable</td>
+                </tr>
+                <tr>
+                  <td className="p-3.5 pl-5 font-bold">High-Cost Debt Payoff</td>
+                  <td className="p-3.5">6-18 months</td>
+                  <td className="p-3.5">Focused Cash Flow Reallocation</td>
+                  <td className="p-3.5 pr-5 font-semibold text-[#E65100]">Critical</td>
+                </tr>
+                <tr>
+                  <td className="p-3.5 pl-5 font-bold">Mid-Term Purchases</td>
+                  <td className="p-3.5">2 - 5 years</td>
+                  <td className="p-3.5">Short-Duration Debt Funds / Arbitrage</td>
+                  <td className="p-3.5 pr-5 font-semibold text-[#6B7280]">Discretionary</td>
+                </tr>
+                <tr>
+                  <td className="p-3.5 pl-5 font-bold">Long-Term Wealth / Retirement</td>
+                  <td className="p-3.5">7+ years</td>
+                  <td className="p-3.5">Diversified Equity Funds (via disciplined SIPs)</td>
+                  <td className="p-3.5 pr-5 font-semibold text-[#6AA32A]">Essential</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+
+          <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540] pt-4">
+            3. Create a Cash-Flow Allocation Strategy
+          </h2>
+          <p>
+            A budget shouldn&apos;t feel restrictive; it is simply a framework to ensure your money works toward your defined priorities before discretionary spending takes over.
+          </p>
+          <ul className="space-y-2 list-disc pl-5">
+            <li><b>Automate Transfers:</b> The moment income lands, automate transfers directly to your investments and emergency reserves rather than saving whatever happens to be left at the end of the month.</li>
+            <li><b>Partition Spending:</b> Split spending into fixed commitments, goal-linked investments, and flexible spending. Keeping everyday spending within a dedicated account prevents lifestyle creep from eating into investment capital.</li>
+            <li><b>Dynamic Adjustments:</b> Cash flow isn&apos;t static. As increments occur or liabilities wind down, adjust your automated allocations immediately to maintain an upward savings trajectory.</li>
+          </ul>
+
+          <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540] pt-4">
+            4. Construct a Realistic Emergency Buffer
+          </h2>
+          <p>
+            Unplanned medical needs, temporary job disruptions, or sudden household repairs can quickly dismantle an investment strategy if you are forced to break long-term holdings or take on high-interest loans.
+          </p>
+          <ul className="space-y-2 list-disc pl-5">
+            <li><b>Survival Expenses:</b> Focus strictly on mandatory survival expenses (rent, food, insurance premiums, EMIs), not your total gross salary.</li>
+            <li><b>Scale Progressively:</b> Striving for a lump-sum 6-month buffer right away can feel paralyzing. Start by securing a 1-month baseline, then progressively scale the reserve with consistent monthly contributions.</li>
+            <li><b>Safe Parking:</b> Park this capital where capital preservation and immediate access are the priorities &mdash; such as high-yield savings accounts, sweep-in bank deposits, or overnight/liquid funds &mdash; rather than volatile market products.</li>
+          </ul>
+
+          <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540] pt-4">
+            The Next Step
+          </h2>
+          <p>
+            A solid financial foundation is built on consistency rather than market timing or aggressive speculation. Securing your cash flow and ring-fencing your downside allows you to invest for long-term growth with confidence and clarity.
+          </p>
         </div>
+
+        {/* Disclaimer Footer */}
+        <div className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 text-xs text-[#6B7280] space-y-2">
+          <p>
+            <b>Disclaimer:</b> This article is published purely for financial literacy and educational purposes. It does not constitute individual financial, tax, or investment advice. Asset allocation and financial planning depend on an individual&apos;s unique risk profile, financial position, and goals. Please consult a qualified financial advisor before executing investments or restructuring debt.
+          </p>
+          <p>
+            Anmol Share Broking Pvt. Ltd. &mdash; AMFI-registered Mutual Fund Distributor, ARN: 114893.
+          </p>
+        </div>
+
       </div>
     </div>
   );
