@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { getPool, pingDatabase } from "./db.mjs";
 import { mailConfigured, sendReport, sendStaffCopy } from "./mail.mjs";
+import { copyGetStartedLead } from "./sanchay.mjs";
 import { acceptedGoogleProfile } from "./google-profile.mjs";
 import { assertSameOrigin, rateLimit } from "./guard.mjs";
 import {
@@ -129,6 +130,14 @@ async function createLead(request, response) {
       `Interests: ${interest || "—"}`,
       `Page: ${sourcePath || "—"}`,
     ].join("\n"),
+  });
+  await copyGetStartedLead({
+    name,
+    phone,
+    email,
+    city,
+    interest,
+    sourcePath,
   });
   json(response, 201, { id: result.insertId });
 }
