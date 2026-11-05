@@ -1,151 +1,193 @@
 import React from 'react';
 
-export default function FinancialFoundationBlog() {
+export default function DesignSystemToolkit() {
   const handleDownloadPDF = (e: React.MouseEvent) => {
     e.preventDefault();
     window.print();
   };
 
   return (
-    <article className="font-['Montserrat',sans-serif] bg-white text-[#111827] antialiased min-h-screen py-12">
-      <div className="w-full max-w-[1180px] mx-auto px-6 space-y-10">
-        
-        {/* Header Navigation / Action Bar */}
-        <div className="flex justify-between items-center flex-wrap gap-4 border-b border-[#E3E8F4] pb-6">
-          <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.14em] text-[#6AA32A] bg-[#EFF8E2] px-3.5 py-1.5 rounded-full">
-            Financial Wellbeing
-          </span>
+    <div className="font-['Montserrat',sans-serif] bg-white text-[#111827] antialiased min-h-screen py-12 px-5 sm:px-8">
+      <div className="max-w-[1200px] mx-auto space-y-16">
+        {/* Header */}
+        <div className="flex justify-between items-center flex-wrap gap-4 border-b border-[#E3E8F4] pb-8">
+          <div>
+            <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.14em] text-[#6AA32A] bg-[#EFF8E2] px-3.5 py-1.5 rounded-full mb-3">
+              Design System &amp; Brand Tokens
+            </span>
+            <h1 className="font-['Montserrat',sans-serif] text-3xl sm:text-4xl font-extrabold text-[#091540]">
+              MyAnmol Font Styles, Colors &amp; Formatting Toolkit
+            </h1>
+          </div>
           <button
             onClick={handleDownloadPDF}
-            className="inline-flex items-center gap-2 h-10 px-4 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
+            className="inline-flex items-center gap-2 h-11 px-5 rounded-[8px] bg-[#1A3B9F] text-white font-extrabold text-xs hover:bg-[#132d7c] transition-all cursor-pointer shadow-sm border-0"
           >
-            Download / Print Article
+            Download / Print Toolkit
           </button>
         </div>
 
-        {/* Article Title & Metadata */}
-        <header className="space-y-4">
-          <h1 className="font-['Montserrat',sans-serif] text-3xl sm:text-5xl font-extrabold text-[#091540] tracking-tight leading-tight">
-            Building a Strong Financial Foundation for Your Future
-          </h1>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs sm:text-sm text-[#6B7280] border-l-4 border-[#1A3B9F] pl-4 py-1 bg-[#EEF2FB] rounded-r-[8px]">
-            <div>
-              <span className="font-bold text-[#091540]">By: Grant Gallagher</span>
-              <span className="block text-xs text-[#1A3B9F] font-semibold">AVP Financial Wellbeing &amp; Brand Communications</span>
+        {/* 1. Color Palette */}
+        <div className="space-y-6">
+          <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540]">
+            1. Brand Color Palette &amp; Tokens
+          </h2>
+          <p className="text-xs sm:text-sm text-[#6B7280]">
+            Our color system is meticulously calibrated for high-trust executive financial services, combining deep navy blues with vibrant growth greens and warm accent tones.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-[#091540] text-white rounded-[16px] p-6 space-y-3 shadow-sm border border-black/10">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold uppercase tracking-wider text-white/70">Executive Navy</span>
+                <span className="text-xs font-mono bg-white/10 px-2.5 py-1 rounded">#091540</span>
+              </div>
+              <p className="text-xs text-white/80 font-light">
+                Primary background for hero headers, high-impact dark containers, and key conversion sections.
+              </p>
             </div>
-            <div className="mt-2 sm:mt-0 font-medium">
-              October 3, 2023
+
+            <div className="bg-[#1A3B9F] text-white rounded-[16px] p-6 space-y-3 shadow-sm border border-black/10">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold uppercase tracking-wider text-white/70">Primary Blue</span>
+                <span className="text-xs font-mono bg-white/10 px-2.5 py-1 rounded">#1A3B9F</span>
+              </div>
+              <p className="text-xs text-white/80 font-light">
+                Primary interactive buttons, active tab borders, prominent headings, and trust anchors.
+              </p>
+            </div>
+
+            <div className="bg-[#6AA32A] text-white rounded-[16px] p-6 space-y-3 shadow-sm border border-black/10">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold uppercase tracking-wider text-white/70">Growth Green</span>
+                <span className="text-xs font-mono bg-white/10 px-2.5 py-1 rounded">#6AA32A / #8DC63F</span>
+              </div>
+              <p className="text-xs text-white/80 font-light">
+                Positive returns, success badges, primary call-to-action highlights, and wealth growth markers.
+              </p>
+            </div>
+
+            <div className="bg-[#EEF2FB] text-[#091540] rounded-[16px] p-6 space-y-3 shadow-sm border border-[#C5D3F2]">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#1A3B9F]">Surface Blue / Input BG</span>
+                <span className="text-xs font-mono bg-[#1A3B9F]/10 px-2.5 py-1 rounded">#EEF2FB</span>
+              </div>
+              <p className="text-xs text-[#374151] font-light">
+                Form input backgrounds, subtle card containers, table headers, and step backgrounds.
+              </p>
+            </div>
+
+            <div className="bg-[#FFFDF0] text-[#856404] rounded-[16px] p-6 space-y-3 shadow-sm border border-[#FFE8A3]">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold uppercase tracking-wider">Highlight Gold / Warning</span>
+                <span className="text-xs font-mono bg-[#FFE8A3]/50 px-2.5 py-1 rounded">#FFC107 / #FFFDF0</span>
+              </div>
+              <p className="text-xs text-[#374151] font-light">
+                Principal amount indicators in charts, warning notices, and featured highlight cards.
+              </p>
+            </div>
+
+            <div className="bg-[#F8FAFE] text-[#374151] rounded-[16px] p-6 space-y-3 shadow-sm border border-[#E3E8F4]">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280]">Neutral Border &amp; Card</span>
+                <span className="text-xs font-mono bg-[#E3E8F4] px-2.5 py-1 rounded">#E3E8F4 / #F8FAFE</span>
+              </div>
+              <p className="text-xs text-[#6B7280] font-light">
+                Card borders, divider lines, light background wrappers, and secondary table rows.
+              </p>
             </div>
           </div>
-        </header>
-
-        {/* Lead Introduction */}
-        <div className="space-y-4 text-sm sm:text-base text-[#374151] font-light leading-relaxed">
-          <p>
-            When securing your financial future, having a well-thought-out plan is essential. Financial stability and achieving an overall sense of wellbeing plays a key role in your future. Developing a financial plan can be complex but is necessary to have in place in order to reach your goals. According to a Charles Schwab survey, only 33% of Americans have a financial plan<sup>1</sup>, and half of the respondents said they don’t have the money to make a plan worthwhile. On top of that, you will need to revise your plan over time as your family’s needs and your life circumstances change.
-          </p>
         </div>
 
-        {/* Section 1: Assessing Your Current Financial Situation */}
-        <section className="space-y-4 pt-4 border-t border-[#E3E8F4]">
+        {/* 2. Typography Styles */}
+        <div className="space-y-6 pt-6 border-t border-[#E3E8F4]">
           <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540]">
-            Assessing Your Current Financial Situation
+            2. Typography &amp; Font Styles
           </h2>
-          <p className="text-sm sm:text-base text-[#374151] font-light leading-relaxed">
-            Before you create a roadmap for your financial future, you need to understand where you currently stand. There are four things to consider when assessing your current financial situation:
-          </p>
-          
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-4">
-            <li className="bg-[#F8FAFE] border border-[#E3E8F4] p-4 rounded-[12px] flex items-start gap-3">
-              <span className="w-2 h-2 rounded-full bg-[#6AA32A] mt-2 flex-shrink-0"></span>
-              <span className="text-sm text-[#374151]"><strong>Income:</strong> What is your monthly take-home pay?</span>
-            </li>
-            <li className="bg-[#F8FAFE] border border-[#E3E8F4] p-4 rounded-[12px] flex items-start gap-3">
-              <span className="w-2 h-2 rounded-full bg-[#6AA32A] mt-2 flex-shrink-0"></span>
-              <span className="text-sm text-[#374151]"><strong>Expenses:</strong> Track your monthly spending to identify areas where you can cut back</span>
-            </li>
-            <li className="bg-[#F8FAFE] border border-[#E3E8F4] p-4 rounded-[12px] flex items-start gap-3">
-              <span className="w-2 h-2 rounded-full bg-[#6AA32A] mt-2 flex-shrink-0"></span>
-              <span className="text-sm text-[#374151]"><strong>Debts:</strong> Lists all outstanding loans, credit card balances, and other debts</span>
-            </li>
-            <li className="bg-[#F8FAFE] border border-[#E3E8F4] p-4 rounded-[12px] flex items-start gap-3">
-              <span className="w-2 h-2 rounded-full bg-[#6AA32A] mt-2 flex-shrink-0"></span>
-              <span className="text-sm text-[#374151]"><strong>Savings:</strong> How much do you have saved for emergencies and future goals?</span>
-            </li>
-          </ul>
-
-          <p className="text-sm sm:text-base text-[#374151] font-light leading-relaxed">
-            Understanding your current financial situation is important when making informed decisions about your future.
-          </p>
-        </section>
-
-        {/* Section 2: Define Your Financial Goals */}
-        <section className="space-y-4 pt-4 border-t border-[#E3E8F4]">
-          <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540]">
-            Define Your Financial Goals
-          </h2>
-          <p className="text-sm sm:text-base text-[#374151] font-light leading-relaxed">
-            What do you want to achieve in the short and long term? Setting clear financial goals is crucial. Your goals might include:
+          <p className="text-xs sm:text-sm text-[#6B7280]">
+            Our typography hierarchy uses clean geometric sans-serif for optimal legibility across digital interfaces and financial calculators.
           </p>
 
-          <div className="bg-[#EEF2FB] border border-[#C5D3F2] p-6 rounded-[16px] space-y-3">
-            <ul className="space-y-2 text-sm text-[#091540] font-medium">
-              <li className="flex items-center gap-2">✓ Building an emergency fund</li>
-              <li className="flex items-center gap-2">✓ Paying off debt</li>
-              <li className="flex items-center gap-2">✓ Saving for a down payment on a home</li>
-              <li className="flex items-center gap-2">✓ Investing for retirement</li>
-              <li className="flex items-center gap-2">✓ Funding your child’s education</li>
-            </ul>
+          <div className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-8 space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pb-6 border-b border-[#E3E8F4]">
+              <div>
+                <span className="text-xs font-bold text-[#1A3B9F] uppercase tracking-wider block mb-1">Primary Font Family</span>
+                <div className="text-lg font-extrabold text-[#091540]">Montserrat</div>
+                <div className="text-xs text-[#6B7280] mt-1">Used for all headings, body text, UI buttons, and navigation.</div>
+              </div>
+              <div>
+                <span className="text-xs font-bold text-[#1A3B9F] uppercase tracking-wider block mb-1">Display / Serif Font</span>
+                <div className="text-lg font-extrabold text-[#091540] font-serif">Playfair Display</div>
+                <div className="text-xs text-[#6B7280] mt-1">Used selectively for editorial headings and pull quotes.</div>
+              </div>
+              <div>
+                <span className="text-xs font-bold text-[#1A3B9F] uppercase tracking-wider block mb-1">Monospace / Input Font</span>
+                <div className="text-lg font-mono font-extrabold text-[#091540]">Nunito Sans / Mono</div>
+                <div className="text-xs text-[#6B7280] mt-1">Used for currency inputs, numerical values, and calculations.</div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex justify-between items-center flex-wrap gap-2">
+                <span className="text-xs font-bold text-[#6B7280]">H1 Heading Token</span>
+                <span className="text-xs font-mono bg-white px-2 py-1 rounded border border-[#E3E8F4]">text-3xl sm:text-5xl font-extrabold tracking-tight</span>
+              </div>
+              <div className="flex justify-between items-center flex-wrap gap-2">
+                <span className="text-xs font-bold text-[#6B7280]">H2 Section Heading</span>
+                <span className="text-xs font-mono bg-white px-2 py-1 rounded border border-[#E3E8F4]">text-2xl sm:text-3xl font-bold</span>
+              </div>
+              <div className="flex justify-between items-center flex-wrap gap-2">
+                <span className="text-xs font-bold text-[#6B7280]">Body Text Token</span>
+                <span className="text-xs font-mono bg-white px-2 py-1 rounded border border-[#E3E8F4]">text-sm sm:text-base text-[#374151] font-light</span>
+              </div>
+              <div className="flex justify-between items-center flex-wrap gap-2">
+                <span className="text-xs font-bold text-[#6B7280]">Button / CTA Token</span>
+                <span className="text-xs font-mono bg-white px-2 py-1 rounded border border-[#E3E8F4]">font-extrabold text-xs tracking-wider uppercase</span>
+              </div>
+            </div>
           </div>
+        </div>
 
-          <p className="text-sm sm:text-base text-[#374151] font-light leading-relaxed">
-            It’s okay to be a little ambitious but be realistic. You don’t have to work towards all of your goals at once, and your financial wellbeing will benefit from making notable progress on a few goals, as opposed to minor progress on many. Assign goal priority based on importance and timeliness, and focus on those first. Be specific about your goals, assign a timeline, and attach a dollar amount to each. This will give you a clear target to aim for.
-          </p>
-        </section>
-
-        {/* Section 3: Creating a Budget */}
-        <section className="space-y-4 pt-4 border-t border-[#E3E8F4]">
+        {/* 3. Formatting & Component Toolkit */}
+        <div className="space-y-6 pt-6 border-t border-[#E3E8F4]">
           <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540]">
-            Creating a Budget
+            3. Formatting &amp; Component Toolkit
           </h2>
-          <p className="text-sm sm:text-base text-[#374151] font-light leading-relaxed">
-            A budget is the foundation of any solid financial plan. It helps manage your money, allocate funds to your goals, and track your progress. Some tips and best practices for budgeting include:
+          <p className="text-xs sm:text-sm text-[#6B7280]">
+            Standardized UI blocks used across all calculators, hubs, and modal workflows.
           </p>
 
-          <ul className="list-disc pl-5 space-y-2 text-sm sm:text-base text-[#374151] font-light">
-            <li>List your monthly income sources</li>
-            <li>Categorize your expenses</li>
-            <li>Allocate a portion of your income to each expense category</li>
-            <li>Ensure that you’re saving towards your goals<sup>2</sup>, building or rebuilding your emergency fund, and paying down debt</li>
-            <li>Regularly review and adjust your budget as needed</li>
-          </ul>
-        </section>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white border border-[#E3E8F4] rounded-[20px] p-6 space-y-3">
+              <h3 className="font-bold text-sm text-[#1A3B9F]">📊 Interactive Donut &amp; Stacked Bar Charts</h3>
+              <p className="text-xs text-[#6B7280] leading-relaxed">
+                SVG-based responsive donut charts with custom stroke-dasharray calculations for principal vs. interest breakdown, and yearly amortization stacked bar/line charts.
+              </p>
+            </div>
 
-        {/* Section 4: Building an Emergency Fund */}
-        <section className="space-y-4 pt-4 border-t border-[#E3E8F4]">
-          <h2 className="font-['Montserrat',sans-serif] text-2xl font-bold text-[#091540]">
-            Building an Emergency Fund
-          </h2>
-          <p className="text-sm sm:text-base text-[#374151] font-light leading-relaxed">
-            Unexpected expenses can derail your financial plans. Traditional wisdom says to save three to six months' worth of living expenses, establishing an easily accessible account as an emergency fund, but this can be an overwhelmingly large goal to achieve depending on your lifestyle. Focus on budgeting to save what you can afford consistently on a monthly basis and be a bit more aggressive on replenishing when you’ve had to dip into your emergency fund, but don’t give yourself needless financial stress by focusing on whether it is “full.” Realistically, most people never have “enough” in this fund but having enough to cover any major household emergencies will help provide peace of mind and financial security.
-          </p>
-        </section>
+            <div className="bg-white border border-[#E3E8F4] rounded-[20px] p-6 space-y-3">
+              <h3 className="font-bold text-sm text-[#1A3B9F]">🎛️ Dual Slider &amp; Text Input Controls</h3>
+              <p className="text-xs text-[#6B7280] leading-relaxed">
+                Synchronized range sliders and formatted Indian currency input fields (`en-IN`) with automatic clamping and error boundaries.
+              </p>
+            </div>
 
-        {/* Conclusion Callout */}
-        <section className="bg-[#091540] text-white p-8 rounded-[20px] space-y-6 shadow-md">
-          <p className="text-sm sm:text-base text-white/90 font-light leading-relaxed">
-            Building a solid financial foundation for your future is not just a prudent choice; it’s a necessity. While the process may seem daunting, it’s a journey worth embarking upon. By taking these steps and seeking guidance when needed, you can pave the way for a financially secure tomorrow. So, don't hesitate to contact Affinity Federal Credit Union<sup>3</sup> today to kickstart your path toward financial wellbeing. Your future self will undoubtedly thank you for the proactive steps you take today.
-          </p>
-        </section>
+            <div className="bg-white border border-[#E3E8F4] rounded-[20px] shadow-sm p-6 space-y-3">
+              <h3 className="font-bold text-sm text-[#1A3B9F]">💬 2-Step Advisor Booking Modal</h3>
+              <p className="text-xs text-[#6B7280] leading-relaxed">
+                Step 1 lead capture form feeding into Step 2 interactive expert advisor card carousel with 6 verified mentors and availability badges.
+              </p>
+            </div>
 
-        {/* Disclaimer Footer */}
-        <footer className="pt-6 border-t border-[#E3E8F4] text-xs text-[#6B7280] font-light leading-relaxed space-y-2">
-          <p>
-            This information is for informational purposes only, is intended to provide general guidance, and does not constitute legal, tax, or financial advice. Each person's circumstances are different and may not apply to the specific information provided. You should seek the advice of a financial professional, tax consultant, and/or legal counsel to discuss your specific needs before making any financial or other commitments regarding the matters related to your condition.
-          </p>
-        </footer>
-
+            <div className="bg-white border border-[#E3E8F4] rounded-[20px] shadow-sm p-6 space-y-3">
+              <h3 className="font-bold text-sm text-[#1A3B9F]">📄 CSV / PDF Export &amp; Print Utilities</h3>
+              <p className="text-xs text-[#6B7280] leading-relaxed">
+                Instant browser print styling and CSV data export handlers integrated into every calculator and report card.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </article>
+    </div>
   );
 }
