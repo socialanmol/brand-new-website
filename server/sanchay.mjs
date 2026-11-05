@@ -21,10 +21,8 @@ export function getStartedSanchayBody(lead) {
   if (process.env.SANCHAY_PRODUCT) fields.product_sub_category = process.env.SANCHAY_PRODUCT;
   if (process.env.SANCHAY_ASSIGNED_USER_ID) fields.assigned_user_id = process.env.SANCHAY_ASSIGNED_USER_ID;
   return {
-    rest_data: {
-      module_name: "Lead",
-      name_value_list: fields,
-    },
+    module_name: "Lead",
+    name_value_list: fields,
   };
 }
 
