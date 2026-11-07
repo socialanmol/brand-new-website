@@ -15,6 +15,7 @@ import NewsAndMarketingHub from '../pages/news_and_marketing_hub';
 import ForArmedForces from '../pages/ForArmedForces';
 import ForBusinessOwners from '../pages/ForBusinessOwners';
 import SeminarsWorkshops from '../pages/SeminarsWorkshops';
+import PersonalFinanceTopics from '../pages/personal-finance-money-mgt';
 import SampleWebinarPage from '../pages/SampleWebinarPage';
 import SeminarRetirementEstate from '../pages/SeminarRetirementEstate';
 import SeminarInvestingPlanning from '../pages/SeminarInvestingPlanning';
@@ -129,6 +130,7 @@ export const router = createBrowserRouter([
       
       { path: 'insights/seminars', Component: SeminarsWorkshops },
       { path: 'seminars', Component: SeminarsWorkshops },
+      { path: 'insights/seminars/personal-finance-money-management', Component: PersonalFinanceTopics },
       { path: 'insights/seminars/manage-your-salary', Component: SampleWebinarPage },
       { path: 'insights/seminars/mutual-funds-101', Component: SampleWebinarPage },
       { path: 'insights/seminars/retirement-estate-planning', Component: SeminarRetirementEstate },
