@@ -1,23 +1,25 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
-import mohitBajaj from "@/imports/mohit_bajaj.jpg";
-import maheshBajaj from "@/imports/mahesh_bajaj.jpg";
-import sureshBajaj from "@/imports/suresh_bajaj.jpg";
+import mohitBajaj from "@/imports/mohit_bajaj.png";
+import sureshBajaj from "@/imports/Suresh Bajaj.png";
+import sandhyaBajaj from "@/imports/Sandhya Bajaj.png";
+import vaibhavi from "@/imports/Vaibhavi.png";
 import karthikeyan from "@/imports/karthikeyan.jpg";
 import yashma from "@/imports/yashma.jpg";
-import devansh from "@/imports/devansh.jpg";
-import madhu from "@/imports/madhu.png";
-import raghavendra from "@/imports/raghavendra.png";
-import vinod from "@/imports/vinod-n-s.png";
-import indhumathi from "@/imports/indhumathi_g.png";
-import pratap from "@/imports/pratap_behura.png";
+import khusbhoo from "@/imports/khushboo_bajaj.png";
+import devansh from "@/imports/devansh_agarwal.png";
+import madhu from "@/imports/Madhu Shree C.png";
+import raghavendra from "@/imports/Raghavendra B.png";
+import vinod from "@/imports/Vinod N S.png";
+import indhumathi from "@/imports/Indhumathi G (2).png";
+import pratap from "@/imports/Pratap Behura (1).png";
 import prachi from "@/imports/prachi_bajaj.png";
 import adithya from "@/imports/adithya.png";
 import adhi from "@/imports/adhisheshan.png";
-import silky from "@/imports/silky.png";
-import vidyadheesha from "@/imports/vidyadheesha.png";
-import monika from "@/imports/monika-gupta.png";
-import vinaya from "@/imports/vinaya-kumari.png";
+import silky from "@/imports/Silky Kedia.png";
+import vidyadheesha from "@/imports/Vidyadheesh H R.png";
+import monika from "@/imports/Monika Gupta.png";
+import vinaya from "@/imports/Vinaya Kumari.png";
 
 interface TeamMember {
   name: string;
@@ -25,6 +27,8 @@ interface TeamMember {
   department: string;
   image?: string;
   monogram?: string;
+  cropPortrait?: boolean;
+  portraitClassName?: string;
   bio: string;
 }
 
@@ -33,7 +37,7 @@ const FOUNDERS: TeamMember[] = [
     name: "Mahesh Bajaj",
     role: "Founder",
     department: "Founder & Market Strategy Expert",
-    image: maheshBajaj,
+    monogram: "MB",
     bio: "A highly respected financial and stock market expert with over 45 years of experience across diverse market cycles. Known for his disciplined approach and deep market understanding. he has guided investors toward sustainable wealth creation. At MyAnmol, he brings invaluable perspective and stability to strategic decision-making.",
   },
   {
@@ -41,6 +45,7 @@ const FOUNDERS: TeamMember[] = [
     role: "Founder",
     department: "Founder & Stock Market Expert",
     image: sureshBajaj,
+    cropPortrait: true,
     bio: "A seasoned financial and stock market expert known for his sharp market intuition and practical investment approach. With over 40 years of hands-on experience, he brings a dynamic perspective to market movements, combining analytical thinking with real-time decision-making at MyAnmol.",
   },
   {
@@ -54,7 +59,8 @@ const FOUNDERS: TeamMember[] = [
     name: "Sandhya Bajaj",
     role: "Founder",
     department: "Founder & Market Strategy Expert",
-    monogram: "SB",
+    image: sandhyaBajaj,
+    cropPortrait: true,
     bio: "At MyAnmol, she brings invaluable perspective and stability to strategic decision-making.",
   },
 ];
@@ -68,10 +74,19 @@ const SENIOR_LEADERSHIP: TeamMember[] = [
     bio: "A Chartered Accountant with over 15 years of professional experience, including 5 years in the global insurance industry. She brings deep expertise across audit, financial management, and reinsurance, designing structured, reliable risk solutions with precision.",
   },
   {
+    name: "Khusbhoo Bajaj",
+    role: "Director",
+    department: "Director and Partner - Insurance Brokers",
+    image: khusbhoo,
+    portraitClassName: "object-[50%_70%] origin-top scale-[1.2] group-hover:scale-[1.25]",
+    bio: "A Chartered Accountant with over 15 years of professional experience, including 5 years in the global insurance industry. She brings deep expertise across audit, financial management, and reinsurance, designing structured, reliable risk solutions with precision.",
+  },
+  {
     name: "Devansh Agarwal",
     role: "Wealth Partner",
     department: "Chartered Accountant & Financial Strategist",
     image: devansh,
+    portraitClassName: "object-[50%_70%] origin-top scale-[1.2] group-hover:scale-[1.25]",
     bio: "A Chartered Accountant, Mutual Fund Distributor, and Financial Strategist with over 8 years of experience across Ernst & Young and Goldman Sachs. He blends strong technical expertise with a client-first mindset, building long-term strategies aligned with each client's evolving goals.",
   },
 ];
@@ -82,6 +97,7 @@ const ADVISORY_TEAM: TeamMember[] = [
     role: "Mutual Funds",
     department: "Executive Customer and Support",
     image: madhu,
+    cropPortrait: true,
     bio: "Madhu is a Mutual Fund Operations professional with 3 years of experience in customer support, client servicing, transaction processing, and operational activities. She handles client queries, ensures accurate processing, and coordinates effectively to deliver timely and efficient service.",
   },
   {
@@ -89,6 +105,7 @@ const ADVISORY_TEAM: TeamMember[] = [
     role: "Equity Trading",
     department: "Sr. Operations Executive",
     image: raghavendra,
+    cropPortrait: true,
     bio: "An Experienced Stock Market Dealer and Back Office Executive with 22 years of experience in trade execution, client support, order processing, account opening, KYC documentation, and maintaining accurate records. Skilled in trading and demat-related operations.",
   },
   {
@@ -96,6 +113,7 @@ const ADVISORY_TEAM: TeamMember[] = [
     role: "Equity Trading",
     department: "Senior Operations Executive",
     image: vinod,
+    cropPortrait: true,
     bio: "Vinod is an experienced professional in the financial markets industry with over 19 years of experience in client relationship management and financial operations.",
   },
   {
@@ -103,6 +121,7 @@ const ADVISORY_TEAM: TeamMember[] = [
     role: "Mutual Funds",
     department: "Executive Customer Support & Operations",
     image: indhumathi,
+    cropPortrait: true,
     bio: "Indhumathi has 1 year of experience in the mutual fund industry. She specializes in client servicing, KYC processes, transactions, documentation, and operational coordination, ensuring accuracy, compliance, and timely resolution of customer requirements.",
   },
   {
@@ -110,6 +129,7 @@ const ADVISORY_TEAM: TeamMember[] = [
     role: "Insurance",
     department: "Insurance Executive",
     image: pratap,
+    cropPortrait: true,
     bio: "A professional with 10 years of experience in broking services and insurance, building trusted financial partnerships and guiding clients toward secure, long-term wealth growth.",
   },
   {
@@ -124,6 +144,7 @@ const ADVISORY_TEAM: TeamMember[] = [
     role: "Mutual Funds",
     department: "Financial Planner & Fund Analyst",
     image: monika,
+    cropPortrait: true,
     bio: "Monika is part of the Wealth Management team, working across financial planning, mutual fund research, fund analysis, and investment research. He contributes to research-driven analysis, evaluating risk-return dynamics and investment opportunities to support long-term wealth creation strategies.",
   },
   {
@@ -145,6 +166,7 @@ const ADVISORY_TEAM: TeamMember[] = [
     role: "Mutual Funds",
     department: "Business Operations Executive",
     image: silky,
+    cropPortrait: true,
     bio: "Silky is a Business Operations Executive at Anmol Share Broking Private Limited, handling overall client coordination, business operations, digital marketing, and customer engagement activities to support smooth workflow and business growth.",
   },
   {
@@ -152,6 +174,7 @@ const ADVISORY_TEAM: TeamMember[] = [
     role: "Mutual Funds",
     department: "Research and Client Relationship Manager",
     image: vidyadheesha,
+    cropPortrait: true,
     bio: "Vidyadheesha is a finance professional with a strong understanding of markets, investments, and wealth management. He combines analytical thinking with a practical approach, while staying updated on market developments. Known for being dependable, approachable, and collaborative.",
   },
   {
@@ -159,13 +182,15 @@ const ADVISORY_TEAM: TeamMember[] = [
     role: "Team Member",
     department: "Team Member",
     image: vinaya,
+    cropPortrait: true,
     bio: "Part of the MyAnmol team, supporting the organisation's mission to make financial services more accessible and client-focused.",
   },
   {
     name: "Vaibhavi Vishwanath",
     role: "Wealth Management Officer-Client Advisory",
     department: "Mutual Funds",
-    monogram: "V",
+    image: vaibhavi,
+    cropPortrait: true,
     bio: "Vaibhavi a talented women, having great powers to overcome any obstacles in her life at MyAnmol.",
   },
 ];
@@ -204,11 +229,11 @@ export default function OurTeam() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-[340px_1fr] bg-gradient-to-br from-[#091540] to-[#0D1E52] rounded-3xl overflow-hidden shadow-xl border border-[rgba(26,59,159,0.2)] text-white">
-            <div className="relative aspect-[4/5] md:aspect-auto min-h-[320px] bg-[#0D1E52]">
+            <div className="relative aspect-[4/5] md:aspect-auto min-h-[320px] overflow-hidden bg-[#0D1E52]">
               <img
                 src={mohitBajaj}
                 alt="Mohit Bajaj"
-                className="w-full h-full object-cover object-top"
+                className="w-full h-full object-cover object-top origin-top scale-[1.2]"
               />
             </div>
             <div className="p-8 sm:p-12 flex flex-col justify-center">
@@ -251,7 +276,11 @@ export default function OurTeam() {
                     <img
                       src={member.image}
                       alt={member.name}
-                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                      decoding="async"
+                      className={`w-full h-full object-cover object-top transition-transform duration-500 ${
+                        member.cropPortrait ? "origin-top scale-[1.2] group-hover:scale-[1.25]" : "group-hover:scale-105"
+                      }`}
                     />
                   ) : (
                     member.monogram
@@ -299,7 +328,13 @@ export default function OurTeam() {
                     <img
                       src={member.image}
                       alt={member.name}
-                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                      decoding="async"
+                      className={`w-full h-full object-cover transition-transform duration-500 ${
+                        member.portraitClassName || (member.cropPortrait
+                          ? "object-top origin-top scale-[1.2] group-hover:scale-[1.25]"
+                          : "object-top group-hover:scale-105")
+                      }`}
                     />
                   )}
                 </div>
@@ -345,13 +380,17 @@ export default function OurTeam() {
                     <img
                       src={member.image}
                       alt={member.name}
-                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                      decoding="async"
+                      className={`w-full h-full object-cover transition-transform duration-500 ${
+                        member.cropPortrait
+                          ? "object-top origin-top scale-[1.2] group-hover:scale-[1.25]"
+                          : "object-center group-hover:scale-105"
+                      }`}
                       style={
-                        member.name === "Madhu Shree C"
-                          ? { transform: "translateY(14px) scale(1.18)" }
-                          : member.name === "Adhi Sheshan D"
-                            ? { objectPosition: "25% center" }
-                            : undefined
+                        member.name === "Adhi Sheshan D"
+                          ? { objectPosition: "25% center" }
+                          : undefined
                       }
                     />
                   ) : (
