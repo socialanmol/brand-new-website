@@ -34,6 +34,12 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
+      headers: {
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+      },
       host: process.env.FIGMA_DEV_SERVER_HOST || '0.0.0.0',
       port: parseInt(process.env.PORT || '8443'),
       strictPort: true,
@@ -48,6 +54,12 @@ export default defineConfig(({ mode }) => {
       watch: { ignored: ['**/.figma/**'] },
     },
     preview: {
+      headers: {
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+      },
       host: process.env.FIGMA_DEV_SERVER_HOST || '0.0.0.0',
       port: parseInt(process.env.PORT || '8443'),
       allowedHosts: ['.cursorvm.com'],
@@ -100,8 +112,8 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
     return html.replace(`<!-- ${slotName} -->`, content)
   }
 
-  const title = config.title ?? "MyAnmol - one stop solution for all financial services"
-  const description = config.description ?? ''
+  const title = config.title ?? "MyAnmol | Goal-Based Financial Planning, SIP and Mutual Funds"
+  const description = config.description ?? "Goal-based financial planning for Indian families and NRIs. Savings, insurance and mutual funds from Anmol Share Broking Pvt. Ltd., AMFI ARN 114893."
   const favicon = config.icons?.icon ?? "/favicon.png"
   const socialImage = config.openGraph?.image ?? ''
   const language = sanitizeHtmlValue(config.language) || 'en'

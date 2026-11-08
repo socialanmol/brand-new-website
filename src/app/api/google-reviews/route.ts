@@ -1,5 +1,3 @@
-import { SAMPLE_GOOGLE_REVIEWS } from "../../../data/googleReviews.ts";
-
 export const revalidate = 3600; // refresh from Google at most once an hour
 
 interface GoogleReview {
@@ -38,7 +36,7 @@ export async function GET() {
   const placeId = process.env.GOOGLE_PLACE_ID;
 
   if (!key || !placeId) {
-    return Response.json(SAMPLE_GOOGLE_REVIEWS, {
+    return Response.json({ available: false }, {
       headers: { "Cache-Control": "no-store" },
     });
   }
@@ -79,6 +77,7 @@ export async function GET() {
     mapsUrl: httpsUrl(place.googleMapsUri, ["google.com"]) || "https://www.google.com/maps",
     reviews,
     isSample: false,
+    available: true,
   }, {
     headers: { "Cache-Control": "no-store" },
   });
