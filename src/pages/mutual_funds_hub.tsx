@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AdvisorBookingModal from "../components/AdvisorBookingModal";
 import { saveForm } from "../lib/saveForm";
+import { DataConsent } from "../components/DataConsent";
 
 interface MutualFundScheme {
   id: string;
@@ -191,6 +192,7 @@ export default function MutualFundsHub() {
   const [sipSaving, setSipSaving] = useState(false);
   const [sipError, setSipError] = useState("");
   const [sipSaved, setSipSaved] = useState(false);
+  const [sipConsent, setSipConsent] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeAssetTab, setActiveAssetTab] = useState<AssetClass>("equity");
@@ -302,6 +304,7 @@ export default function MutualFundsHub() {
         scheme: investModalScheme.name,
         fundHouse: investModalScheme.fundHouse,
         month,
+        consent: true,
       });
       setSipSaved(true);
       setSipRequest(EMPTY_SIP_REQUEST);
@@ -850,6 +853,7 @@ export default function MutualFundsHub() {
                       <p className="text-[11px] text-[#6B7280]">Minimum SIP amount is ₹{investModalScheme.minSip.toLocaleString("en-IN")}</p>
                     )}
                   </label>
+                  <DataConsent id="sip-request-consent" checked={sipConsent} onChange={setSipConsent} />
                   {sipError && <p className="text-xs font-semibold text-[#B42318]">{sipError}</p>}
                   <button
                     type="submit"

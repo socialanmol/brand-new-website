@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router';
+import { DataConsent } from './DataConsent';
 import logoSrc from '@/imports/myanmolylogo.png';
 
 /* ─── TYPES ─────────────────────────────────────────────────────────────────── */
@@ -134,6 +135,7 @@ export function GetStartedModal({ onClose }: { onClose: () => void }) {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [consent, setConsent] = useState(false);
   const upd = (k: 'name' | 'phone' | 'email' | 'city', v: string) => setForm(f => ({ ...f, [k]: v }));
   const toggleInterest = (interest: string) => setForm(current => ({
     ...current,
@@ -149,12 +151,16 @@ export function GetStartedModal({ onClose }: { onClose: () => void }) {
       setError('Enter a valid 10-digit phone number.');
       return;
     }
+    if (!consent) {
+      setError('Please accept the privacy consent to continue.');
+      return;
+    }
     setSubmitting(true);
     try {
       const response = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, sourcePath: window.location.pathname }),
+        body: JSON.stringify({ ...form, consent: true, sourcePath: window.location.pathname }),
       });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) {
@@ -267,6 +273,7 @@ export function GetStartedModal({ onClose }: { onClose: () => void }) {
                   })}
                 </div>
               </div>
+              <DataConsent id="get-started-consent" checked={consent} onChange={setConsent} />
               {error && (
                 <p style={{ margin: 0, fontFamily: 'var(--fs)', fontSize: 13, fontWeight: 700, color: '#B91C1C' }}>{error}</p>
               )}

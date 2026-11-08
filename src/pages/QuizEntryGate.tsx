@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Navigate, useParams } from "react-router";
+import { DataConsent } from "../components/DataConsent";
 import QuizOne from "./quiz1";
 import QuizTwo from "./quiz2";
 import type { UserDetails } from "./quiz1";
@@ -15,6 +16,7 @@ export default function QuizEntryGate() {
   const { quizNumber } = useParams();
   const [hasStarted, setHasStarted] = useState(false);
   const [userDetails, setUserDetails] = useState<UserDetails>({ fullName: "", email: "" });
+  const [consent, setConsent] = useState(false);
 
   if (quizNumber !== "1" && quizNumber !== "2") {
     return <Navigate to="/fw/quiz" replace />;
@@ -26,6 +28,7 @@ export default function QuizEntryGate() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!consent) return;
     const formData = new FormData(event.currentTarget);
     setUserDetails({
       fullName: String(formData.get("name") ?? ""),
@@ -121,6 +124,9 @@ export default function QuizEntryGate() {
             />
           </label>
 
+          <div className="sm:col-span-2">
+            <DataConsent id={`quiz-${quizNumber}-consent`} checked={consent} onChange={setConsent} />
+          </div>
           <button
             className="mt-1 min-h-12 rounded bg-[#8DC63F] px-6 py-3 font-bold text-[#091540] transition-colors hover:bg-[#9ED64A] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1A3B9F] sm:col-span-2"
             type="submit"

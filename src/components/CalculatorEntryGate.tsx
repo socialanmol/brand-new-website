@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router";
 import { CalculatorUserProvider, type CalculatorUser } from "../calculators/user";
+import { DataConsent } from "./DataConsent";
 
 const emptyForm = { name: "", email: "", phone: "", location: "" };
 const UNLOCK_KEY = "ma-calculator-report-unlocked";
@@ -30,6 +31,7 @@ export default function CalculatorEntryGate() {
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [consent, setConsent] = useState(false);
   const pending = useRef<((value: CalculatorUser | null) => void) | null>(null);
   const profileReady = useRef(false);
   const profileWaiters = useRef<Array<() => void>>([]);
@@ -107,6 +109,7 @@ export default function CalculatorEntryGate() {
           email: form.email.trim(),
           phone: form.phone.trim(),
           location: form.location.trim(),
+          consent: true,
         }),
       });
       const body = await response.json().catch(() => ({}));
@@ -165,6 +168,7 @@ export default function CalculatorEntryGate() {
                 <label htmlFor="calculator-report-location">Current location</label>
                 <input id="calculator-report-location" name="location" autoComplete="address-level2" placeholder="Enter your current city" value={form.location} onChange={update("location")} required />
               </div>
+              <DataConsent id="calculator-report-consent" checked={consent} onChange={setConsent} />
               {error && <p className="calculator-report-error" role="alert">{error}</p>}
               <div className="calculator-report-actions">
                 <button className="calculator-report-cancel" type="button" onClick={closeForm}>Cancel</button>
