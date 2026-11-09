@@ -1,0 +1,42 @@
+# MyAnmol (Anmol Share Broking Pvt. Ltd.)
+
+> Goal-based financial planning, mutual fund and SIF distribution, insurance solicitation, and PMS distribution for Indian families and NRIs.
+
+## Regulatory identity
+
+- Legal entity: Anmol Share Broking Private Limited
+- Brand: MyAnmol
+- AMFI registration number (ARN): 114893
+- Initial AMFI registration: 16 Sep 2016
+- Current ARN validity: 15 Sep 2028
+- AMFI registrations: Mutual Fund Distributor and SIF Distributor
+- APMI PMS distributor registration: APRN01456
+- Email: mutualfunds@myanmol.com
+- Corporate office: 4th Floor, No. 39/1, 33rd Cross Road, Jayanagar 4th T Block, Above Iyengar Bakery, Bangalore 560041
+- Registered office: #23, 31 Main, J P Nagar 6 Phase, Behind Inchara Hotel, Bangalore 560078
+
+## What the firm offers
+
+- Savings, insurance and mutual fund investments planned around a household's goals.
+- SIPs can start from ₹500 a month.
+- Portfolio Management Services (PMS) distribution. SEBI minimum investment stated on the PMS page: ₹50 lakh.
+- Specialised Investment Funds (SIF), alternative investment funds, and GIFT City access.
+- Guidance for families, NRIs, doctors, women, teachers, armed forces, business owners, and Gen Z.
+- The consultation described on the site is free and has no obligation.
+
+## Canonical pages
+
+- Homepage: https://www.myanmol.com/
+- Investment services: https://www.myanmol.com/investment-services
+- Mutual funds: https://www.myanmol.com/mutual-funds
+- Portfolio Management Services: https://www.myanmol.com/services/pms
+- NRI guidance: https://www.myanmol.com/solutions/nri
+- GIFT City: https://www.myanmol.com/mutual-funds/gift-city
+- Seminars and workshops: https://www.myanmol.com/insights/seminars
+- Contact: https://www.myanmol.com/contact
+- Our team: https://www.myanmol.com/about/team
+- Regulatory disclosures: https://www.myanmol.com/regulatory
+- Privacy policy: https://www.myanmol.com/privacy-policy
+- Terms and conditions: https://www.myanmol.com/terms-and-conditions
+
+Mutual funds and securities investments are subject to market risks. Insurance is the subject matter of solicitation.

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { Clock, Users, CheckCircle, ArrowRight, ShieldCheck, Share2, Award, ChevronLeft, ChevronRight, MessageSquare } from 'lucide-react';
 import { saveForm } from '../lib/saveForm';
+import { DataConsent } from '../components/DataConsent';
 
 export default function WebinarPage() {
   // State for Registration Flow & Poll
@@ -15,6 +16,7 @@ export default function WebinarPage() {
   });
   const [pollAnswer, setPollAnswer] = useState('');
   const [saving, setSaving] = useState(false);
+  const [consent, setConsent] = useState(false);
   const [error, setError] = useState('');
 
   // Image Slider State
@@ -53,7 +55,12 @@ export default function WebinarPage() {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!consent) {
+      setError('Please accept the privacy consent to continue.');
+      return;
+    }
     if (formData.name && formData.email && formData.phone && formData.location) {
+      setError('');
       setStep('poll');
     }
   };
@@ -70,6 +77,7 @@ export default function WebinarPage() {
         location: formData.location.trim(),
         slot: formData.slot.trim(),
         poll: pollAnswer,
+        consent: true,
       });
       setStep('success');
     } catch (submitError) {
@@ -353,6 +361,8 @@ export default function WebinarPage() {
                       <option value="November 16 | 6:30 PM – 7:30 PM IST">November 16 | 6:30 PM – 7:30 PM IST</option>
                     </select>
                   </div>
+                  <DataConsent id="webinar-consent" checked={consent} onChange={setConsent} />
+                  {error && step === 'form' && <p className="text-xs font-semibold text-rose-600">{error}</p>}
                   <button 
                     type="submit" 
                     className="w-full h-11 bg-[#1A3B9F] hover:bg-[#132d7c] text-white font-extrabold text-xs uppercase tracking-wider rounded-[8px] transition cursor-pointer shadow-sm mt-2"

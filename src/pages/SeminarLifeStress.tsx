@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
 import { saveForm } from "../lib/saveForm";
+import { DataConsent } from "../components/DataConsent";
 
 export default function SeminarLifeStress() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [consent, setConsent] = useState(false);
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen">
@@ -57,7 +59,7 @@ export default function SeminarLifeStress() {
                   setSaving(true);
                   setError("");
                   try {
-                    await saveForm("seminar-life-stress", { email: email.trim() });
+                    await saveForm("seminar-life-stress", { email: email.trim(), consent: true });
                     setSubscribed(true);
                   } catch (submitError) {
                     setError(submitError instanceof Error ? submitError.message : "We could not save your email. Please try again.");
@@ -77,6 +79,9 @@ export default function SeminarLifeStress() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm mb-4 focus:border-[#1A3B9F] focus:outline-none"
                 />
+                <div className="mb-4 text-left">
+                  <DataConsent id="seminar-life-stress-consent" checked={consent} onChange={setConsent} />
+                </div>
                 {error && <p className="text-xs font-semibold text-rose-600 mb-3 text-left">{error}</p>}
                 <button
                   type="submit"

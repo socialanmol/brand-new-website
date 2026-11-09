@@ -466,7 +466,7 @@ export default function CourseLanding() {
                       className="mt-0.5 accent-[#1A3B9F]"
                     />
                     <span>
-                      I agree to the <Link to="/terms-and-conditions" className="text-[#1A3B9F] underline">Terms</Link> and consent to being contacted by MyAnmol.
+                      I agree to the <Link to="/terms-and-conditions" className="text-[#1A3B9F] underline">Terms</Link> and the <Link to="/privacy-policy" className="text-[#1A3B9F] underline">Privacy Policy</Link>. MyAnmol may use my name, phone and email to respond to this enrolment. I can withdraw this consent by emailing mutualfunds@myanmol.com.
                     </span>
                   </label>
                   {errors.consent && <p className="text-[11px] text-rose-500">Please accept the terms to continue.</p>}

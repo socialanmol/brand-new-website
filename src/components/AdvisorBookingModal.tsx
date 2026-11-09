@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { saveForm } from "../lib/saveForm";
+import { DataConsent } from "./DataConsent";
 
 interface AdvisorBookingModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ export default function AdvisorBookingModal({ isOpen, onClose }: AdvisorBookingM
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [consent, setConsent] = useState(false);
 
   if (!isOpen) return null;
 
@@ -37,6 +39,7 @@ export default function AdvisorBookingModal({ isOpen, onClose }: AdvisorBookingM
         email: form.email.trim(),
         time: form.time.trim(),
         notes: form.notes.trim(),
+        consent: true,
       });
       setSaved(true);
       setForm(emptyForm);
@@ -90,6 +93,7 @@ export default function AdvisorBookingModal({ isOpen, onClose }: AdvisorBookingM
               What would you like to plan?
               <textarea name="notes" value={form.notes} onChange={update("notes")} rows={3} className="px-3 py-2 rounded-xl border border-[#E3E8F4] font-medium" />
             </label>
+            <DataConsent id="advisor-booking-consent" checked={consent} onChange={setConsent} />
             {error && <p className="m-0 text-sm text-rose-700" role="alert">{error}</p>}
             <button type="submit" disabled={saving} className="h-12 rounded-xl bg-[#8DC63F] text-[#091540] font-extrabold text-xs border-0 cursor-pointer disabled:opacity-60">
               {saving ? "Saving…" : "Submit"}

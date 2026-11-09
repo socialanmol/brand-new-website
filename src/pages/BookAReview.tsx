@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { saveForm } from "../lib/saveForm";
+import { DataConsent } from "../components/DataConsent";
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ export function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [consent, setConsent] = useState(false);
   const [form, setForm] = useState({
     name: "",
     mobile: "",
@@ -47,6 +49,7 @@ export function BookingModal({ isOpen, onClose }: BookingModalProps) {
         mode,
         timeZone,
         notes: form.notes.trim(),
+        consent: true,
       });
       setSubmitted(true);
     } catch (submitError) {
@@ -246,6 +249,7 @@ export function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 />
               </div>
 
+              <DataConsent id="book-review-consent" checked={consent} onChange={setConsent} />
               <div className="pt-2">
                 <button
                   type="submit"

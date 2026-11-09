@@ -113,6 +113,7 @@ async function createLead(request, response) {
   const city = text(body.city, 120) || null;
   const interest = readInterests(body.interests ?? body.interest);
   const sourcePath = safePath(body.sourcePath) || null;
+  if (body.consent !== true) throw new HttpError(400, "Please accept the privacy consent to continue.");
 
   const [result] = await query(
     `INSERT INTO leads (name, phone, email, city, interest, source_path) VALUES (?, ?, ?, ?, ?, ?)`,
@@ -129,6 +130,7 @@ async function createLead(request, response) {
       `City: ${city || "—"}`,
       `Interests: ${interest || "—"}`,
       `Page: ${sourcePath || "—"}`,
+      "Consent: accepted",
     ].join("\n"),
   });
   await copyGetStartedLead({
@@ -157,7 +159,7 @@ async function createFormSubmission(request, response) {
   const formKey = text(body.form, 64);
   if (!/^[a-z0-9-]{3,64}$/.test(formKey)) throw new HttpError(400, "Choose a form.");
   rateLimit(request, `form:${formKey}`, 8, 10 * 60 * 1000);
-  const fields = readFields(formKey, body.fields);
+  const fields = { ...readFields(formKey, body.fields), consent: true };
   const sourcePath = safePath(body.sourcePath) || null;
   const [result] = await query(
     `INSERT INTO form_submissions (form_key, name, email, phone, fields, source_path) VALUES (?, ?, ?, ?, ?, ?)`,
@@ -235,6 +237,7 @@ async function createFormSubmission(request, response) {
 
 function readFields(formKey, raw) {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new HttpError(400, "Enter the form details.");
+  if (raw.consent !== true) throw new HttpError(400, "Please accept the privacy consent to continue.");
   if (formKey === "teachers") {
     return {
       name: requireName(raw.name),
@@ -266,7 +269,6 @@ function readFields(formKey, raw) {
     };
   }
   if (formKey === "course-enroll") {
-    if (raw.consent !== true) throw new HttpError(400, "Accept the terms to continue.");
     return {
       name: requireName(raw.name),
       email: requireEmail(raw.email),
@@ -351,6 +353,7 @@ async function createContact(request, response) {
   const phone = requirePhone(body.phone);
   const message = text(body.message, 4000);
   if (message.length < 2) throw new HttpError(400, "Enter a message.");
+  if (body.consent !== true) throw new HttpError(400, "Please accept the privacy consent to continue.");
   const sourceInput = text(body.source, 64);
   const source = /^[a-z0-9-]{1,64}$/.test(sourceInput) ? sourceInput : "contact-page";
 
@@ -368,6 +371,7 @@ async function createContact(request, response) {
       `Phone: ${phone}`,
       `Message: ${message}`,
       `Source: ${source}`,
+      "Consent: accepted",
     ].join("\n"),
   });
   json(response, 201, { id: result.insertId });
@@ -602,6 +606,7 @@ async function saveCalculatorProfile(request, response) {
   const phone = requireContact(body.phone);
   const location = text(body.location, 120);
   if (location.length < 2) throw new HttpError(400, "Enter your current location.");
+  if (body.consent !== true) throw new HttpError(400, "Please accept the privacy consent to continue.");
 
   const token = randomToken();
   const expiresAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);

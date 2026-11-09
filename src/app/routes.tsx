@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import Root from './Root';
 import Home from '../pages/Home';
 import GeneralInsurance from '../pages/GeneralInsurance';
@@ -121,6 +121,8 @@ export const router = createBrowserRouter([
       { path: 'services/travel', Component: SolutionsTravel },
       { path: 'services/tax', Component: TaxServices },
 
+      { path: 'nri-1', element: <Navigate to="/solutions/nri" replace /> },
+      { path: 'nri-wealth-management', element: <Navigate to="/solutions/nri" replace /> },
       { path: 'solutions/nri', Component: ForNri },
       { path: 'for-nri', Component: ForNri },
 
@@ -160,6 +162,8 @@ export const router = createBrowserRouter([
       { path: 'services/aif', Component: AlternativeInvestmentFunds },
       { path: 'mutual-funds/aifs', Component: AlternativeInvestmentFunds },
 
+      { path: 'pms', element: <Navigate to="/services/pms" replace /> },
+      { path: 'portfolio-management-services-pms', element: <Navigate to="/services/pms" replace /> },
       { path: 'services/pms', Component: PortfolioManagementServices },
       { path: 'mutual-funds/pms', Component: PortfolioManagementServices },
 

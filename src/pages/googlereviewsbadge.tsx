@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { SAMPLE_GOOGLE_REVIEWS, type GoogleReviewsData } from "../data/googleReviews";
+import { type GoogleReviewsData } from "../data/googleReviews";
 
 interface GoogleReviewsBadgeProps {
   endpoint?: string;
@@ -35,7 +35,7 @@ const ROTATE_MS = 10000;
 const GoogleReviewsBadge: React.FC<GoogleReviewsBadgeProps> = ({
   endpoint = "/api/google-reviews",
 }) => {
-  const [data, setData] = useState<GoogleReviewsData>(SAMPLE_GOOGLE_REVIEWS);
+  const [data, setData] = useState<GoogleReviewsData | null>(null);
   const [open, setOpen] = useState(false);
   const [reviewPage, setReviewPage] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -45,11 +45,10 @@ const GoogleReviewsBadge: React.FC<GoogleReviewsBadgeProps> = ({
     fetch(endpoint, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
       .then((json: GoogleReviewsData) => {
-        if (!cancelled) setData(json);
+        if (cancelled || !json || json.available === false || json.isSample || !json.rating) return;
+        setData(json);
       })
-      .catch(() => {
-        if (!cancelled) setData(SAMPLE_GOOGLE_REVIEWS);
-      });
+      .catch(() => undefined);
     return () => {
       cancelled = true;
     };
@@ -69,7 +68,7 @@ const GoogleReviewsBadge: React.FC<GoogleReviewsBadgeProps> = ({
     };
   }, [open]);
 
-  const shownReviews = data.reviews
+  const shownReviews = (data?.reviews ?? [])
     .filter((review) => review.rating === 5 || review.rating === 4)
     .sort((left, right) => right.rating - left.rating);
   const pageCount = Math.max(1, Math.ceil(shownReviews.length / PAGE_SIZE));
@@ -88,14 +87,15 @@ const GoogleReviewsBadge: React.FC<GoogleReviewsBadgeProps> = ({
 
   const visibleReviews = shownReviews.slice(reviewPage * PAGE_SIZE, reviewPage * PAGE_SIZE + PAGE_SIZE);
 
+  if (!data || data.isSample) return null;
+
   return (
     <div className="gr-root" ref={rootRef}>
       {open && (
         <div className="gr-panel" role="dialog" aria-label="Google reviews for MyAnmol">
           <div className="gr-panel-head">
             <div>
-              <strong>{data.isSample ? "Sample Google reviews" : "MyAnmol on Google"}</strong>
-              {data.isSample && <div className="gr-sample-note">Preview only — not live customer reviews</div>}
+              <strong>MyAnmol on Google</strong>
               <div className="gr-panel-sub">
                 <span className="gr-score">{data.rating.toFixed(1)}</span>
                 <Stars value={data.rating} size={14} />
@@ -128,15 +128,9 @@ const GoogleReviewsBadge: React.FC<GoogleReviewsBadgeProps> = ({
             ))}
           </ul>
 
-          {data.isSample ? (
-            <div className="gr-more gr-sample-note">
-              Live Google reviews will appear after Places API setup.
-            </div>
-          ) : (
-            <a className="gr-more" href={data.mapsUrl} target="_blank" rel="noopener noreferrer">
-              See all reviews on Google
-            </a>
-          )}
+          <a className="gr-more" href={data.mapsUrl} target="_blank" rel="noopener noreferrer">
+            See all reviews on Google
+          </a>
         </div>
       )}
 
@@ -150,7 +144,6 @@ const GoogleReviewsBadge: React.FC<GoogleReviewsBadgeProps> = ({
         <span className="gr-score">{data.rating.toFixed(1)}</span>
         <Stars value={data.rating} size={16} />
         <span className="gr-count">({data.total.toLocaleString("en-IN")})</span>
-        {data.isSample && <span className="gr-sample-tag">SAMPLE</span>}
       </button>
 
       <style>{`
