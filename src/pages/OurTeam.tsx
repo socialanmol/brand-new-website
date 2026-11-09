@@ -61,7 +61,7 @@ const FOUNDERS: TeamMember[] = [
     department: "Founder & Market Strategy Expert",
     image: sandhyaBajaj,
     cropPortrait: true,
-    bio: "At MyAnmol, she brings invaluable perspective and stability to strategic decision-making.",
+    bio: "With over 15 years of professional experience in Risk Management, Sandhya (Chartered Accountant) brings a distinctive risk-focused and strategic perspective to wealth management. Her corporate journey has shaped her belief that sound decision-making goes beyond identifying risks, it is about understanding what matters most, anticipating uncertainties and building a foundation for long-term success. These principles now guide her approach to helping individuals and families navigate their financial journeys. As Director – Wealth Management, she is passionate about translating the principles of risk management into meaningful financial outcomes by helping clients create wealth, protect their financial well-being and plan confidently for the future. By bringing together wealth creation, financial planning and life risk protection, she strives to make financial security more accessible, purposeful and enduring. Her commitment lies in building lasting client relationships founded on trust, thoughtful guidance and a shared vision of financial well-being.",
   },
 ];
 
