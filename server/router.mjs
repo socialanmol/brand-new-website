@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
 import { getPool, pingDatabase } from "./db.mjs";
 import { mailConfigured, sendReport, sendStaffCopy } from "./mail.mjs";
-import { copyGetStartedLead } from "./sanchay.mjs";
+import { copyGetStartedLead, copySeminarRegistration } from "./sanchay.mjs";
+import { loadSeminars } from "./seminar-sheet.mjs";
 import { acceptedGoogleProfile } from "./google-profile.mjs";
 import { assertSameOrigin, rateLimit } from "./guard.mjs";
 import {
@@ -67,6 +68,7 @@ export async function handleRequest(request, response) {
 
   if (method === "GET" && path === "/api/health") return health(response);
   if (method === "GET" && path === "/api/google-reviews") return googleReviews(response);
+  if (method === "GET" && path === "/api/seminars") return seminarSchedule(response);
   if (method === "POST" && path === "/api/leads") return createLead(request, response);
   if (method === "POST" && path === "/api/contact") return createContact(request, response);
   if (method === "POST" && path === "/api/forms") return createFormSubmission(request, response);
@@ -93,6 +95,16 @@ async function health(response) {
     json(response, 200, { ok: true, mysql: true });
   } catch {
     json(response, 503, { ok: false, mysql: false });
+  }
+}
+
+async function seminarSchedule(response) {
+  try {
+    const seminars = await loadSeminars();
+    json(response, 200, { seminars });
+  } catch (error) {
+    console.error("Seminar sheet failed:", error instanceof Error ? error.message : "unknown");
+    json(response, 502, { error: "Seminar schedule is unavailable" });
   }
 }
 
@@ -190,10 +202,22 @@ async function createFormSubmission(request, response) {
         `Email: ${fields.email}`,
         `Phone: ${fields.phone}`,
         `Location: ${fields.location || "—"}`,
+        `Seminar: ${fields.title || "—"}`,
         `Slot: ${fields.slot || "—"}`,
         `Poll: ${fields.poll || "—"}`,
         `Page: ${sourcePath || "—"}`,
+        "Consent: accepted",
       ].join("\n"),
+    });
+    await copySeminarRegistration({
+      name: fields.name,
+      phone: fields.phone,
+      email: fields.email,
+      title: fields.title,
+      slot: fields.slot,
+      location: fields.location,
+      poll: fields.poll,
+      sourcePath,
     });
   }
   if (formKey === "mutual-fund-sip") {
@@ -287,6 +311,7 @@ function readFields(formKey, raw) {
       location: requiredLine(raw.location, "Enter your location."),
       slot: requiredLine(raw.slot, "Choose a time slot."),
       poll: requiredLine(raw.poll, "Choose an answer."),
+      title: text(raw.title, 200),
     };
   }
   if (formKey === "mutual-fund-advisor") {

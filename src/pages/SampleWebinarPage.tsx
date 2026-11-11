@@ -1,8 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import { Clock, Users, CheckCircle, ArrowRight, ShieldCheck, Share2, Award, ChevronLeft, ChevronRight, MessageSquare } from 'lucide-react';
+import { Clock, CheckCircle, ArrowRight, ShieldCheck, Share2, Award, ChevronLeft, ChevronRight, MessageSquare } from 'lucide-react';
 import { saveForm } from '../lib/saveForm';
 import { DataConsent } from '../components/DataConsent';
+import { findTeamMember } from '../data/teamDirectory';
+
+const STATIC_TITLE = "How to manage your salary better: Save, Spend & Invest";
+
+type SeminarSlot = { label: string; startsAt: string | null; endsAt: string | null };
+type LiveSeminar = { title: string; format: string; instructor: string; slots: SeminarSlot[] };
+
+function sameTitle(left: string, right: string) {
+  return left.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim() === right.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function upcomingSlots(slots: SeminarSlot[], now: number) {
+  return slots.filter((slot) => !slot.endsAt || Date.parse(slot.endsAt) > now);
+}
+
+function countdown(startsAt: string | null, now: number) {
+  if (!startsAt) return null;
+  const diff = Date.parse(startsAt) - now;
+  if (diff <= 0) return null;
+  const total = Math.floor(diff / 1000);
+  return {
+    days: Math.floor(total / 86400),
+    hours: Math.floor((total % 86400) / 3600),
+    minutes: Math.floor((total % 3600) / 60),
+    seconds: total % 60,
+  };
+}
 
 export default function WebinarPage() {
   // State for Registration Flow & Poll
@@ -12,9 +39,11 @@ export default function WebinarPage() {
     email: '',
     phone: '',
     location: '',
-    slot: 'November 12 | 6:30 PM – 7:30 PM IST'
+    slot: ''
   });
   const [pollAnswer, setPollAnswer] = useState('');
+  const [seminar, setSeminar] = useState<LiveSeminar | null>(null);
+  const [now, setNow] = useState(() => Date.now());
   const [saving, setSaving] = useState(false);
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState('');
@@ -37,21 +66,45 @@ export default function WebinarPage() {
     { quote: "Engaging presentation style and incredible insights into smart cash flow habits.", name: "Vikram Malhotra", role: "Operations Manager" }
   ];
 
-  // Countdown Timer State
-  const [timeLeft, setTimeLeft] = useState({ days: 12, hours: 8, minutes: 45, seconds: 30 });
+  useEffect(() => {
+    let cancelled = false;
+    const load = () => {
+      fetch("/api/seminars", { cache: "no-store" })
+        .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+        .then((body: { seminars?: LiveSeminar[] }) => {
+          if (cancelled) return;
+          const seminars = body.seminars || [];
+          const match = seminars.find((item) => sameTitle(item.title, STATIC_TITLE))
+            || (seminars.length === 1 ? seminars[0] : null);
+          if (match) setSeminar(match);
+        })
+        .catch(() => undefined);
+    };
+    load();
+    const refresh = window.setInterval(load, 60_000);
+    const clock = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(refresh);
+      window.clearInterval(clock);
+    };
+  }, []);
+
+  const slots = upcomingSlots(seminar?.slots || [], now);
+  const nextSlot = slots[0] || null;
+  const title = seminar?.title || STATIC_TITLE;
+  const format = seminar?.format || "Pre-recorded sessions / Live Q&A / Live MasterClass";
+  const instructor = seminar ? findTeamMember(seminar.instructor) : null;
+  const instructorName = instructor?.name || seminar?.instructor || "Loading instructor…";
+  const timeLeft = countdown(nextSlot?.startsAt || null, now);
+  const sessionUnderway = Boolean(nextSlot?.startsAt && Date.parse(nextSlot.startsAt) <= now);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-        if (prev.minutes > 0) return { ...prev, minutes: 59, seconds: 59 };
-        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        if (prev.days > 0) return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 };
-        return prev;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+    if (!nextSlot) return;
+    setFormData((current) => current.slot && slots.some((slot) => slot.label === current.slot)
+      ? current
+      : { ...current, slot: nextSlot.label });
+  }, [nextSlot?.label]);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +112,7 @@ export default function WebinarPage() {
       setError('Please accept the privacy consent to continue.');
       return;
     }
-    if (formData.name && formData.email && formData.phone && formData.location) {
+    if (formData.name && formData.email && formData.phone && formData.location && formData.slot) {
       setError('');
       setStep('poll');
     }
@@ -77,6 +130,7 @@ export default function WebinarPage() {
         location: formData.location.trim(),
         slot: formData.slot.trim(),
         poll: pollAnswer,
+        title,
         consent: true,
       });
       setStep('success');
@@ -90,7 +144,7 @@ export default function WebinarPage() {
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: 'How to manage your salary better: Save, Spend & Invest',
+        title,
         text: 'Join this incredible masterclass with MyAnmol!',
         url: window.location.href,
       }).catch(() => {});
@@ -116,10 +170,10 @@ export default function WebinarPage() {
                 MyAnmol Money Matters Masterclass
               </span>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                How to manage your salary better: Save, Spend &amp; Invest
+                {title}
               </h1>
               <p className="text-xs sm:text-sm text-white/80 mt-2 font-light">
-                Next Batch Date: <span className="text-white font-bold">November 12; November 16</span>
+                Next Batch Date: <span className="text-white font-bold">{nextSlot?.label || (seminar ? "The next batch will be announced." : "Loading the next batch…")}</span>
               </p>
             </div>
             
@@ -168,8 +222,10 @@ export default function WebinarPage() {
       {/* Countdown Timer Bar */}
       <div className="bg-[#1A3B9F] text-white py-4 px-5 sm:px-8 shadow-sm">
         <div className="max-w-[1000px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs sm:text-sm font-semibold text-white/90">Registration closes soon. Time remaining until event:</p>
-          <div className="flex gap-3 text-center">
+          <p className="text-xs sm:text-sm font-semibold text-white/90">
+            {sessionUnderway ? "This session is underway." : "Time remaining until the next batch:"}
+          </p>
+          {timeLeft && <div className="flex gap-3 text-center">
             <div className="bg-white/10 px-3 py-1.5 rounded-[8px] border border-white/20">
               <span className="text-base font-extrabold">{timeLeft.days}</span> <span className="text-[10px] uppercase text-white/80">Days</span>
             </div>
@@ -182,7 +238,7 @@ export default function WebinarPage() {
             <div className="bg-white/10 px-3 py-1.5 rounded-[8px] border border-white/20">
               <span className="text-base font-extrabold">{timeLeft.seconds}</span> <span className="text-[10px] uppercase text-white/80">Secs</span>
             </div>
-          </div>
+          </div>}
         </div>
       </div>
 
@@ -193,21 +249,16 @@ export default function WebinarPage() {
         <div className="lg:col-span-2 space-y-8">
           
           {/* Quick Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-[#F8FAFE] p-6 rounded-[20px] border border-[#E3E8F4] text-center">
-            <div className="space-y-1">
-              <Users className="w-5 h-5 text-[#1A3B9F] mx-auto mb-1" />
-              <p className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Users Enrolled</p>
-              <p className="text-base font-extrabold text-[#091540]">145 participants</p>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#F8FAFE] p-6 rounded-[20px] border border-[#E3E8F4] text-center">
             <div className="space-y-1">
               <Clock className="w-5 h-5 text-[#1A3B9F] mx-auto mb-1" />
               <p className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Time Slot</p>
-              <p className="text-sm font-extrabold text-[#091540]">6:30 PM – 7:30 PM IST</p>
+              <p className="text-sm font-extrabold text-[#091540]">{nextSlot ? nextSlot.label.split("|").pop()?.trim() : "Announced with the next batch"}</p>
             </div>
             <div className="space-y-1">
               <ShieldCheck className="w-5 h-5 text-[#6AA32A] mx-auto mb-1" />
               <p className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Format</p>
-              <p className="text-xs font-bold text-[#091540]">Pre-recorded sessions / Live Q&amp;A / Live MasterClass</p>
+              <p className="text-xs font-bold text-[#091540]">{format}</p>
             </div>
           </div>
 
@@ -229,15 +280,25 @@ export default function WebinarPage() {
 
           {/* Instructor Bio */}
           <section className="bg-white p-8 rounded-[20px] border border-[#E3E8F4] shadow-sm flex flex-col sm:flex-row items-center gap-6">
-            <div className="w-20 h-20 bg-[#EEF2FB] text-[#1A3B9F] rounded-full flex items-center justify-center font-extrabold text-2xl shrink-0 border border-[#C5D3F2]">
-              M
+            <div className="w-24 h-24 bg-[#EEF2FB] text-[#1A3B9F] rounded-full overflow-hidden flex items-center justify-center font-extrabold text-2xl shrink-0 border border-[#C5D3F2]">
+              {instructor?.image ? (
+                <img
+                  src={instructor.image}
+                  alt={instructor.name}
+                  className={`w-full h-full object-cover ${instructor.cropPortrait ? "object-top" : "object-center"}`}
+                />
+              ) : (
+                instructorName.charAt(0)
+              )}
             </div>
             <div className="space-y-1 text-center sm:text-left">
-              <h3 className="text-lg font-bold text-[#091540]">Instructor Name: Mohit</h3>
-              <p className="text-xs font-bold text-[#6AA32A] uppercase tracking-wider">Lead Wealth Strategist, MyAnmol</p>
-              <p className="text-xs sm:text-sm text-[#6B7280] font-light leading-relaxed pt-1">
-                Founder &amp; Lead Wealth Strategist at MyAnmol, specializing in personal finance, financial independence frameworks, and client advisory with over a decade of industry expertise.
-              </p>
+              <h3 className="text-lg font-bold text-[#091540]">{instructorName}</h3>
+              <p className="text-xs font-bold text-[#6AA32A] uppercase tracking-wider">{instructor?.department || "MyAnmol"}</p>
+              {instructor?.bio && (
+                <p className="text-xs sm:text-sm text-[#6B7280] font-light leading-relaxed pt-1">
+                  {instructor.bio}
+                </p>
+              )}
             </div>
           </section>
 
@@ -355,10 +416,15 @@ export default function WebinarPage() {
                     <select 
                       value={formData.slot}
                       onChange={(e) => setFormData({...formData, slot: e.target.value})}
-                      className="w-full h-11 px-4 text-xs font-mono bg-[#EEF2FB] border border-[#C5D3F2] rounded-[8px] focus:outline-none focus:ring-2 focus:ring-[#1A3B9F] text-[#091540]"
+                      required
+                      disabled={slots.length === 0}
+                      className="w-full h-11 px-4 text-xs font-mono bg-[#EEF2FB] border border-[#C5D3F2] rounded-[8px] focus:outline-none focus:ring-2 focus:ring-[#1A3B9F] text-[#091540] disabled:text-[#6B7280]"
                     >
-                      <option value="November 12 | 6:30 PM – 7:30 PM IST">November 12 | 6:30 PM – 7:30 PM IST</option>
-                      <option value="November 16 | 6:30 PM – 7:30 PM IST">November 16 | 6:30 PM – 7:30 PM IST</option>
+                      {slots.length === 0 ? (
+                        <option value="">No upcoming slot</option>
+                      ) : slots.map((slot) => (
+                        <option key={slot.label} value={slot.label}>{slot.label}</option>
+                      ))}
                     </select>
                   </div>
                   <DataConsent id="webinar-consent" checked={consent} onChange={setConsent} />
