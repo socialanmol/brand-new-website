@@ -4,14 +4,19 @@ import { Clock, CheckCircle, ArrowRight, ShieldCheck, Share2, Award, ChevronLeft
 import { saveForm } from '../lib/saveForm';
 import { DataConsent } from '../components/DataConsent';
 import { findTeamMember } from '../data/teamDirectory';
-
-const STATIC_TITLE = "How to manage your salary better: Save, Spend & Invest";
+import { relatedSeminarTopics, seminarTopic } from '../data/personalFinanceSeminars';
 
 type SeminarSlot = { label: string; startsAt: string | null; endsAt: string | null };
-type LiveSeminar = { title: string; format: string; instructor: string; slots: SeminarSlot[] };
+type LiveSeminar = { pageId?: string; title: string; format: string; instructor: string; slots: SeminarSlot[] };
 
 function sameTitle(left: string, right: string) {
   return left.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim() === right.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function matchSeminar(seminars: LiveSeminar[], pageId: string, title: string) {
+  return seminars.find((item) => item.pageId && item.pageId.toLowerCase() === pageId.toLowerCase())
+    || seminars.find((item) => item.title && sameTitle(item.title, title))
+    || null;
 }
 
 function upcomingSlots(slots: SeminarSlot[], now: number) {
@@ -31,7 +36,14 @@ function countdown(startsAt: string | null, now: number) {
   };
 }
 
-export default function WebinarPage() {
+export function seminarPage(pageId: string) {
+  return function SeminarPage() {
+    return <WebinarPage pageId={pageId} />;
+  };
+}
+
+export default function WebinarPage({ pageId = "manage-your-salary" }: { pageId?: string }) {
+  const topic = seminarTopic(pageId);
   // State for Registration Flow & Poll
   const [step, setStep] = useState<'form' | 'poll' | 'success'>('form');
   const [formData, setFormData] = useState({
@@ -43,42 +55,39 @@ export default function WebinarPage() {
   });
   const [pollAnswer, setPollAnswer] = useState('');
   const [seminar, setSeminar] = useState<LiveSeminar | null>(null);
+  const [scheduleReady, setScheduleReady] = useState(false);
   const [now, setNow] = useState(() => Date.now());
   const [saving, setSaving] = useState(false);
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState('');
 
-  // Image Slider State
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const images = [
-    "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?auto=format&fit=crop&w=1200&q=80"
-  ];
-
-  // Testimonial Carousel State (5 testimonials)
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const testimonials = [
-    { quote: "Mohit's budgeting framework completely transformed how I handle my monthly salary. Highly practical!", name: "Rahul Sharma", role: "Software Engineer" },
-    { quote: "The 2-bank approach was an eye-opener. I finally have control over my savings vs spending.", name: "Ananya Deshmukh", role: "Marketing Specialist" },
-    { quote: "Clear, jargon-free, and extremely actionable. Every young earner should attend this masterclass.", name: "Karan Mehta", role: "Financial Analyst" },
-    { quote: "The session gave me a structured roadmap to build my first 10 lakh without stressing over every rupee.", name: "Priya Nair", role: "HR Professional" },
-    { quote: "Engaging presentation style and incredible insights into smart cash flow habits.", name: "Vikram Malhotra", role: "Operations Manager" }
-  ];
+  const images = topic?.images || [];
+  const testimonials = topic?.testimonials || [];
+  const related = relatedSeminarTopics(pageId);
 
   useEffect(() => {
     let cancelled = false;
+    setSeminar(null);
+    setScheduleReady(false);
+    setStep('form');
+    setPollAnswer('');
+    setCurrentImageIndex(0);
+    setCurrentTestimonial(0);
     const load = () => {
       fetch("/api/seminars", { cache: "no-store" })
         .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
         .then((body: { seminars?: LiveSeminar[] }) => {
-          if (cancelled) return;
-          const seminars = body.seminars || [];
-          const match = seminars.find((item) => sameTitle(item.title, STATIC_TITLE))
-            || (seminars.length === 1 ? seminars[0] : null);
-          if (match) setSeminar(match);
+          if (cancelled || !topic) return;
+          setSeminar(matchSeminar(body.seminars || [], pageId, topic.title));
         })
-        .catch(() => undefined);
+        .catch(() => {
+          if (!cancelled) setSeminar(null);
+        })
+        .finally(() => {
+          if (!cancelled) setScheduleReady(true);
+        });
     };
     load();
     const refresh = window.setInterval(load, 60_000);
@@ -88,14 +97,14 @@ export default function WebinarPage() {
       window.clearInterval(refresh);
       window.clearInterval(clock);
     };
-  }, []);
+  }, [pageId, topic]);
 
   const slots = upcomingSlots(seminar?.slots || [], now);
   const nextSlot = slots[0] || null;
-  const title = seminar?.title || STATIC_TITLE;
-  const format = seminar?.format || "Pre-recorded sessions / Live Q&A / Live MasterClass";
+  const title = seminar?.title || topic?.title || "";
+  const format = seminar?.format || (scheduleReady ? "Announced with the next batch" : "Loading format…");
   const instructor = seminar ? findTeamMember(seminar.instructor) : null;
-  const instructorName = instructor?.name || seminar?.instructor || "Loading instructor…";
+  const instructorName = instructor?.name || seminar?.instructor || (scheduleReady ? "The instructor will be announced." : "Loading instructor…");
   const timeLeft = countdown(nextSlot?.startsAt || null, now);
   const sessionUnderway = Boolean(nextSlot?.startsAt && Date.parse(nextSlot.startsAt) <= now);
 
@@ -153,6 +162,8 @@ export default function WebinarPage() {
     }
   };
 
+  if (!topic) return null;
+
   return (
     <div className="font-['Montserrat',sans-serif] bg-white text-[#111827] antialiased min-h-screen">
       
@@ -173,7 +184,7 @@ export default function WebinarPage() {
                 {title}
               </h1>
               <p className="text-xs sm:text-sm text-white/80 mt-2 font-light">
-                Next Batch Date: <span className="text-white font-bold">{nextSlot?.label || (seminar ? "The next batch will be announced." : "Loading the next batch…")}</span>
+                Next Batch Date: <span className="text-white font-bold">{nextSlot?.label || (scheduleReady ? "The next batch will be announced." : "Loading the next batch…")}</span>
               </p>
             </div>
             
@@ -266,7 +277,7 @@ export default function WebinarPage() {
           <section className="bg-white p-8 rounded-[20px] border border-[#E3E8F4] shadow-sm space-y-3">
             <h2 className="text-2xl font-bold text-[#091540]">Description</h2>
             <p className="text-sm sm:text-base text-[#374151] font-light leading-relaxed">
-              A practical entry-level masterclass for young earners on optimizing take-home pay, smart budgeting, and building healthy cash flow habits.
+              {topic.description}
             </p>
           </section>
 
@@ -274,7 +285,7 @@ export default function WebinarPage() {
           <section className="bg-white p-8 rounded-[20px] border border-[#E3E8F4] shadow-sm space-y-3">
             <h2 className="text-2xl font-bold text-[#091540]">Benefits Seen After Enrolling</h2>
             <p className="text-sm sm:text-base text-[#374151] font-light leading-relaxed">
-              Clear understanding of monthly cash allocation, reduced impulse spending, and a structured approach to initial savings.
+              {topic.benefits}
             </p>
           </section>
 
@@ -306,18 +317,14 @@ export default function WebinarPage() {
           <section className="bg-white p-8 rounded-[20px] border border-[#E3E8F4] shadow-sm space-y-4">
             <h2 className="text-2xl font-bold text-[#091540]">Check Out Other Topics Related to This Topic</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[
-                "The 2-bank approach to better budgeting",
-                "10 money mistakes that can cost you lakhs",
-                "How much should you save from your monthly income?"
-              ].map((topic, i) => (
-                <div key={i} className="p-4 rounded-[16px] border border-[#E3E8F4] bg-[#F8FAFE] hover:border-[#1A3B9F] transition flex flex-col justify-between cursor-pointer">
-                  <span className="text-xs font-bold text-[#091540] mb-3 leading-snug">{topic}</span>
+              {related.map((item) => (
+                <Link key={item.pageId} to={`/insights/seminars/${item.pageId}`} className="p-4 rounded-[16px] border border-[#E3E8F4] bg-[#F8FAFE] hover:border-[#1A3B9F] transition flex flex-col justify-between">
+                  <span className="text-xs font-bold text-[#091540] mb-3 leading-snug">{item.title}</span>
                   <div className="flex items-center gap-1 text-[11px] font-extrabold uppercase text-[#1A3B9F]">
                     <span>Explore</span>
                     <ArrowRight className="w-3 h-3" />
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </section>
@@ -451,15 +458,10 @@ export default function WebinarPage() {
                 <div className="bg-[#EEF2FB] p-4 rounded-[16px] border border-[#C5D3F2] space-y-3">
                   <div className="flex items-start gap-2 text-[#091540] font-bold text-xs">
                     <MessageSquare className="w-4 h-4 text-[#1A3B9F] shrink-0 mt-0.5" />
-                    <span>What is your primary financial goal for the next 12 months?</span>
+                    <span>{topic.pollQuestion}</span>
                   </div>
                   <div className="space-y-2 pt-1">
-                    {[
-                      "Building an emergency fund & better budgeting",
-                      "Starting my first mutual fund SIP",
-                      "Clearing existing debt / loans",
-                      "Planning for retirement / long-term wealth"
-                    ].map((option, idx) => (
+                    {topic.pollOptions.map((option, idx) => (
                       <label key={idx} className={`flex items-center gap-3 p-3 rounded-[8px] border cursor-pointer transition text-xs ${pollAnswer === option ? 'border-[#1A3B9F] bg-white text-[#091540] font-bold shadow-sm' : 'border-[#C5D3F2]/60 bg-white/50 text-[#374151] hover:bg-white'}`}>
                         <input 
                           type="radio" 

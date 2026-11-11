@@ -174,10 +174,13 @@ export function seminarsFromCsv(csv, now = new Date()) {
   const grouped = new Map();
   for (const cells of body) {
     const record = Object.fromEntries(columns.map((column, index) => [column, clean(cells[index])]));
+    const pageId = clean(record["page-id"]).toLowerCase();
     const title = record.title;
-    if (!title) continue;
-    const key = normalTitle(title);
-    const seminar = grouped.get(key) || { title, format: "", instructor: "", slots: [] };
+    if (!title && !pageId) continue;
+    const key = pageId || normalTitle(title);
+    const seminar = grouped.get(key) || { pageId, title: title || "", format: "", instructor: "", slots: [] };
+    if (pageId) seminar.pageId = pageId;
+    if (title) seminar.title = title;
     if (record.format) seminar.format = record.format;
     if (record.instructor) seminar.instructor = record.instructor;
     for (const label of labelsFromRow(record)) {
