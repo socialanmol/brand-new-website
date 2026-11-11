@@ -69,6 +69,46 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Personal Finance and Money Management Seminars | MyAnmol",
     description: "Topic list for the MyAnmol personal finance and money management masterclasses.",
   },
+  "/insights/seminars/manage-your-salary": {
+    title: "How to Manage Your Salary Better | MyAnmol",
+    description: "A MyAnmol masterclass on saving, spending and investing a monthly salary.",
+  },
+  "/insights/seminars/2-bank-approach": {
+    title: "The 2-Bank Approach to Better Budgeting | MyAnmol",
+    description: "A MyAnmol masterclass on splitting salary across spending and saving accounts.",
+  },
+  "/insights/seminars/10-money-mistakes": {
+    title: "10 Money Mistakes That Can Cost You Lakhs | MyAnmol",
+    description: "A MyAnmol masterclass on everyday money decisions that reduce what a household can keep.",
+  },
+  "/insights/seminars/how-much-to-save": {
+    title: "How Much Should You Save from Monthly Income? | MyAnmol",
+    description: "A MyAnmol masterclass on choosing a monthly savings amount that fits the rest of the bills.",
+  },
+  "/insights/seminars/build-first-10-lakh": {
+    title: "How to Build Your First ₹10 Lakh | MyAnmol",
+    description: "A MyAnmol masterclass on reaching the first ₹10 lakh from a steady monthly surplus.",
+  },
+  "/insights/seminars/credit-cards-emis-loans": {
+    title: "Credit Cards, EMIs and Personal Loans | MyAnmol",
+    description: "A MyAnmol masterclass on when borrowing helps a plan and when the interest cost works against it.",
+  },
+  "/insights/seminars/financial-independence-45": {
+    title: "Financial Independence by 45 or 50 | MyAnmol",
+    description: "A MyAnmol masterclass on the savings rate and protection behind an earlier work-optional life.",
+  },
+  "/insights/seminars/financial-planning-couples": {
+    title: "Financial Planning for Couples | MyAnmol",
+    description: "A MyAnmol masterclass on managing shared goals and personal money together.",
+  },
+  "/insights/seminars/planning-after-marriage": {
+    title: "Financial Planning after Marriage | MyAnmol",
+    description: "A MyAnmol masterclass for newly married couples on household bills, nominees and a shared emergency fund.",
+  },
+  "/insights/seminars/major-life-events": {
+    title: "Prepare Financially for Major Life Events | MyAnmol",
+    description: "A MyAnmol masterclass on funding a child, a home, a career break or care for parents.",
+  },
   "/insights/articles": {
     title: "Articles and Insights | MyAnmol",
     description: "Articles on financial planning, mutual funds and household money decisions from MyAnmol.",
