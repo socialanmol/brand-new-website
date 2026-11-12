@@ -48,6 +48,26 @@ test("keeps different page ids apart and merges rows of the same page", () => {
   assert.equal(seminars[1].instructor, "Adithya Menon");
 });
 
+test("uses the next upcoming row for instructor and format", () => {
+  const sheet = [
+    "page-id,title,next-batch-date,time-slot-availability,format,instructor",
+    "manage-your-salary,Salary class,\"November 12, 2026\",4 PM to 5 PM,Masterclass,Monica Gupta",
+    "manage-your-salary,Salary class,\"November 12, 2026\",6 PM to 7 PM,Masterclass,Adhitya Menon",
+    "manage-your-salary,Salary class,\"November 11, 2026\",2 PM to 3 PM,Pre-Recorded Sessions,Silky Kedia",
+  ].join("\n");
+  const before = seminarsFromCsv(sheet, new Date("2026-11-12T07:00:00.000Z"));
+  assert.equal(before[0].instructor, "Monica Gupta");
+  assert.equal(before[0].format, "Masterclass");
+  assert.deepEqual(before[0].slots.map((slot) => slot.label), [
+    "November 12, 2026 | 4 PM to 5 PM",
+    "November 12, 2026 | 6 PM to 7 PM",
+  ]);
+  const after = seminarsFromCsv(sheet, new Date("2026-11-12T11:31:00.000Z"));
+  assert.equal(after[0].instructor, "Adhitya Menon");
+  assert.equal(after[0].format, "Masterclass");
+  assert.deepEqual(after[0].slots.map((slot) => slot.label), ["November 12, 2026 | 6 PM to 7 PM"]);
+});
+
 test("parses the end of a slot in India time", () => {
   const window = parseSlotWindow("November 18, 2026 | 6 PM to 7 PM", new Date("2026-11-11T00:00:00.000Z"));
   assert.equal(window.endsAt, "2026-11-18T13:30:00.000Z");

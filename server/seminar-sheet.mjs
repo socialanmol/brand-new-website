@@ -181,8 +181,6 @@ export function seminarsFromCsv(csv, now = new Date()) {
     const seminar = grouped.get(key) || { pageId, title: title || "", format: "", instructor: "", slots: [] };
     if (pageId) seminar.pageId = pageId;
     if (title) seminar.title = title;
-    if (record.format) seminar.format = record.format;
-    if (record.instructor) seminar.instructor = record.instructor;
     for (const label of labelsFromRow(record)) {
       const window = parseSlotWindow(label, now);
       if (seminar.slots.some((slot) => slot.label.toLowerCase() === label.toLowerCase())) continue;
@@ -190,16 +188,25 @@ export function seminarsFromCsv(csv, now = new Date()) {
         label,
         startsAt: window?.startsAt || null,
         endsAt: window?.endsAt || null,
+        format: record.format || "",
+        instructor: record.instructor || "",
       });
     }
     grouped.set(key, seminar);
   }
-  return [...grouped.values()].map((seminar) => ({
-    ...seminar,
-    slots: seminar.slots
+  return [...grouped.values()].map((seminar) => {
+    const slots = seminar.slots
       .filter((slot) => !slot.endsAt || Date.parse(slot.endsAt) > now.getTime())
-      .sort((left, right) => Date.parse(left.startsAt || 0) - Date.parse(right.startsAt || 0)),
-  }));
+      .sort((left, right) => Date.parse(left.startsAt || 0) - Date.parse(right.startsAt || 0));
+    const next = slots[0];
+    return {
+      pageId: seminar.pageId,
+      title: seminar.title,
+      format: next?.format || "",
+      instructor: next?.instructor || "",
+      slots,
+    };
+  });
 }
 
 export async function loadSeminars(now = new Date()) {

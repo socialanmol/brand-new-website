@@ -6,7 +6,7 @@ import { DataConsent } from '../components/DataConsent';
 import { findTeamMember } from '../data/teamDirectory';
 import { relatedSeminarTopics, seminarTopic } from '../data/personalFinanceSeminars';
 
-type SeminarSlot = { label: string; startsAt: string | null; endsAt: string | null };
+type SeminarSlot = { label: string; startsAt: string | null; endsAt: string | null; format?: string; instructor?: string };
 type LiveSeminar = { pageId?: string; title: string; format: string; instructor: string; slots: SeminarSlot[] };
 
 function sameTitle(left: string, right: string) {
@@ -102,9 +102,10 @@ export default function WebinarPage({ pageId = "manage-your-salary" }: { pageId?
   const slots = upcomingSlots(seminar?.slots || [], now);
   const nextSlot = slots[0] || null;
   const title = seminar?.title || topic?.title || "";
-  const format = seminar?.format || (scheduleReady ? "Announced with the next batch" : "Loading format…");
-  const instructor = seminar ? findTeamMember(seminar.instructor) : null;
-  const instructorName = instructor?.name || seminar?.instructor || (scheduleReady ? "The instructor will be announced." : "Loading instructor…");
+  const format = nextSlot?.format || seminar?.format || (scheduleReady ? "Announced with the next batch" : "Loading format…");
+  const instructorSource = nextSlot?.instructor || seminar?.instructor || "";
+  const instructor = instructorSource ? findTeamMember(instructorSource) : null;
+  const instructorName = instructor?.name || instructorSource || (scheduleReady ? "The instructor will be announced." : "Loading instructor…");
   const timeLeft = countdown(nextSlot?.startsAt || null, now);
   const sessionUnderway = Boolean(nextSlot?.startsAt && Date.parse(nextSlot.startsAt) <= now);
 
