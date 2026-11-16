@@ -30,6 +30,9 @@ export interface TeamMember {
   monogram?: string;
   cropPortrait?: boolean;
   portraitClassName?: string;
+  headTop?: number;
+  photoWidth?: number;
+  photoHeight?: number;
   bio: string;
 }
 
@@ -47,6 +50,9 @@ export const FOUNDERS: TeamMember[] = [
     department: "Founder & Stock Market Expert",
     image: sureshBajaj,
     cropPortrait: true,
+    headTop: 0.148,
+    photoWidth: 1696,
+    photoHeight: 2528,
     bio: "A seasoned financial and stock market expert known for his sharp market intuition and practical investment approach. With over 40 years of hands-on experience, he brings a dynamic perspective to market movements, combining analytical thinking with real-time decision-making at MyAnmol.",
   },
   {
@@ -62,6 +68,9 @@ export const FOUNDERS: TeamMember[] = [
     department: "Founder & Market Strategy Expert",
     image: sandhyaBajaj,
     cropPortrait: true,
+    headTop: 0.11,
+    photoWidth: 1696,
+    photoHeight: 2528,
     bio: "At MyAnmol, she brings invaluable perspective and stability to strategic decision-making.",
   },
 ];
@@ -99,6 +108,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     department: "Executive Customer and Support",
     image: madhu,
     cropPortrait: true,
+    headTop: 0.157,
+    photoWidth: 1686,
+    photoHeight: 2528,
     bio: "Madhu is a Mutual Fund Operations professional with 3 years of experience in customer support, client servicing, transaction processing, and operational activities. She handles client queries, ensures accurate processing, and coordinates effectively to deliver timely and efficient service.",
   },
   {
@@ -107,6 +119,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     department: "Sr. Operations Executive",
     image: raghavendra,
     cropPortrait: true,
+    headTop: 0.122,
+    photoWidth: 1844,
+    photoHeight: 2304,
     bio: "An Experienced Stock Market Dealer and Back Office Executive with 22 years of experience in trade execution, client support, order processing, account opening, KYC documentation, and maintaining accurate records. Skilled in trading and demat-related operations.",
   },
   {
@@ -115,6 +130,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     department: "Senior Operations Executive",
     image: vinod,
     cropPortrait: true,
+    headTop: 0.209,
+    photoWidth: 1686,
+    photoHeight: 2528,
     bio: "Vinod is an experienced professional in the financial markets industry with over 19 years of experience in client relationship management and financial operations.",
   },
   {
@@ -123,6 +141,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     department: "Executive Customer Support & Operations",
     image: indhumathi,
     cropPortrait: true,
+    headTop: 0.152,
+    photoWidth: 1686,
+    photoHeight: 2528,
     bio: "Indhumathi has 1 year of experience in the mutual fund industry. She specializes in client servicing, KYC processes, transactions, documentation, and operational coordination, ensuring accuracy, compliance, and timely resolution of customer requirements.",
   },
   {
@@ -131,6 +152,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     department: "Insurance Executive",
     image: pratap,
     cropPortrait: true,
+    headTop: 0.128,
+    photoWidth: 1844,
+    photoHeight: 2304,
     bio: "A professional with 10 years of experience in broking services and insurance, building trusted financial partnerships and guiding clients toward secure, long-term wealth growth.",
   },
   {
@@ -146,6 +170,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     department: "Financial Planner & Fund Analyst",
     image: monika,
     cropPortrait: true,
+    headTop: 0.225,
+    photoWidth: 1686,
+    photoHeight: 2528,
     bio: "Monika is part of the Wealth Management team, working across financial planning, mutual fund research, fund analysis, and investment research. He contributes to research-driven analysis, evaluating risk-return dynamics and investment opportunities to support long-term wealth creation strategies.",
   },
   {
@@ -168,6 +195,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     department: "Business Operations Executive",
     image: silky,
     cropPortrait: true,
+    headTop: 0.098,
+    photoWidth: 1844,
+    photoHeight: 2304,
     bio: "Silky is a Business Operations Executive at Anmol Share Broking Private Limited, handling overall client coordination, business operations, digital marketing, and customer engagement activities to support smooth workflow and business growth.",
   },
   {
@@ -176,6 +206,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     department: "Research and Client Relationship Manager",
     image: vidyadheesha,
     cropPortrait: true,
+    headTop: 0.119,
+    photoWidth: 1792,
+    photoHeight: 2390,
     bio: "Vidyadheesha is a finance professional with a strong understanding of markets, investments, and wealth management. He combines analytical thinking with a practical approach, while staying updated on market developments. Known for being dependable, approachable, and collaborative.",
   },
   {
@@ -184,6 +217,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     department: "Team Member",
     image: vinaya,
     cropPortrait: true,
+    headTop: 0.158,
+    photoWidth: 1792,
+    photoHeight: 2390,
     bio: "Part of the MyAnmol team, supporting the organisation's mission to make financial services more accessible and client-focused.",
   },
   {

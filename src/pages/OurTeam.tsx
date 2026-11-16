@@ -1,6 +1,56 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
-import { FOUNDERS, SENIOR_LEADERSHIP, ADVISORY_TEAM, mohitBajaj } from "../data/teamDirectory";
+import { FOUNDERS, SENIOR_LEADERSHIP, ADVISORY_TEAM, mohitBajaj, type TeamMember } from "../data/teamDirectory";
+
+function TeamCardPhoto({
+  member,
+  fitClass,
+  style,
+}: {
+  member: TeamMember;
+  fitClass: string;
+  style?: React.CSSProperties;
+}) {
+  if (member.image && member.headTop != null && member.photoWidth && member.photoHeight) {
+    const ratio = member.photoHeight / member.photoWidth;
+    const scale = Math.max(1, (1.25 / ((1 - member.headTop) * ratio)) * 1.04);
+    const head = `${(member.headTop * 100).toFixed(2)}%`;
+    return (
+      <div
+        className="absolute left-1/2 max-w-none"
+        style={{
+          top: "3mm",
+          width: `${scale * 100}%`,
+          transform: `translate(-50%, -${head})`,
+        }}
+      >
+        <img
+          src={member.image}
+          alt={member.name}
+          width={member.photoWidth}
+          height={member.photoHeight}
+          loading="lazy"
+          decoding="async"
+          className="block w-full h-auto transition-transform duration-500 group-hover:scale-[1.04]"
+          style={{ transformOrigin: `50% ${head}` }}
+        />
+      </div>
+    );
+  }
+
+  if (!member.image) return null;
+  return (
+    <img
+      src={member.image}
+      alt={member.name}
+      loading="lazy"
+      decoding="async"
+      className={fitClass}
+      style={style}
+    />
+  );
+}
+
 export default function OurTeam() {
   const [videoOpen, setVideoOpen] = useState(false);
 
@@ -79,12 +129,9 @@ export default function OurTeam() {
               >
                 <div className="aspect-[4/5] overflow-hidden bg-[#EEF2FB] relative flex items-center justify-center text-[#1A3B9F] font-[var(--fd)] text-5xl font-extrabold select-none">
                   {member.image ? (
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      loading="lazy"
-                      decoding="async"
-                      className={`w-full h-full object-cover object-top transition-transform duration-500 ${
+                    <TeamCardPhoto
+                      member={member}
+                      fitClass={`w-full h-full object-cover object-top transition-transform duration-500 ${
                         member.cropPortrait ? "origin-top scale-[1.2] group-hover:scale-[1.25]" : "group-hover:scale-105"
                       }`}
                     />
@@ -131,12 +178,9 @@ export default function OurTeam() {
               >
                 <div className="aspect-[4/5] overflow-hidden bg-[#EEF2FB] relative">
                   {member.image && (
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      loading="lazy"
-                      decoding="async"
-                      className={`w-full h-full object-cover transition-transform duration-500 ${
+                    <TeamCardPhoto
+                      member={member}
+                      fitClass={`w-full h-full object-cover transition-transform duration-500 ${
                         member.portraitClassName || (member.cropPortrait
                           ? "object-top origin-top scale-[1.2] group-hover:scale-[1.25]"
                           : "object-top group-hover:scale-105")
@@ -183,12 +227,9 @@ export default function OurTeam() {
               >
                 <div className="aspect-[4/5] overflow-hidden bg-[#EEF2FB] relative flex items-center justify-center text-[#1A3B9F] font-[var(--fd)] text-3xl font-extrabold select-none">
                   {member.image ? (
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      loading="lazy"
-                      decoding="async"
-                      className={`w-full h-full object-cover transition-transform duration-500 ${
+                    <TeamCardPhoto
+                      member={member}
+                      fitClass={`w-full h-full object-cover transition-transform duration-500 ${
                         member.cropPortrait
                           ? "object-top origin-top scale-[1.2] group-hover:scale-[1.25]"
                           : "object-center group-hover:scale-105"
