@@ -16,7 +16,9 @@ import ForArmedForces from '../pages/ForArmedForces';
 import ForBusinessOwners from '../pages/ForBusinessOwners';
 import SeminarsWorkshops from '../pages/SeminarsWorkshops';
 import PersonalFinanceTopics from '../pages/personal-finance-money-mgt';
+import MutualFundTopics from '../pages/mutual-funds-wealth-creation';
 import SampleWebinarPage, { seminarPage } from '../pages/SampleWebinarPage';
+import { MUTUAL_FUND_SEMINARS } from '../data/mutualFundSeminars';
 import SeminarRetirementEstate from '../pages/SeminarRetirementEstate';
 import SeminarInvestingPlanning from '../pages/SeminarInvestingPlanning';
 import SeminarLifeStress from '../pages/SeminarLifeStress';
@@ -133,6 +135,7 @@ export const router = createBrowserRouter([
       { path: 'insights/seminars', Component: SeminarsWorkshops },
       { path: 'seminars', Component: SeminarsWorkshops },
       { path: 'insights/seminars/personal-finance-money-management', Component: PersonalFinanceTopics },
+      { path: 'insights/seminars/mutual-funds-wealth-creation', Component: MutualFundTopics },
       { path: 'insights/seminars/manage-your-salary', Component: SampleWebinarPage },
       { path: 'insights/seminars/2-bank-approach', Component: seminarPage('2-bank-approach') },
       { path: 'insights/seminars/10-money-mistakes', Component: seminarPage('10-money-mistakes') },
@@ -143,7 +146,10 @@ export const router = createBrowserRouter([
       { path: 'insights/seminars/financial-planning-couples', Component: seminarPage('financial-planning-couples') },
       { path: 'insights/seminars/planning-after-marriage', Component: seminarPage('planning-after-marriage') },
       { path: 'insights/seminars/major-life-events', Component: seminarPage('major-life-events') },
-      { path: 'insights/seminars/mutual-funds-101', Component: SampleWebinarPage },
+      ...MUTUAL_FUND_SEMINARS.map((topic) => ({
+        path: `insights/seminars/${topic.pageId}`,
+        Component: seminarPage(topic.pageId),
+      })),
       { path: 'insights/seminars/retirement-estate-planning', Component: SeminarRetirementEstate },
       { path: 'insights/seminars/investing-financial-planning', Component: SeminarInvestingPlanning },
       { path: 'insights/seminars/life-stress-management', Component: SeminarLifeStress },
