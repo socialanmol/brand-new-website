@@ -1,4 +1,5 @@
 import { homeFaqs } from "./homeFaqs";
+import { MUTUAL_FUND_SEMINARS } from "../data/mutualFundSeminars";
 
 const ORIGIN = "https://www.myanmol.com";
 
@@ -68,6 +69,10 @@ const pages: Record<string, { title: string; description: string }> = {
   "/insights/seminars/personal-finance-money-management": {
     title: "Personal Finance and Money Management Seminars | MyAnmol",
     description: "Topic list for the MyAnmol personal finance and money management masterclasses.",
+  },
+  "/insights/seminars/mutual-funds-wealth-creation": {
+    title: "Mutual Funds and Wealth Creation Seminars | MyAnmol",
+    description: "Topic list for the MyAnmol mutual fund and wealth creation masterclasses.",
   },
   "/insights/seminars/manage-your-salary": {
     title: "How to Manage Your Salary Better | MyAnmol",
@@ -149,6 +154,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Financial Glossary | MyAnmol",
     description: "Plain-language definitions for mutual funds, insurance and tax terms used on MyAnmol.",
   },
+  ...Object.fromEntries(MUTUAL_FUND_SEMINARS.map((topic) => [
+    `/insights/seminars/${topic.pageId}`,
+    { title: `${topic.title} | MyAnmol`, description: topic.description },
+  ])),
 };
 
 const aliases: Record<string, string> = {

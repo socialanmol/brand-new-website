@@ -257,16 +257,25 @@ export const PERSONAL_FINANCE_SEMINARS: SeminarTopic[] = [
   },
 ];
 
+import { MUTUAL_FUND_SEMINARS } from "./mutualFundSeminars";
+
+const SEMINAR_CATALOGS = [PERSONAL_FINANCE_SEMINARS, MUTUAL_FUND_SEMINARS];
+
 export function seminarTopic(pageId: string) {
-  return PERSONAL_FINANCE_SEMINARS.find((topic) => topic.pageId === pageId) || null;
+  for (const catalog of SEMINAR_CATALOGS) {
+    const topic = catalog.find((item) => item.pageId === pageId);
+    if (topic) return topic;
+  }
+  return null;
 }
 
 export function relatedSeminarTopics(pageId: string) {
-  const index = PERSONAL_FINANCE_SEMINARS.findIndex((topic) => topic.pageId === pageId);
-  if (index < 0) return [];
+  const catalog = SEMINAR_CATALOGS.find((list) => list.some((topic) => topic.pageId === pageId));
+  if (!catalog) return [];
+  const index = catalog.findIndex((topic) => topic.pageId === pageId);
   const related: SeminarTopic[] = [];
-  for (let step = 1; related.length < 3 && step < PERSONAL_FINANCE_SEMINARS.length; step += 1) {
-    related.push(PERSONAL_FINANCE_SEMINARS[(index + step) % PERSONAL_FINANCE_SEMINARS.length]);
+  for (let step = 1; related.length < 3 && step < catalog.length; step += 1) {
+    related.push(catalog[(index + step) % catalog.length]);
   }
   return related;
 }
