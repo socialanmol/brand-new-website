@@ -25,14 +25,12 @@ interface CommodityItem {
   isPositive: boolean;
 }
 
-type WrapTab = "overview" | "sectors" | "macro" | "summary" | "sector_analysis";
+type WrapTab = "overview" | "sectors" | "macro";
 
 const TABS: { id: WrapTab; label: string }[] = [
   { id: "overview", label: "📊 Market Overview & Levels" },
   { id: "sectors", label: "📈 Sector Performance" },
   { id: "macro", label: "🌐 Macro & Commodities" },
-  { id: "summary", label: "📝 Daily Summary" },
-  { id: "sector_analysis", label: "📑 Sector Analysis" },
 ];
 
 function colorValue(val: string) {
@@ -170,7 +168,7 @@ export default function DailyMarketWrap() {
   ];
   const tapeLoop = [...tape, ...tape];
 
-  const showOverview = activeTab === "overview" || activeTab === "summary" || activeTab === "sector_analysis";
+  const showOverview = activeTab === "overview";
   const showSectors = activeTab === "sectors" || activeTab === "overview";
 
   return (
@@ -433,65 +431,6 @@ export default function DailyMarketWrap() {
           </div>
         )}
 
-        <div id="daily-summary" style={{ background: "#fff", borderRadius: "14px", padding: "32px", boxShadow: "0 4px 25px rgba(26,59,159,0.08)", borderTop: "6px solid #8DC63F" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "2px solid #EEF2FB", paddingBottom: "12px", flexWrap: "wrap", gap: "10px" }}>
-            <div>
-              <span style={{ fontSize: "11px", fontWeight: 700, color: "#8DC63F", textTransform: "uppercase", letterSpacing: "1px" }}>Daily Research Report</span>
-              <h2 style={{ margin: "4px 0 0 0", fontSize: "22px", color: "#1A3B9F", fontWeight: 900 }}>DAILY SUMMARY</h2>
-            </div>
-            <div style={{ fontSize: "12px", color: "#6B7280", fontWeight: 600 }}>
-              16 November 2026 | generated on 16-Nov-26 08:01 (Powered by NGEN Research)
-            </div>
-          </div>
-          <h3 style={{ fontSize: "18px", color: "#111827", fontWeight: 800, marginBottom: "16px" }}>Indian Equity Markets Close Lower Amid Profit Booking</h3>
-          <p style={{ lineHeight: "1.8", color: "#374151", marginBottom: "16px" }}>
-            Indian equity benchmarks ended in negative territory on November 13, 2026, with broad-based selling pressure across major indices. The Nifty 50 declined 0.61% to close at 25,144.30, while the BSE SENSEX fell 0.39% to 81,592.45. Large-cap indices bore the brunt of the selloff, with the BSE LargeCap down 0.50% and the Nifty Next 50 declining 0.83%. The broader BSE 500 and Nifty 500 dropped 0.46% and 0.55% respectively. Mid and small-cap segments demonstrated relative resilience, with the BSE SmallCap shedding just 0.28% and the Nifty Midcap 100 down 0.24%, suggesting selective profit-taking in larger stocks.
-          </p>
-          <p style={{ lineHeight: "1.8", color: "#374151", marginBottom: "16px" }}>
-            The month-to-date performance reveals a sharp recovery across all segments, with the BSE SENSEX surging 9.58% and the Nifty 50 up 9.07% in November. However, year-to-date figures paint a contrasting picture, with large-cap indices remaining under pressure. The Nifty 50 is down 3.77% YTD, while the BSE SENSEX has declined 4.26% and the BSE LargeCap has fallen 2.27%. The one-year performance continues to show weakness in large-caps, with the Nifty 50 down 2.84% and the SENSEX lower by 3.42%, indicating sustained headwinds for blue-chip stocks over the past year.
-          </p>
-          <p style={{ lineHeight: "1.8", color: "#374151", marginBottom: "16px" }}>
-            Market capitalization segments are exhibiting stark performance divergence. Small-caps have emerged as clear outperformers with the BSE SmallCap up 10.29% YTD and 7.02% over one year, while the Nifty Smallcap 100 has gained 10.97% YTD and 8.10% over 12 months. Mid-caps occupy the middle ground, with the BSE MidCap posting 0.86% YTD returns and the Nifty Midcap 100 up 2.32%. Large-caps continue to lag significantly, weighed down by valuation concerns and persistent foreign institutional selling. The three-month returns highlight this trend further, with large-caps gaining 5.64% (SENSEX) versus mid-caps declining 3.44% and small-caps down 2.14%, though recent monthly momentum suggests rotation back into large-caps.
-          </p>
-          <p style={{ lineHeight: "1.8", color: "#374151", marginBottom: "20px" }}>
-            The November rally has provided a strong technical bounce for benchmark indices, with large-caps leading monthly gains as evidenced by the SENSEX's 9.79% one-month return. However, the overall market structure remains fragmented, with investors navigating between growth opportunities in smaller companies and quality plays in established large-caps. The consistent underperformance of large-cap indices on a YTD and one-year basis, juxtaposed against their recent monthly outperformance, suggests a potential trend reversal may be underway. Market participants should monitor whether this large-cap resurgence has sustainability or represents merely a technical rebound within a broader risk-off environment favoring smaller, domestically-oriented growth stories.
-          </p>
-          <div style={{ background: "#EEF2FB", padding: "12px 16px", borderRadius: "8px", fontSize: "12px", color: "#6B7280", borderLeft: "4px solid #1A3B9F" }}>
-            <strong>Disclaimer:</strong> This is an AI-generated summary produced by NGEN Research. It is intended for informational purposes only and should not be construed as investment advice.
-          </div>
-        </div>
-
-        <div id="sector-analysis" style={{ background: "#fff", borderRadius: "14px", padding: "32px", boxShadow: "0 4px 25px rgba(26,59,159,0.08)", borderTop: "6px solid #1A3B9F" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "2px solid #EEF2FB", paddingBottom: "12px", flexWrap: "wrap", gap: "10px" }}>
-            <div>
-              <span style={{ fontSize: "11px", fontWeight: 700, color: "#1A3B9F", textTransform: "uppercase", letterSpacing: "1px" }}>Sector Intelligence Report</span>
-              <h2 style={{ margin: "4px 0 0 0", fontSize: "22px", color: "#1A3B9F", fontWeight: 900 }}>SECTOR ANALYSIS</h2>
-            </div>
-            <div style={{ fontSize: "12px", color: "#6B7280", fontWeight: 600 }}>
-              16 November 2026 | generated on 16-Nov-26 08:01 (Powered by NGEN Research)
-            </div>
-          </div>
-          <h3 style={{ fontSize: "18px", color: "#111827", fontWeight: 800, marginBottom: "16px" }}>Indian Equity Sector Report - November 13, 2026</h3>
-          <h4 style={{ color: "#1A3B9F", marginBottom: "8px" }}>Daily Performance Summary</h4>
-          <p style={{ lineHeight: "1.8", color: "#374151", marginBottom: "16px" }}>
-            Indian equity sectors displayed broad-based weakness on November 13, with Nifty Energy emerging as the sole green spot, posting a modest gain of +0.03%. The session's underperformers were concentrated in cyclical and mobility-related sectors, with Nifty Realty leading the decline at -1.39%, followed closely by Nifty Mobility and Nifty Transportation & Logistics, both down -1.16%. Traditional growth sectors also faced pressure, as Nifty Auto fell -1.07% and Nifty Commodities declined -1.06%. Defensive sectors showed relative resilience, with Nifty FMCG virtually flat at -0.01% and Nifty Non-Cyclical Consumer down only -0.20%.
-          </p>
-          <h4 style={{ color: "#1A3B9F", marginBottom: "8px" }}>Month-to-Date Trends and Sector Rotation</h4>
-          <p style={{ lineHeight: "1.8", color: "#374151", marginBottom: "16px" }}>
-            November has witnessed a pronounced rotation into financials and real estate, with Nifty Financial Services Ex-Bank surging +13.82% MTD, while Nifty Realty gained +13.19% and Nifty Financial Services advanced +12.72%. Banking subsectors showed exceptional strength, with Nifty PSU Bank up +12.43% and Nifty Bank climbing +11.61%. Consumer durables and auto sectors participated in the rally, gaining +11.33% and +9.86% respectively. In stark contrast, technology remains under significant pressure with Nifty IT declining -2.07% MTD, extending its year-to-date losses to a concerning -15.71%. The divergence between domestic cyclical sectors and export-oriented technology reflects a clear risk-on sentiment favoring India's domestic growth story.
-          </p>
-          <h4 style={{ color: "#1A3B9F", marginBottom: "8px" }}>Momentum Analysis and Year-to-Date Leaders</h4>
-          <p style={{ lineHeight: "1.8", color: "#374151", marginBottom: "16px" }}>
-            Year-to-date performance reveals a bifurcated market with clear winners and losers. Nifty Pharma stands as the undisputed leader with a +25.58% YTD return, supported by strong three-month momentum of +8.25% and one-year gains of +25.78%. Nifty MidSmall Healthcare shows similar strength at +23.54% YTD. The media sector demonstrates exceptional momentum with Nifty Media up +21.67% YTD and posting the strongest six-month performance at +25.99%. Conversely, structural weakness persists in consumer staples and technology, with Nifty FMCG down -15.58% YTD and Nifty IT declining -15.71%. The Nifty Metal index presents an interesting case, showing +13.25% YTD gains despite recent three-month weakness of -2.90%, suggesting potential consolidation after earlier gains.
-          </p>
-          <h4 style={{ color: "#1A3B9F", marginBottom: "8px" }}>Key Divergences and Tactical Considerations</h4>
-          <p style={{ lineHeight: "1.8", color: "#374151", marginBottom: "20px" }}>
-            Several notable divergences warrant attention. Within financials, Nifty Private Bank significantly outperforms with a one-year return of +6.49% versus Nifty Financial Services 25/50 at -0.34%, highlighting stock-specific dispersion. The energy complex shows internal division: Nifty Energy posts +5.87% YTD while Nifty Oil & Gas lags at -7.51%, reflecting diverging fortunes between upstream and integrated players. Mid-cap segments demonstrate resilience with Nifty Midcap Select gaining +8.81% MTD, outpacing large-cap equivalents. The sharp underperformance of Nifty Dividend Opportunities 50 at -8.09% YTD suggests investors are prioritizing growth over yield in the current environment, consistent with the risk-on positioning evident across domestic cyclical sectors.
-          </p>
-          <div style={{ background: "#EEF2FB", padding: "12px 16px", borderRadius: "8px", fontSize: "12px", color: "#6B7280", borderLeft: "4px solid #1A3B9F" }}>
-            <strong>Disclaimer:</strong> This is an AI-generated summary produced by NGEN Research. It is intended for informational purposes only and should not be construed as investment advice.
-          </div>
-        </div>
       </main>
 
       <footer style={{ background: "#0D1E52", color: "#fff", padding: "24px 0", borderTop: "3px solid #8DC63F", textAlign: "center", fontSize: "12px" }}>
