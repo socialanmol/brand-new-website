@@ -50,25 +50,48 @@ const OFFICES = [
   {
     city: "Bengaluru",
     state: "KARNATAKA",
-    address: "4th Floor, 39/1, 33rd Cross Road, Above Iyengar's Bakery, 4th T Block East, Pattabhirama Nagar, Jayanagar, Bengaluru, Karnataka 560041",
+    address: [
+      "4th Floor, 39/1, 33rd Cross",
+      "Road, Above Iyengar's",
+      "Bakery, 4th T Block East",
+      "Pattabhirama Nagar,",
+      "Jayanagar, Bengaluru,",
+      "Karnataka 560041",
+    ],
     mapQuery: "39/1+33rd+Cross+Road+Jayanagar+4th+T+Block+Bengaluru+560041",
   },
   {
     city: "Jaipur",
     state: "RAJASTHAN",
-    address: "Second Floor, Plot No. 501, Opposite Centre for Happiness, Rani Sati Nagar, Nirman Nagar, Ajmer Road, Jaipur 302019",
+    address: [
+      "Second Floor, Plot No. 501",
+      "Opposite Centre for",
+      "Happiness, Rani Sati Nagar,",
+      "Nirman Nagar, Ajmer Road,",
+      "Jaipur 302019",
+    ],
     mapQuery: "Plot+No+501+Rani+Sati+Nagar+Nirman+Nagar+Jaipur+302019",
   },
   {
     city: "New Delhi",
     state: "DELHI NCR",
-    address: "E-4, 2nd Floor, Defence Colony, Main Ring Road, New Delhi 110024",
+    address: [
+      "E-4, 2nd Floor",
+      "Defence Colony, Main",
+      "Ring Road",
+      "New Delhi 110024",
+    ],
     mapQuery: "Defence+Colony+Main+Ring+Road+New+Delhi+110024",
   },
   {
     city: "Ludhiana",
     state: "PUNJAB",
-    address: "B-16, 577/8-A, Vishwakarma Street, Gill Road, Ludhiana 141003",
+    address: [
+      "B-16, 577/8-A",
+      "Vishwakarma Street,",
+      "Gill Road",
+      "Ludhiana 141003",
+    ],
     mapQuery: "Vishwakarma+Street+Gill+Road+Ludhiana+141003",
   },
 
@@ -76,13 +99,23 @@ const OFFICES = [
   {
     city: "Dibrugarh",
     state: "ASSAM",
-    address: "No. 6, Prerna, Chowkidinghi, P.O. C.R. Building, Dibrugarh 786003",
+    address: [
+      "No. 6, Prerna,",
+      "Chowkidinghi,",
+      "P.O. C.R. Building,",
+      "Dibrugarh 786003",
+    ],
     mapQuery: "Chowkidinghi+CR+Building+Dibrugarh+786003",
   },
   {
     city: "Ranchi",
     state: "JHARKHAND",
-    address: "Auto x Change, Near aadivasi boys hostel, karamtoli, Ranchi 834001",
+    address: [
+      "Auto x Change",
+      "Near aadivasi boys hostel,",
+      "karamtoli,",
+      "Ranchi 834001",
+    ],
     mapQuery: "Auto+x+Change+Near+aadivasi+boys+hostel+karamtoli+Ranchi+834001",
   },
 
@@ -283,11 +316,11 @@ export default function OurJourney() {
           </span>
 
           <div className="overflow-x-auto pb-3 snap-x snap-mandatory">
-            <div className="flex gap-4 w-max">
+            <div className="flex items-stretch gap-4 w-max">
             {OFFICES.map((off, idx) => (
               <div
                 key={idx}
-                className="snap-start shrink-0 bg-[#2D3A54]/60 border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:bg-[#2D3A54] transition-colors"
+                className="snap-start w-[250px] shrink-0 bg-[#2D3A54]/60 border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:bg-[#2D3A54] transition-colors"
               >
                 <div>
                   <h3 className="font-[var(--fd)] text-lg font-bold text-white mb-0.5">
@@ -297,16 +330,18 @@ export default function OurJourney() {
                     {off.state}
                   </span>
 
-                  <p className="text-xs text-white/75 font-light whitespace-nowrap mb-6">
-                    {off.address}
-                  </p>
+                  <div className="text-xs text-white/75 font-light leading-relaxed space-y-0.5">
+                    {off.address.map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                  </div>
                 </div>
 
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${off.mapQuery}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs font-bold text-white/90 hover:text-[#8DC63F] inline-flex items-center gap-1 transition-colors"
+                  className="mt-6 text-xs font-bold text-white/90 hover:text-[#8DC63F] inline-flex items-center gap-1 transition-colors"
                 >
                   Get Directions →
                 </a>
