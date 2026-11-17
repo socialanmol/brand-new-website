@@ -178,11 +178,6 @@ export default function DailyMarketWrap() {
       <header style={{ background: "#091540", color: "#fff", borderBottom: "3px solid #8DC63F" }}>
         <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
-            <div style={{ background: "#fff", padding: "8px 14px", borderRadius: "8px", display: "flex", alignItems: "center", gap: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>
-              <span style={{ fontSize: "22px", fontWeight: 900, color: "#1A3B9F", letterSpacing: "-0.5px" }}>ANMOL</span>
-              <div style={{ width: "2px", height: "24px", background: "#8DC63F" }} />
-              <span style={{ fontSize: "11px", fontWeight: 700, color: "#374151", textTransform: "uppercase", lineHeight: "1.2" }}>Anmol Share Broking<br />Pvt Ltd</span>
-            </div>
             <div>
               <div style={{ fontSize: "13px", fontWeight: 600, color: "#8DC63F", textTransform: "uppercase", letterSpacing: "1px" }}>Daily Market Wrap</div>
               <div style={{ fontSize: "20px", fontWeight: 800, color: "#fff" }}>13 November 2026</div>
