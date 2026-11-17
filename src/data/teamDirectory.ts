@@ -60,6 +60,9 @@ export const FOUNDERS: TeamMember[] = [
     role: "Director",
     department: "Founder and Director - Insurance Brokers",
     image: karthikeyan,
+    headTop: 0.057,
+    photoWidth: 441,
+    photoHeight: 619,
     bio: "A Fellow Chartered Accountant with over 15 years of experience in financial advisory, specializing in insurance planning and risk management. He focuses on building robust protection strategies grounded in clarity, trust, and long-term value for clients.",
   },
   {
@@ -81,6 +84,9 @@ export const SENIOR_LEADERSHIP: TeamMember[] = [
     role: "Director",
     department: "Director and Partner - Insurance Brokers",
     image: yashma,
+    headTop: 0.044,
+    photoWidth: 462,
+    photoHeight: 526,
     bio: "A Chartered Accountant with over 15 years of professional experience, including 5 years in the global insurance industry. She brings deep expertise across audit, financial management, and reinsurance, designing structured, reliable risk solutions with precision.",
   },
   {
@@ -88,7 +94,9 @@ export const SENIOR_LEADERSHIP: TeamMember[] = [
     role: "Director",
     department: "Director and Partner - Insurance Brokers",
     image: khusbhoo,
-    portraitClassName: "object-[50%_70%] origin-top scale-[1.2] group-hover:scale-[1.25]",
+    headTop: 0.14,
+    photoWidth: 1792,
+    photoHeight: 2400,
     bio: "A Chartered Accountant with over 15 years of professional experience, including 5 years in the global insurance industry. She brings deep expertise across audit, financial management, and reinsurance, designing structured, reliable risk solutions with precision.",
   },
   {
@@ -96,7 +104,9 @@ export const SENIOR_LEADERSHIP: TeamMember[] = [
     role: "Wealth Partner",
     department: "Chartered Accountant & Financial Strategist",
     image: devansh,
-    portraitClassName: "object-[50%_70%] origin-top scale-[1.2] group-hover:scale-[1.25]",
+    headTop: 0.165,
+    photoWidth: 1696,
+    photoHeight: 2528,
     bio: "A Chartered Accountant, Mutual Fund Distributor, and Financial Strategist with over 8 years of experience across Ernst & Young and Goldman Sachs. He blends strong technical expertise with a client-first mindset, building long-term strategies aligned with each client's evolving goals.",
   },
 ];
@@ -162,6 +172,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     role: "Client Advisory",
     department: "Wealth Management Officer-Client Advisory",
     image: prachi,
+    headTop: 0.082,
+    photoWidth: 2752,
+    photoHeight: 1536,
     bio: "Prachi is a Wealth Advisor at Anmol Share Broking. She brings experience across Goldman Sachs, venture capital, and investment research, with a strong understanding of financial markets, investments, and portfolio management.",
   },
   {
@@ -180,6 +193,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     role: "Mutual Funds",
     department: "Research & Operations Executive",
     image: adithya,
+    headTop: 0.064,
+    photoWidth: 2390,
+    photoHeight: 1792,
     bio: "Adithya has cleared CFA Level I and has 3+ years of experience tracking financial markets, with expertise in equity analysis, investing, and sectoral research. He brings a research-driven approach to portfolio and wealth management.",
   },
   {
@@ -187,6 +203,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     role: "Mutual Funds",
     department: "Financial Planner & Client Growth Officer",
     image: adhi,
+    headTop: 0.085,
+    photoWidth: 1508,
+    photoHeight: 1703,
     bio: "Adhi is a CFA Level I cleared professional with 2 years of experience closely following financial markets and studying investment opportunities across sectors. With a focus on equity research and market analysis, he brings a disciplined, research-oriented approach to portfolio management.",
   },
   {
@@ -228,6 +247,9 @@ export const ADVISORY_TEAM: TeamMember[] = [
     department: "Mutual Funds",
     image: vaibhavi,
     cropPortrait: true,
+    headTop: 0.06,
+    photoWidth: 1792,
+    photoHeight: 2400,
     bio: "Vaibhavi a talented women, having great powers to overcome any obstacles in her life at MyAnmol.",
   },
 ];

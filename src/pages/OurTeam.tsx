@@ -89,7 +89,8 @@ export default function OurTeam() {
               <img
                 src={mohitBajaj}
                 alt="Mohit Bajaj"
-                className="w-full h-full object-cover object-top origin-top scale-[1.2]"
+                className="absolute left-1/2 h-[128%] w-auto max-w-none"
+                style={{ top: "3mm", transform: "translate(-50%, -12.1%)" }}
               />
             </div>
             <div className="p-8 sm:p-12 flex flex-col justify-center">
@@ -234,11 +235,6 @@ export default function OurTeam() {
                           ? "object-top origin-top scale-[1.2] group-hover:scale-[1.25]"
                           : "object-center group-hover:scale-105"
                       }`}
-                      style={
-                        member.name === "Adhi Sheshan D"
-                          ? { objectPosition: "25% center" }
-                          : undefined
-                      }
                     />
                   ) : (
                     member.monogram
