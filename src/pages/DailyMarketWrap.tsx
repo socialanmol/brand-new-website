@@ -1,29 +1,5 @@
 import { useEffect, useState } from "react";
-
-interface MarketItem {
-  name: string;
-  level: string;
-  today: string;
-  todayNum: number;
-  mtd: string;
-  y1: string;
-  y1Num: number;
-}
-
-interface MacroItem {
-  indicator: string;
-  frequency: string;
-  period: string;
-  value: string;
-  unit: string;
-}
-
-interface CommodityItem {
-  name: string;
-  price: string;
-  change: string;
-  isPositive: boolean;
-}
+import { MACRO_DATA, MARKET_WRAPS, type MarketWrapEdition } from "@/data/marketWraps";
 
 type WrapTab = "overview" | "sectors" | "macro";
 
@@ -43,7 +19,7 @@ function colorValue(val: string) {
   );
 }
 
-export default function DailyMarketWrap() {
+export default function DailyMarketWrap({ edition = "13-nov" }: { edition?: MarketWrapEdition }) {
   const [activeTab, setActiveTab] = useState<WrapTab>("overview");
   const [currentTime, setCurrentTime] = useState("");
 
@@ -61,104 +37,23 @@ export default function DailyMarketWrap() {
     return () => clearInterval(timer);
   }, []);
 
-  const indicesLargeCap: MarketItem[] = [
-    { name: "Nifty 50", level: "25,144.30", today: "-0.61%", todayNum: -0.61, mtd: "+9.07%", y1: "-2.84%", y1Num: -2.84 },
-    { name: "BSE Sensex", level: "81,592.45", today: "-0.39%", todayNum: -0.39, mtd: "+9.58%", y1: "-3.42%", y1Num: -3.42 },
-  ];
-
-  const indicesBroad: MarketItem[] = [
-    { name: "BSE 500", level: "37,160.37", today: "-0.46%", todayNum: -0.46, mtd: "+8.50%", y1: "-0.52%", y1Num: -0.52 },
-    { name: "Nifty 500", level: "23,734.20", today: "-0.55%", todayNum: -0.55, mtd: "+8.40%", y1: "-0.34%", y1Num: -0.34 },
-  ];
-
-  const indicesMidSmall: MarketItem[] = [
-    { name: "Nifty Next 50", level: "72,874.70", today: "-0.83%", todayNum: -0.83, mtd: "+7.63%", y1: "+4.33%", y1Num: 4.33 },
-    { name: "Nifty Midcap 100", level: "61,889.50", today: "-0.24%", todayNum: -0.24, mtd: "+8.01%", y1: "+1.97%", y1Num: 1.97 },
-    { name: "Nifty Smallcap 100", level: "19,656.45", today: "-0.26%", todayNum: -0.26, mtd: "+6.46%", y1: "+8.10%", y1Num: 8.10 },
-  ];
-
-  const worldMarkets: MarketItem[] = [
-    { name: "Dow Jones", level: "52,297.09", today: "-0.36%", todayNum: -0.36, mtd: "+1.02%", y1: "+8.38%", y1Num: 8.38 },
-    { name: "S&P 500", level: "7,592.40", today: "-0.35%", todayNum: -0.35, mtd: "+0.16%", y1: "+10.82%", y1Num: 10.82 },
-    { name: "Nasdaq", level: "25,366.09", today: "-0.39%", todayNum: -0.39, mtd: "-0.28%", y1: "+8.37%", y1Num: 8.37 },
-    { name: "FTSE 100", level: "10,863.09", today: "+0.25%", todayNum: 0.25, mtd: "+1.24%", y1: "+9.60%", y1Num: 9.60 },
-    { name: "CAC 40", level: "8,361.36", today: "+0.34%", todayNum: 0.34, mtd: "+4.92%", y1: "+1.46%", y1Num: 1.46 },
-    { name: "DAX", level: "26,771.88", today: "+0.41%", todayNum: 0.41, mtd: "+3.69%", y1: "+9.80%", y1Num: 9.80 },
-    { name: "Nikkei", level: "61,712.84", today: "+0.74%", todayNum: 0.74, mtd: "-2.49%", y1: "+20.61%", y1Num: 20.61 },
-    { name: "Hang Seng", level: "24,008.55", today: "-1.26%", todayNum: -1.26, mtd: "+3.07%", y1: "-11.01%", y1Num: -11.01 },
-    { name: "CBOE VIX", level: "18.70", today: "+6.92%", todayNum: 6.92, mtd: "-3.71%", y1: "+6.80%", y1Num: 6.80 },
-  ];
-
-  const bestSectors = [
-    { name: "IPO", val: 22.4 },
-    { name: "TELECOM", val: 19.8 },
-    { name: "HEALTHCARE", val: 18.7 },
-    { name: "METAL", val: 15.4 },
-    { name: "REIT & INVIT", val: 14.9 },
-    { name: "SME IPO", val: 12.7 },
-    { name: "POWER", val: 7.5 },
-    { name: "BANKEX", val: 5.1 },
-    { name: "SERVICES", val: 5.1 },
-    { name: "INDUSTRIALS", val: 4.9 },
-  ];
-
-  const worstSectors = [
-    { name: "IT", val: -15.6 },
-    { name: "FMCG", val: -13.2 },
-    { name: "TECK", val: -9.5 },
-    { name: "OIL & GAS", val: -8.8 },
-    { name: "ENERGY", val: -6.4 },
-    { name: "HOUSING", val: -5.5 },
-    { name: "CPSE", val: -4.2 },
-    { name: "INFRASTRUCTURE", val: -3.6 },
-    { name: "REALTY", val: -1.9 },
-    { name: "POWER & ENERGY", val: -1.6 },
-  ];
-
-  const bseSectorsList = [
-    { name: "IPO", level: "19,535.27", today: "+1.45%", mtd: "+9.42%", y1: "+22.44%" },
-    { name: "Telecom", level: "3,761.21", today: "+0.28%", mtd: "+2.36%", y1: "+19.76%" },
-    { name: "Healthcare", level: "52,884.38", today: "-0.24%", mtd: "+5.41%", y1: "+18.70%" },
-    { name: "Metal", level: "40,457.16", today: "-0.93%", mtd: "+7.13%", y1: "+15.39%" },
-    { name: "REIT & InvIT", level: "152.45", today: "-0.41%", mtd: "+1.14%", y1: "+14.88%" },
-    { name: "SME IPO", level: "1,17,808.56", today: "+0.12%", mtd: "+4.65%", y1: "+12.65%" },
-    { name: "Power", level: "7,211.51", today: "+0.33%", mtd: "+4.94%", y1: "+7.46%" },
-    { name: "Bankex", level: "68,809.34", today: "-0.64%", mtd: "+12.04%", y1: "+5.14%" },
-    { name: "Services", level: "1,713.62", today: "+0.45%", mtd: "+8.61%", y1: "+5.11%" },
-    { name: "Industrials", level: "15,889.00", today: "-0.07%", mtd: "+6.45%", y1: "+4.88%" },
-    { name: "Private Banks", level: "21,503.27", today: "+0.74%", mtd: "+13.08%", y1: "+4.02%" },
-    { name: "Commodities", level: "8,220.22", today: "-1.11%", mtd: "+6.91%", y1: "+3.58%" },
-  ];
-
-  const commodities: CommodityItem[] = [
-    { name: "Gold ($/oz)", price: "3,876.43", change: "-2.79%", isPositive: false },
-    { name: "Silver ($/oz)", price: "50.02", change: "-3.19%", isPositive: false },
-    { name: "Crude Oil ($/bbl)", price: "88.74", change: "+2.55%", isPositive: true },
-    { name: "Natural Gas ($/MMBtu)", price: "3.34", change: "+3.89%", isPositive: true },
-    { name: "USD/INR", price: "94.04", change: "+0.38%", isPositive: true },
-    { name: "India VIX", price: "15.49", change: "-6.80%", isPositive: false },
-  ];
-
-  const macroData: MacroItem[] = [
-    { indicator: "Inflation Rate", frequency: "Monthly", period: "Oct-2026", value: "6.09", unit: "percent" },
-    { indicator: "Interest Rate", frequency: "Daily", period: "07-Oct-2026", value: "5.50", unit: "percent" },
-    { indicator: "Unemployment Rate", frequency: "Monthly", period: "Sep-2026", value: "5.00", unit: "percent" },
-    { indicator: "GDP", frequency: "Yearly", period: "2025", value: "3,956.07", unit: "USD Billion" },
-    { indicator: "GDP Annual Growth Rate", frequency: "Quarterly", period: "Jun-2026", value: "7.80", unit: "percent" },
-    { indicator: "Government Debt to GDP", frequency: "Yearly", period: "2025", value: "81.85", unit: "percent of GDP" },
-    { indicator: "Government Spending", frequency: "Quarterly", period: "Jun-2026", value: "8,548.77", unit: "INR Billion" },
-    { indicator: "Current Account to GDP", frequency: "Yearly", period: "2025", value: "-0.60", unit: "percent of GDP" },
-    { indicator: "Consumer Price Index (CPI)", frequency: "Monthly", period: "Oct-2026", value: "110.05", unit: "points" },
-  ];
-
-  const levelCards = [
-    { title: "NIFTY 50", level: "25,144.30", d1: "-0.61%", y1: "-2.84%", pos: false },
-    { title: "BSE SENSEX", level: "81,592.45", d1: "-0.39%", y1: "-3.42%", pos: false },
-    { title: "INDIA 10Y", level: "7.25%", d1: "+0.38%", y1: "+6.13%", pos: true },
-    { title: "USD/INR", level: "94.04", d1: "+2.79%", y1: "+2.55%", pos: true },
-    { title: "CRUDE OIL ($/bbl)", level: "$88.74", d1: "+2.55%", y1: "-7.60%", pos: true },
-    { title: "GOLD ($/oz)", level: "$3,876.43", d1: "-2.79%", y1: "+51.72%", pos: false },
-  ];
+  const {
+    dateLabel,
+    updatedLabel,
+    commentary,
+    notes,
+    lossScale,
+    indicesLargeCap,
+    indicesBroad,
+    indicesMidSmall,
+    worldMarkets,
+    bestSectors,
+    worstSectors,
+    bseSectorsList,
+    commodities,
+    levelCards,
+  } = MARKET_WRAPS[edition];
+  const macroData = MACRO_DATA;
 
   const tape = [
     ...indicesLargeCap.map((item) => ({ name: item.name, figure: item.level, change: item.today })),
@@ -178,7 +73,7 @@ export default function DailyMarketWrap() {
           <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
             <div>
               <div style={{ fontSize: "13px", fontWeight: 600, color: "#8DC63F", textTransform: "uppercase", letterSpacing: "1px" }}>Daily Market Wrap</div>
-              <div style={{ fontSize: "20px", fontWeight: 800, color: "#fff" }}>13 November 2026</div>
+              <div style={{ fontSize: "20px", fontWeight: 800, color: "#fff" }}>{dateLabel}</div>
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
@@ -233,24 +128,17 @@ export default function DailyMarketWrap() {
             <div style={{ background: "#fff", borderRadius: "14px", padding: "24px", boxShadow: "0 4px 20px rgba(26,59,159,0.08)", borderLeft: "6px solid #1A3B9F" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "8px" }}>
                 <h2 style={{ margin: 0, fontSize: "18px", color: "#1A3B9F", fontWeight: 800 }}>MARKET COMMENTARY & MACRO CONTEXT</h2>
-                <span style={{ fontSize: "11px", background: "#EFF8E2", color: "#6AA32A", padding: "4px 10px", borderRadius: "20px", fontWeight: 700 }}>Updated 13 Nov, 3:36 PM</span>
+                <span style={{ fontSize: "11px", background: "#EFF8E2", color: "#6AA32A", padding: "4px 10px", borderRadius: "20px", fontWeight: 700 }}>{updatedLabel}</span>
               </div>
               <p style={{ margin: "0 0 16px 0", fontSize: "14px", lineHeight: "1.7", color: "#374151" }}>
-                Nifty 50 fell 0.61% to 25,144.30 while Sensex dropped 0.39% to 81,592.45; crude oil slipped 0.34% to USD 88.44/barrel, gold rose 0.39% to USD 3,900.50/oz, and INR weakened 0.22% to INR 94.25 per dollar.
+                {commentary}
               </p>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "12px" }}>
-                <div style={{ background: "#EEF2FB", padding: "12px 16px", borderRadius: "8px", fontSize: "13px" }}>
-                  <strong>Export Momentum:</strong> India's October exports surged 29.9% year-on-year to USD 89.99 billion.
-                </div>
-                <div style={{ background: "#EEF2FB", padding: "12px 16px", borderRadius: "8px", fontSize: "13px" }}>
-                  <strong>Auto Sector Growth:</strong> Passenger vehicle dispatches hit record 5.19 lakh units in October 2024.
-                </div>
-                <div style={{ background: "#EEF2FB", padding: "12px 16px", borderRadius: "8px", fontSize: "13px" }}>
-                  <strong>Gold Demand:</strong> Domestic gold prices around INR 137,000 per 10 grams amid festive buying.
-                </div>
-                <div style={{ background: "#EEF2FB", padding: "12px 16px", borderRadius: "8px", fontSize: "13px" }}>
-                  <strong>Trade Balance:</strong> India's trade deficit narrowed to USD 20.09 billion from USD 25.15 billion.
-                </div>
+                {notes.map((note) => (
+                  <div key={note.title} style={{ background: "#EEF2FB", padding: "12px 16px", borderRadius: "8px", fontSize: "13px" }}>
+                    <strong>{note.title}:</strong> {note.body}
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -354,7 +242,7 @@ export default function DailyMarketWrap() {
                       <span style={{ color: "#EF4444" }}>{sector.val}%</span>
                     </div>
                     <div style={{ width: "100%", background: "#F3F4F6", height: "10px", borderRadius: "5px", overflow: "hidden" }}>
-                      <div style={{ width: `${(Math.abs(sector.val) / 18) * 100}%`, background: "#EF4444", height: "100%", borderRadius: "5px" }} />
+                      <div style={{ width: `${(Math.abs(sector.val) / lossScale) * 100}%`, background: "#EF4444", height: "100%", borderRadius: "5px" }} />
                     </div>
                   </div>
                 ))}

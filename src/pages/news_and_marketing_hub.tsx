@@ -10,9 +10,21 @@ interface NewsItem {
   content: string;
   readTime: string;
   layout?: 'market-wrap';
+  edition?: '13-nov' | '16-nov';
 }
 
 const NEWS_DATA: NewsItem[] = [
+  {
+    id: 'daily-market-wrap-16-nov-2026',
+    title: 'Daily Market Wrap 16 November 2026',
+    date: '17th November, 2026',
+    category: 'Market Wrap',
+    summary: 'On November 16, 2026, Indian markets finished higher, with the Nifty 50 rising 0.58% to 25,291.10 and the Sensex gaining 0.63% to 82,104.79. Macroeconomic pressures persist as headline retail inflation hit a two-year high of 6.09%, fueling expectations of a December rate hike by the RBI. On the corporate front, Mahanadi Coalfields announced an INR 9,000 crore IPO opening on November 19, alongside positive quarterly results from J. Kumar Infraprojects and Belrise Industries. Meanwhile, India inaugurated a new 80,000-tonne LPG storage facility in Mangaluru to enhance strategic energy reserves, while crude oil traded around $88.56 per barrel and gold stood near $3,881.75 per ounce.',
+    content: '',
+    readTime: 'Full report',
+    layout: 'market-wrap',
+    edition: '16-nov',
+  },
   {
     id: 'daily-market-wrap-13-nov-2026',
     title: 'Daily Market Wrap 13 November 2026',
@@ -22,15 +34,7 @@ const NEWS_DATA: NewsItem[] = [
     content: '',
     readTime: 'Full report',
     layout: 'market-wrap',
-  },
-  {
-    id: 'nri-gift-city-growth',
-    title: 'NRI Wealth Inflows Surge in GIFT City USD-Denominated Funds',
-    date: 'October 10, 2026',
-    category: 'Global Wealth',
-    summary: 'Non-Resident Indians increasingly leverage GIFT City structures for tax-efficient investments and global diversification.',
-    content: 'Global private banking desks note a significant uptick in NRI capital repatriation through NRE/NRO channels into GIFT City vehicles. With favorable Double Taxation Avoidance Agreements (DTAA) and dollar-denominated fund options, our dedicated NRI wealth desk at MyAnmol has recorded a 45% YoY growth in cross-border advisory sessions.',
-    readTime: '3 min read'
+    edition: '13-nov',
   },
   {
     id: 'sip-discipline-milestone',
@@ -73,7 +77,7 @@ export default function NewsAndMarketingHub() {
                   ← Back to All News
                 </button>
                 {selectedNews.layout === 'market-wrap' ? (
-                  <DailyMarketWrap />
+                  <DailyMarketWrap key={selectedNews.id} edition={selectedNews.edition ?? '13-nov'} />
                 ) : (
                 <>
                 <div className="space-y-2">
