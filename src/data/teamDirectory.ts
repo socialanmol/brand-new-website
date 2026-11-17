@@ -1,5 +1,6 @@
 import { matchPerson } from "./matchName";
 import mohitBajaj from "@/imports/mohit_bajaj.png";
+import maheshBajaj from "@/imports/Mahesh Bajaj.png";
 import sureshBajaj from "@/imports/Suresh Bajaj.png";
 import sandhyaBajaj from "@/imports/Sandhya Bajaj.png";
 import vaibhavi from "@/imports/Vaibhavi.png";
@@ -41,7 +42,11 @@ export const FOUNDERS: TeamMember[] = [
     name: "Mahesh Bajaj",
     role: "Founder",
     department: "Founder & Market Strategy Expert",
-    monogram: "MB",
+    image: maheshBajaj,
+    cropPortrait: true,
+    headTop: 0.098,
+    photoWidth: 686,
+    photoHeight: 1024,
     bio: "A highly respected financial and stock market expert with over 45 years of experience across diverse market cycles. Known for his disciplined approach and deep market understanding. he has guided investors toward sustainable wealth creation. At MyAnmol, he brings invaluable perspective and stability to strategic decision-making.",
   },
   {
