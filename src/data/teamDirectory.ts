@@ -44,7 +44,7 @@ export const FOUNDERS: TeamMember[] = [
     department: "Founder & Market Strategy Expert",
     image: maheshBajaj,
     cropPortrait: true,
-    headTop: 0.098,
+    headTop: 0.107,
     photoWidth: 686,
     photoHeight: 1024,
     bio: "A highly respected financial and stock market expert with over 45 years of experience across diverse market cycles. Known for his disciplined approach and deep market understanding. he has guided investors toward sustainable wealth creation. At MyAnmol, he brings invaluable perspective and stability to strategic decision-making.",
