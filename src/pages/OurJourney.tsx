@@ -107,6 +107,17 @@ const OFFICES = [
     ],
     mapQuery: "Chowkidinghi+CR+Building+Dibrugarh+786003",
   },
+  {
+    city: "Ranchi",
+    state: "JHARKHAND",
+    address: [
+      "Auto x Change",
+      "Near aadivasi boys hostel,",
+      "karamtoli,",
+      "Ranchi 834001",
+    ],
+    mapQuery: "Auto+x+Change+Near+aadivasi+boys+hostel+karamtoli+Ranchi+834001",
+  },
 
 ];
 
@@ -304,7 +315,7 @@ export default function OurJourney() {
             Our Offices
           </span>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {OFFICES.map((off, idx) => (
               <div
                 key={idx}
