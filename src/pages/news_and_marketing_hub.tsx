@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import DailyMarketWrap from './DailyMarketWrap';
 
 interface NewsItem {
   id: string;
@@ -8,6 +9,7 @@ interface NewsItem {
   summary: string;
   content: string;
   readTime: string;
+  layout?: 'market-wrap';
 }
 
 interface SocialPost {
@@ -21,13 +23,14 @@ interface SocialPost {
 
 const NEWS_DATA: NewsItem[] = [
   {
-    id: 'sebi-mf-review-2026',
-    title: 'SEBI Streamlines Mutual Fund Regulations & Indexation Norms for 2026',
-    date: 'October 18, 2026',
-    category: 'Regulatory Update',
-    summary: 'Key amendments regarding mutual fund expense ratios, indexation benefits, and enhanced transparency mandates for AMFI registered distributors.',
-    content: 'The Securities and Exchange Board of India (SEBI) has released a comprehensive review of mutual fund distribution frameworks. As an AMFI-registered distributor (ARN: 114893), MyAnmol is fully aligned with these enhancements. Key highlights include transparent disclosure of total expense ratios (TER), simplified digital onboarding protocols, and updated capital gains tax indexation rules. Investors are advised to consult their wealth advisors for portfolio rebalancing.',
-    readTime: '4 min read'
+    id: 'daily-market-wrap-13-nov-2026',
+    title: 'Daily Market Wrap 13 November 2026',
+    date: '16th November, 2026',
+    category: 'Market Wrap',
+    summary: 'On November 13, 2026, Indian equities closed lower, with the Nifty 50 dropping 0.61% to 25,144.30 and the BSE Sensex falling 0.39% to 81,592.45. Despite the market downturn, positive macroeconomic indicators emerged, including a 29.9% year-on-year surge in October exports to USD 89.99 billion and a narrowed trade deficit of USD 20.09 billion. Additionally, robust domestic gold demand persisted around festive buying. In commodity and currency markets, crude oil traded at USD 88.74 per barrel, gold stood at USD 3,876.43 per ounce, and the Indian rupee weakened slightly to 94.04 against the US dollar.',
+    content: '',
+    readTime: 'Full report',
+    layout: 'market-wrap',
   },
   {
     id: 'nri-gift-city-growth',
@@ -140,13 +143,17 @@ export default function NewsAndMarketingHub() {
         {activeTab === 'news' && (
           <div className="space-y-8 animate-fadeIn">
             {selectedNews ? (
-              <div className="bg-white border border-[#E3E8F4] rounded-[24px] p-6 sm:p-10 shadow-sm space-y-6">
+              <div className={selectedNews.layout === 'market-wrap' ? 'space-y-4' : 'bg-white border border-[#E3E8F4] rounded-[24px] p-6 sm:p-10 shadow-sm space-y-6'}>
                 <button
                   onClick={() => setSelectedNews(null)}
                   className="inline-flex items-center gap-2 text-xs font-bold text-[#1A3B9F] bg-[#EEF2FB] px-4 py-2 rounded-[8px] hover:bg-[#dce5f8] transition-colors cursor-pointer border-0"
                 >
                   ← Back to All News
                 </button>
+                {selectedNews.layout === 'market-wrap' ? (
+                  <DailyMarketWrap />
+                ) : (
+                <>
                 <div className="space-y-2">
                   <span className="text-xs font-extrabold uppercase tracking-wider text-[#6AA32A] bg-[#EFF8E2] px-3 py-1 rounded-full">
                     {selectedNews.category}
@@ -165,6 +172,8 @@ export default function NewsAndMarketingHub() {
                   </p>
                   <p>{selectedNews.content}</p>
                 </div>
+                </>
+                )}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -184,7 +193,7 @@ export default function NewsAndMarketingHub() {
                       <h3 className="font-[var(--fd)] text-lg font-bold text-[#091540] line-clamp-2">
                         {news.title}
                       </h3>
-                      <p className="text-xs text-[#6B7280] line-clamp-3 leading-relaxed">
+                      <p className={`text-xs text-[#6B7280] leading-relaxed ${news.layout === 'market-wrap' ? '' : 'line-clamp-3'}`}>
                         {news.summary}
                       </p>
                     </div>
