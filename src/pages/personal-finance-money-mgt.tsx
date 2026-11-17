@@ -109,7 +109,7 @@ export default function PersonalFinanceTopics() {
             Personal Finance &amp; <span className="text-[#8DC63F] italic">Money Management.</span>
           </h1>
           <p className="text-sm sm:text-base text-white/80 font-light leading-relaxed">
-            High priority audience-building masterclasses designed to attract and guide you from budgeting fundamentals to absolute financial independence[cite: 1].
+            High priority audience-building masterclasses designed to attract and guide you from budgeting fundamentals to absolute financial independence.
           </p>
         </div>
       </section>
