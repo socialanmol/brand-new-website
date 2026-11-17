@@ -50,48 +50,25 @@ const OFFICES = [
   {
     city: "Bengaluru",
     state: "KARNATAKA",
-    address: [
-      "4th Floor, 39/1, 33rd Cross",
-      "Road, Above Iyengar's",
-      "Bakery, 4th T Block East",
-      "Pattabhirama Nagar,",
-      "Jayanagar, Bengaluru,",
-      "Karnataka 560041",
-    ],
+    address: "4th Floor, 39/1, 33rd Cross Road, Above Iyengar's Bakery, 4th T Block East, Pattabhirama Nagar, Jayanagar, Bengaluru, Karnataka 560041",
     mapQuery: "39/1+33rd+Cross+Road+Jayanagar+4th+T+Block+Bengaluru+560041",
   },
   {
     city: "Jaipur",
     state: "RAJASTHAN",
-    address: [
-      "Second Floor, Plot No. 501",
-      "Opposite Centre for",
-      "Happiness, Rani Sati Nagar,",
-      "Nirman Nagar, Ajmer Road,",
-      "Jaipur 302019",
-    ],
+    address: "Second Floor, Plot No. 501, Opposite Centre for Happiness, Rani Sati Nagar, Nirman Nagar, Ajmer Road, Jaipur 302019",
     mapQuery: "Plot+No+501+Rani+Sati+Nagar+Nirman+Nagar+Jaipur+302019",
   },
   {
     city: "New Delhi",
     state: "DELHI NCR",
-    address: [
-      "E-4, 2nd Floor",
-      "Defence Colony, Main",
-      "Ring Road",
-      "New Delhi 110024",
-    ],
+    address: "E-4, 2nd Floor, Defence Colony, Main Ring Road, New Delhi 110024",
     mapQuery: "Defence+Colony+Main+Ring+Road+New+Delhi+110024",
   },
   {
     city: "Ludhiana",
     state: "PUNJAB",
-    address: [
-      "B-16, 577/8-A",
-      "Vishwakarma Street,",
-      "Gill Road",
-      "Ludhiana 141003",
-    ],
+    address: "B-16, 577/8-A, Vishwakarma Street, Gill Road, Ludhiana 141003",
     mapQuery: "Vishwakarma+Street+Gill+Road+Ludhiana+141003",
   },
 
@@ -99,23 +76,13 @@ const OFFICES = [
   {
     city: "Dibrugarh",
     state: "ASSAM",
-    address: [
-      "No. 6, Prerna,",
-      "Chowkidinghi,",
-      "P.O. C.R. Building,",
-      "Dibrugarh 786003",
-    ],
+    address: "No. 6, Prerna, Chowkidinghi, P.O. C.R. Building, Dibrugarh 786003",
     mapQuery: "Chowkidinghi+CR+Building+Dibrugarh+786003",
   },
   {
     city: "Ranchi",
     state: "JHARKHAND",
-    address: [
-      "Auto x Change",
-      "Near aadivasi boys hostel,",
-      "karamtoli,",
-      "Ranchi 834001",
-    ],
+    address: "Auto x Change, Near aadivasi boys hostel, karamtoli, Ranchi 834001",
     mapQuery: "Auto+x+Change+Near+aadivasi+boys+hostel+karamtoli+Ranchi+834001",
   },
 
@@ -315,11 +282,12 @@ export default function OurJourney() {
             Our Offices
           </span>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="overflow-x-auto pb-3 snap-x snap-mandatory">
+            <div className="flex gap-4 w-max">
             {OFFICES.map((off, idx) => (
               <div
                 key={idx}
-                className="bg-[#2D3A54]/60 border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:bg-[#2D3A54] transition-colors"
+                className="snap-start shrink-0 bg-[#2D3A54]/60 border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:bg-[#2D3A54] transition-colors"
               >
                 <div>
                   <h3 className="font-[var(--fd)] text-lg font-bold text-white mb-0.5">
@@ -329,11 +297,9 @@ export default function OurJourney() {
                     {off.state}
                   </span>
 
-                  <div className="text-xs text-white/75 font-light leading-relaxed mb-6 space-y-0.5">
-                    {off.address.map((line, i) => (
-                      <p key={i}>{line}</p>
-                    ))}
-                  </div>
+                  <p className="text-xs text-white/75 font-light whitespace-nowrap mb-6">
+                    {off.address}
+                  </p>
                 </div>
 
                 <a
@@ -346,6 +312,7 @@ export default function OurJourney() {
                 </a>
               </div>
             ))}
+            </div>
           </div>
         </div>
       </section>
