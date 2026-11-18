@@ -10,10 +10,21 @@ interface NewsItem {
   content: string;
   readTime: string;
   layout?: 'market-wrap';
-  edition?: '13-nov' | '16-nov';
+  edition?: '13-nov' | '16-nov' | '17-nov';
 }
 
 const NEWS_DATA: NewsItem[] = [
+  {
+    id: 'daily-market-wrap-17-nov-2026',
+    title: 'Daily Market Wrap 17 November 2026',
+    date: '18th November, 2026',
+    category: 'Market Wrap',
+    summary: 'On November 17, 2026, Indian equities closed higher, with the Nifty 50 gaining 0.38% to 25,387.40 and the Sensex advancing 0.52% to 82,532.19. Market commentary highlighted strong corporate earnings with Nifty 50 firms posting 19–27% net profit growth in Q2 FY25, alongside banking recoveries led by rebounds in HDFC Bank and Axis Bank. Key policy and economic themes included industry wishlist priorities for Budget 2027—such as LTCG tax relief and manufacturing support—SEBI exploring limits on leveraged stock bets, and domestic steel producers facing headwinds from a surge in Chinese imports. Meanwhile, crude oil traded at $85.72 per barrel, gold stood at $3,856.68 per ounce, and the Indian Rupee strengthened to 93.91 per USD.',
+    content: '',
+    readTime: 'Full report',
+    layout: 'market-wrap',
+    edition: '17-nov',
+  },
   {
     id: 'daily-market-wrap-16-nov-2026',
     title: 'Daily Market Wrap 16 November 2026',
@@ -36,15 +47,6 @@ const NEWS_DATA: NewsItem[] = [
     layout: 'market-wrap',
     edition: '13-nov',
   },
-  {
-    id: 'sip-discipline-milestone',
-    title: 'Indian Retail Investors Cross ₹25,000 Crore Monthly SIP Milestone',
-    date: 'September 28, 2026',
-    category: 'Market Insights',
-    summary: 'Systematic Investment Plans continue to anchor domestic equity stability despite global macroeconomic headwinds.',
-    content: 'Retail participation in Indian capital markets reached a historic high this month. AMFI data reveals monthly SIP contributions surpassing ₹25,000 crores. Experts attribute this structural shift to disciplined compounding awareness and goal-based financial planning popularized by digital advisory platforms like MyAnmol.',
-    readTime: '5 min read'
-  }
 ];
 
 export default function NewsAndMarketingHub() {

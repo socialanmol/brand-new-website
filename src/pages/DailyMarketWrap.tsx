@@ -52,8 +52,9 @@ export default function DailyMarketWrap({ edition = "13-nov" }: { edition?: Mark
     bseSectorsList,
     commodities,
     levelCards,
+    macro,
   } = MARKET_WRAPS[edition];
-  const macroData = MACRO_DATA;
+  const macroData = macro ?? MACRO_DATA;
 
   const tape = [
     ...indicesLargeCap.map((item) => ({ name: item.name, figure: item.level, change: item.today })),

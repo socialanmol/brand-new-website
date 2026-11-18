@@ -1,4 +1,4 @@
-export type MarketWrapEdition = "13-nov" | "16-nov";
+export type MarketWrapEdition = "13-nov" | "16-nov" | "17-nov";
 
 export interface QuoteRow {
   name: string;
@@ -56,6 +56,7 @@ export interface WrapContent {
   bseSectorsList: QuoteRow[];
   commodities: CommodityItem[];
   levelCards: LevelCard[];
+  macro?: MacroItem[];
 }
 
 export const MACRO_DATA: MacroItem[] = [
@@ -251,6 +252,108 @@ export const MARKET_WRAPS: Record<MarketWrapEdition, WrapContent> = {
       { title: "USD/INR", level: "94.23", d1: "+0.14%", y1: "+50.89%", pos: true },
       { title: "CRUDE OIL ($/bbl)", level: "$88.56", d1: "-0.20%", y1: "-6.93%", pos: false },
       { title: "GOLD ($/oz)", level: "$3,881.75", d1: "+0.14%", y1: "+50.89%", pos: true },
+    ],
+  },
+  "17-nov": {
+    dateLabel: "17 November 2026",
+    updatedLabel: "Updated 17 Nov, 3:54 PM",
+    commentary:
+      "Nifty 50 rose 0.38% to 25,387.40 while Sensex gained 0.52% to 82,532.19; crude oil climbed 0.30% to USD 85.98/bbl, gold advanced 0.24% to USD 3,862.10/oz, and INR strengthened 0.48% to INR 93.46 per USD.",
+    notes: [
+      { title: "India Inc Earnings", body: "Nifty 50 firms post 19-27% net profit growth in Q2FY25." },
+      { title: "Budget 2027 Wishlist", body: "Industry seeks LTCG tax relief, PLI push, manufacturing finance support." },
+      { title: "Banking Recovery", body: "HDFC Bank and Axis Bank shares rebound post-Q2 sell-off strength." },
+      { title: "Market Leverage", body: "SEBI exploring limits on leveraged stock bets amid retail participation surge." },
+    ],
+    lossScale: 16,
+    indicesLargeCap: [
+      { name: "Nifty 50", level: "25,387.40", today: "+0.38%", mtd: "+10.13%", y1: "-2.41%" },
+      { name: "BSE Sensex", level: "82,532.19", today: "+0.52%", mtd: "+10.84%", y1: "-2.85%" },
+    ],
+    indicesBroad: [
+      { name: "BSE 500", level: "37,311.29", today: "+0.38%", mtd: "+8.94%", y1: "-0.69%" },
+      { name: "Nifty 500", level: "23,822.30", today: "+0.29%", mtd: "+8.80%", y1: "-0.55%" },
+    ],
+    indicesMidSmall: [
+      { name: "Nifty Next 50", level: "72,693.00", today: "+0.28%", mtd: "+7.36%", y1: "+3.62%" },
+      { name: "Nifty Midcap 100", level: "61,730.00", today: "+0.25%", mtd: "+7.73%", y1: "+0.90%" },
+      { name: "Nifty Smallcap 100", level: "19,398.70", today: "-0.22%", mtd: "+5.06%", y1: "+5.73%" },
+    ],
+    worldMarkets: [
+      { name: "Dow Jones", level: "51,608.17", today: "-1.41%", mtd: "-0.31%", y1: "+9.46%" },
+      { name: "S&P 500", level: "7,416.59", today: "-1.92%", mtd: "-2.16%", y1: "+10.13%" },
+      { name: "Nasdaq", level: "24,509.76", today: "-2.49%", mtd: "-3.65%", y1: "+7.03%" },
+      { name: "FTSE 100", level: "10,881.55", today: "-0.19%", mtd: "+1.41%", y1: "+12.20%" },
+      { name: "CAC 40", level: "8,352.00", today: "-0.20%", mtd: "+4.80%", y1: "+2.23%" },
+      { name: "DAX", level: "26,598.64", today: "-0.57%", mtd: "+3.02%", y1: "+11.40%" },
+      { name: "Nikkei", level: "59,139.09", today: "-2.66%", mtd: "-6.56%", y1: "+17.39%" },
+      { name: "Hang Seng", level: "23,753.84", today: "+0.49%", mtd: "+1.97%", y1: "-10.61%" },
+      { name: "CBOE VIX", level: "22.91", today: "+18.70%", mtd: "+17.97%", y1: "+15.53%" },
+    ],
+    bestSectors: [
+      { name: "IPO", val: 22.8 },
+      { name: "HEALTHCARE", val: 17.2 },
+      { name: "TELECOM", val: 17.0 },
+      { name: "REIT & INVIT", val: 14.9 },
+      { name: "METAL", val: 14.9 },
+      { name: "SME IPO", val: 9.4 },
+      { name: "BANKEX", val: 6.0 },
+      { name: "POWER", val: 5.4 },
+      { name: "PRIVATE BANKS", val: 4.1 },
+      { name: "COMMODITIES", val: 3.9 },
+    ],
+    worstSectors: [
+      { name: "IT", val: -15.4 },
+      { name: "FMCG", val: -12.8 },
+      { name: "TECK", val: -9.1 },
+      { name: "OIL & GAS", val: -8.1 },
+      { name: "HOUSING", val: -6.8 },
+      { name: "ENERGY", val: -6.3 },
+      { name: "CPSE", val: -5.0 },
+      { name: "INFRASTRUCTURE", val: -4.7 },
+      { name: "POWER & ENERGY", val: -2.3 },
+      { name: "REALTY", val: -1.7 },
+    ],
+    bseSectorsList: [
+      { name: "IPO", level: "19,512.11", today: "-0.54%", mtd: "+9.29%", y1: "+22.83%" },
+      { name: "Healthcare", level: "52,627.81", today: "+0.09%", mtd: "+4.90%", y1: "+17.19%" },
+      { name: "Telecom", level: "3,706.65", today: "-1.58%", mtd: "+0.87%", y1: "+16.97%" },
+      { name: "REIT & InvIT", level: "152.45", today: "-0.41%", mtd: "+1.14%", y1: "+14.88%" },
+      { name: "Metal", level: "39,926.97", today: "+0.44%", mtd: "+5.72%", y1: "+14.85%" },
+      { name: "SME IPO", level: "1,15,359.64", today: "-1.61%", mtd: "+2.48%", y1: "+9.41%" },
+      { name: "Bankex", level: "70,116.73", today: "+1.18%", mtd: "+14.17%", y1: "+5.99%" },
+      { name: "Power", level: "7,149.92", today: "-0.29%", mtd: "+4.05%", y1: "+5.41%" },
+      { name: "Private Banks", level: "21,536.50", today: "+0.84%", mtd: "+13.25%", y1: "+4.08%" },
+      { name: "Commodities", level: "8,200.53", today: "+0.46%", mtd: "+6.65%", y1: "+3.89%" },
+      { name: "Services", level: "1,694.34", today: "-0.64%", mtd: "+7.39%", y1: "+3.65%" },
+      { name: "Industrials", level: "15,635.35", today: "-0.43%", mtd: "+4.75%", y1: "+2.49%" },
+    ],
+    commodities: [
+      { name: "Gold ($/oz)", price: "3,856.68", change: "-0.65%", isPositive: false },
+      { name: "Silver ($/oz)", price: "46.94", change: "-3.65%", isPositive: false },
+      { name: "Crude Oil ($/bbl)", price: "85.72", change: "-3.21%", isPositive: false },
+      { name: "Natural Gas ($/MMBtu)", price: "3.12", change: "-3.34%", isPositive: false },
+      { name: "USD/INR", price: "93.91", change: "-0.34%", isPositive: false },
+      { name: "India VIX", price: "15.52", change: "-1.02%", isPositive: false },
+    ],
+    levelCards: [
+      { title: "NIFTY 50", level: "25,387.40", d1: "+0.38%", y1: "-2.41%", pos: true },
+      { title: "BSE SENSEX", level: "82,532.19", d1: "+0.52%", y1: "-2.85%", pos: true },
+      { title: "INDIA 10Y", level: "7.34%", d1: "-0.34%", y1: "+5.80%", pos: false },
+      { title: "USD/INR", level: "93.91", d1: "-0.65%", y1: "-3.21%", pos: false },
+      { title: "CRUDE OIL ($/bbl)", level: "$85.72", d1: "-3.21%", y1: "-5.56%", pos: false },
+      { title: "GOLD ($/oz)", level: "$3,856.68", d1: "-0.65%", y1: "+42.65%", pos: false },
+    ],
+    macro: [
+      { indicator: "Inflation Rate", frequency: "Monthly", period: "Oct-2026", value: "6.09", unit: "percent" },
+      { indicator: "Interest Rate", frequency: "Daily", period: "07-Oct-2026", value: "5.50", unit: "percent" },
+      { indicator: "Unemployment Rate", frequency: "Monthly", period: "Oct-2026", value: "4.90", unit: "percent" },
+      { indicator: "GDP", frequency: "Yearly", period: "2025", value: "3,956.07", unit: "USD Billion" },
+      { indicator: "GDP Annual Growth Rate", frequency: "Quarterly", period: "Jun-2026", value: "7.80", unit: "percent" },
+      { indicator: "Government Debt to GDP", frequency: "Yearly", period: "2025", value: "81.85", unit: "percent of GDP" },
+      { indicator: "Government Spending", frequency: "Quarterly", period: "Jun-2026", value: "8,548.77", unit: "INR Billion" },
+      { indicator: "Current Account to GDP", frequency: "Yearly", period: "2025", value: "-0.60", unit: "percent of GDP" },
+      { indicator: "Consumer Price Index (CPI)", frequency: "Monthly", period: "Oct-2026", value: "110.05", unit: "points" },
     ],
   },
 };
