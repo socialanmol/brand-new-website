@@ -10,10 +10,21 @@ interface NewsItem {
   content: string;
   readTime: string;
   layout?: 'market-wrap';
-  edition?: '13-nov' | '16-nov' | '17-nov';
+  edition?: '13-nov' | '16-nov' | '17-nov' | '18-nov';
 }
 
 const NEWS_DATA: NewsItem[] = [
+  {
+    id: 'daily-market-wrap-18-nov-2026',
+    title: 'Daily Market Wrap 18 November 2026',
+    date: '18th November, 2026',
+    category: 'Market Wrap',
+    summary: 'On November 18, 2026, Indian equities closed lower, with the Nifty 50 dropping 0.63% to 25,227.95 and the BSE Sensex declining 0.61% to 82,031.81. Market sentiment was supported by positive institutional highlights, including Goldman Sachs upgrading India to an "overweight" rating with a December 2027 Nifty target of 28,500, alongside foreign portfolio investors smashing a monthly record with a ₹99,000 crore purchase in Indian stocks. Corporate highlights featured SpiceJet\'s board approving a fundraise of up to ₹5,500 crore—sending its shares to the upper circuit—and Acme Solar signing a 150 MW hybrid power project with NTPC across three states. Additionally, crude oil traded at $86.01 per barrel, gold stood at $3,849.49 per ounce, and the USD/INR exchange rate stood at 93.46.',
+    content: '',
+    readTime: 'Full report',
+    layout: 'market-wrap',
+    edition: '18-nov',
+  },
   {
     id: 'daily-market-wrap-17-nov-2026',
     title: 'Daily Market Wrap 17 November 2026',
