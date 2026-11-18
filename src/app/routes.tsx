@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import Root from './Root';
 import Home from '../pages/Home';
 import GeneralInsurance from '../pages/GeneralInsurance';
@@ -112,7 +112,8 @@ export const router = createBrowserRouter([
       { path: 'insights/articles', Component: ArticlesInsights },
       { path: 'articles', Component: ArticlesInsights },
       { path: 'insights/articles/financial-foundation', Component: FinancialFoundationBlog },
-      { path: 'insights/news-and-marketing', Component: NewsAndMarketingHub },
+      { path: 'insights/myanmol-headlines', Component: NewsAndMarketingHub },
+      { path: 'insights/news-and-marketing', element: <Navigate to="/insights/myanmol-headlines" replace /> },
 
       { path: 'financial-wellbeing', Component: FinancialWellnessThemed },
       { path: 'solutions/financial-wellbeing', Component: FinancialWellnessThemed },

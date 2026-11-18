@@ -118,7 +118,7 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Articles and Insights | MyAnmol",
     description: "Articles on financial planning, mutual funds and household money decisions from MyAnmol.",
   },
-  "/insights/news-and-marketing": {
+  "/insights/myanmol-headlines": {
     title: "News and Market Notes | MyAnmol",
     description: "Market and money notes published by MyAnmol.",
   },
@@ -172,6 +172,7 @@ const aliases: Record<string, string> = {
   "/mutual-funds/aifs": "/services/aifs",
   "/seminars": "/insights/seminars",
   "/articles": "/insights/articles",
+  "/insights/news-and-marketing": "/insights/myanmol-headlines",
   "/glossary": "/insights/glossary",
   "/our-team": "/about/team",
   "/journey": "/about/journey",
