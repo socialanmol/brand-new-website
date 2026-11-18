@@ -28,7 +28,7 @@ const NEWS_DATA: NewsItem[] = [
   {
     id: 'daily-market-wrap-17-nov-2026',
     title: 'Daily Market Wrap 17 November 2026',
-    date: '18th November, 2026',
+    date: '17th November, 2026',
     category: 'Market Wrap',
     summary: 'On November 17, 2026, Indian equities closed higher, with the Nifty 50 gaining 0.38% to 25,387.40 and the Sensex advancing 0.52% to 82,532.19. Market commentary highlighted strong corporate earnings with Nifty 50 firms posting 19–27% net profit growth in Q2 FY25, alongside banking recoveries led by rebounds in HDFC Bank and Axis Bank. Key policy and economic themes included industry wishlist priorities for Budget 2027—such as LTCG tax relief and manufacturing support—SEBI exploring limits on leveraged stock bets, and domestic steel producers facing headwinds from a surge in Chinese imports. Meanwhile, crude oil traded at $85.72 per barrel, gold stood at $3,856.68 per ounce, and the Indian Rupee strengthened to 93.91 per USD.',
     content: '',
@@ -39,7 +39,7 @@ const NEWS_DATA: NewsItem[] = [
   {
     id: 'daily-market-wrap-16-nov-2026',
     title: 'Daily Market Wrap 16 November 2026',
-    date: '17th November, 2026',
+    date: '16th November, 2026',
     category: 'Market Wrap',
     summary: 'On November 16, 2026, Indian markets finished higher, with the Nifty 50 rising 0.58% to 25,291.10 and the Sensex gaining 0.63% to 82,104.79. Macroeconomic pressures persist as headline retail inflation hit a two-year high of 6.09%, fueling expectations of a December rate hike by the RBI. On the corporate front, Mahanadi Coalfields announced an INR 9,000 crore IPO opening on November 19, alongside positive quarterly results from J. Kumar Infraprojects and Belrise Industries. Meanwhile, India inaugurated a new 80,000-tonne LPG storage facility in Mangaluru to enhance strategic energy reserves, while crude oil traded around $88.56 per barrel and gold stood near $3,881.75 per ounce.',
     content: '',
@@ -50,7 +50,7 @@ const NEWS_DATA: NewsItem[] = [
   {
     id: 'daily-market-wrap-13-nov-2026',
     title: 'Daily Market Wrap 13 November 2026',
-    date: '16th November, 2026',
+    date: '13th November, 2026',
     category: 'Market Wrap',
     summary: 'On November 13, 2026, Indian equities closed lower, with the Nifty 50 dropping 0.61% to 25,144.30 and the BSE Sensex falling 0.39% to 81,592.45. Despite the market downturn, positive macroeconomic indicators emerged, including a 29.9% year-on-year surge in October exports to USD 89.99 billion and a narrowed trade deficit of USD 20.09 billion. Additionally, robust domestic gold demand persisted around festive buying. In commodity and currency markets, crude oil traded at USD 88.74 per barrel, gold stood at USD 3,876.43 per ounce, and the Indian rupee weakened slightly to 94.04 against the US dollar.',
     content: '',
