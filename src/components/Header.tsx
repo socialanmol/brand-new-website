@@ -93,7 +93,6 @@ const NAV: NavEntry[] = [
     items: [
       { label: 'Glossary',                 to: '/insights/glossary',  icon: '📖' },
       { label: 'Our Insights',             to: '/insights/articles',  icon: '✍️' },
-      { label: 'News',                     to: '/insights/myanmol-headlines', icon: '📰' },
       { label: 'Learn, Unlearn & Relearn', to: '/insights/learn',     icon: '🔄' },
       { label: 'Seminars & Workshops',     to: '/insights/seminars',  icon: '🎤' },
     ],

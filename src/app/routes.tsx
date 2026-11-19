@@ -11,7 +11,6 @@ import LifeInsurance from '../pages/LifeInsurance';
 import Resources from '../pages/Resources';
 import ArticlesInsights from '../pages/ArticlesInsights';
 import FinancialFoundationBlog from '../pages/financial_foundation_blog_component';
-import NewsAndMarketingHub from '../pages/news_and_marketing_hub';
 import ForArmedForces from '../pages/ForArmedForces';
 import ForBusinessOwners from '../pages/ForBusinessOwners';
 import SeminarsWorkshops from '../pages/SeminarsWorkshops';
@@ -112,8 +111,8 @@ export const router = createBrowserRouter([
       { path: 'insights/articles', Component: ArticlesInsights },
       { path: 'articles', Component: ArticlesInsights },
       { path: 'insights/articles/financial-foundation', Component: FinancialFoundationBlog },
-      { path: 'insights/myanmol-headlines', Component: NewsAndMarketingHub },
-      { path: 'insights/news-and-marketing', element: <Navigate to="/insights/myanmol-headlines" replace /> },
+      { path: 'insights/myanmol-headlines', element: <Navigate to="/" replace /> },
+      { path: 'insights/news-and-marketing', element: <Navigate to="/" replace /> },
 
       { path: 'financial-wellbeing', Component: FinancialWellnessThemed },
       { path: 'solutions/financial-wellbeing', Component: FinancialWellnessThemed },
