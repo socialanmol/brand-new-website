@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import AdvisorBookingModal from "../components/AdvisorBookingModal";
 
 type AssetClass = "equity" | "debt" | "hybrid" | "solution";
@@ -19,8 +20,8 @@ const ADVANTAGES = [
   { title: "Strictly Regulated by SEBI", desc: "All mutual fund schemes are tightly regulated by SEBI, ensuring complete transparency and investor protection." },
 ];
 
-const INVESTMENT_MODES = [
-  { title: "Systematic Investment Plan (SIP)", desc: "Invest fixed amounts monthly (e.g. ₹1,000+) using rupee cost averaging to buy more units when markets dip." },
+const INVESTMENT_MODES: { title: string; desc: string; to?: string }[] = [
+  { title: "Systematic Investment Plan (SIP)", desc: "Invest fixed amounts monthly (e.g. ₹1,000+) using rupee cost averaging to buy more units when markets dip.", to: "/mutual-funds/sip" },
   { title: "Lump Sum", desc: "Commit a larger capital amount at once, offering superior growth opportunities during periods of upward market momentum." },
   { title: "Systematic Transfer Plan (STP)", desc: "Systematically move money from a debt fund to an equity fund at set intervals for disciplined equity deployment." },
   { title: "Systematic Withdrawal Plan (SWP)", desc: "Withdraw a fixed amount or percentage periodically from your corpus while allowing the rest to continue growing." },
@@ -161,15 +162,32 @@ export default function MutualFundsHub() {
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {INVESTMENT_MODES.map((mode, index) => (
-              <div key={mode.title} className="bg-white border border-[#E3E8F4] rounded-[20px] p-6 space-y-3 shadow-xs">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-[#EEF2FB] px-2.5 py-1 rounded-full">
-                  Mode 0{index + 1}
-                </span>
-                <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">{mode.title}</h3>
-                <p className="text-xs text-[#6B7280] leading-relaxed font-light">{mode.desc}</p>
-              </div>
-            ))}
+            {INVESTMENT_MODES.map((mode, index) => {
+              const className = `bg-white border border-[#E3E8F4] rounded-[20px] p-6 space-y-3 shadow-xs text-left block ${
+                mode.to ? "hover:border-[#1A3B9F] hover:shadow-md transition-all" : ""
+              }`;
+              const body = (
+                <>
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-[#EEF2FB] px-2.5 py-1 rounded-full">
+                    Mode 0{index + 1}
+                  </span>
+                  <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">{mode.title}</h3>
+                  <p className="text-xs text-[#6B7280] leading-relaxed font-light">{mode.desc}</p>
+                  {mode.to && (
+                    <span className="inline-flex text-xs font-extrabold text-[#1A3B9F]">View SIP details →</span>
+                  )}
+                </>
+              );
+              return mode.to ? (
+                <Link key={mode.title} to={mode.to} className={className}>
+                  {body}
+                </Link>
+              ) : (
+                <div key={mode.title} className={className}>
+                  {body}
+                </div>
+              );
+            })}
           </div>
         </div>
 

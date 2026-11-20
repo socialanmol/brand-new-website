@@ -50,6 +50,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Mutual Funds and SIP Investing | MyAnmol",
     description: "Mutual fund research, SIP registration and goal-based fund selection from an AMFI-registered distributor.",
   },
+  "/mutual-funds/sip": {
+    title: "Systematic Investment Plan (SIP) | MyAnmol",
+    description: "How a mutual fund SIP works: a fixed amount, a chosen date, rupee cost averaging, and how to start one with MyAnmol.",
+  },
   "/mutual-funds/gift-city": {
     title: "GIFT City Investments | MyAnmol",
     description: "GIFT City access for residents and NRIs through Anmol Share Broking Pvt. Ltd.",
