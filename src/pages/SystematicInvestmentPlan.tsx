@@ -64,12 +64,9 @@ export default function SystematicInvestmentPlan() {
         <section className="space-y-4">
           <span className="text-xs font-extrabold uppercase tracking-[.14em] text-[#6AA32A]">The idea</span>
           <h2 className="font-[var(--fd)] text-2xl sm:text-3xl font-bold text-[#091540]">What a SIP is</h2>
-          <div className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[24px] p-6 sm:p-8 space-y-4 text-sm text-[#374151] leading-relaxed font-light">
+          <div className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[24px] p-6 sm:p-8 text-sm text-[#374151] leading-relaxed font-light">
             <p>
-              You commit an amount, such as ₹1,000 or ₹5,000, and a calendar date. On that date the money leaves your bank and buys units of the scheme at the NAV published for that day.
-            </p>
-            <p>
-              The same ₹5,000 buys 250 units when the NAV is ₹20, and 200 units when the NAV is ₹25. Over many months, the average cost of your units sits between the highs and the lows.
+              A Systematic Investment Plan (SIP), more popularly known as SIP, is a facility offered by mutual funds to the investors to invest in a disciplined manner. SIP facility allows an investor to invest a fixed amount of money at pre-defined intervals in the selected mutual fund scheme. The fixed amount of money can be as low as Rs. 500, while the pre-defined SIP intervals can be on a weekly/monthly/quarterly/semi-annually or annual basis. By taking the SIP route to investments, the investor invests in a time-bound manner without worrying about the market dynamics and stands to benefit in the long-term due to average costing and power of compounding.
             </p>
           </div>
         </section>
