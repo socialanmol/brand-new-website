@@ -56,14 +56,17 @@ const FEATURES = [
 ];
 
 const EARLY_START = [
-  { age: 25, investedLabel: "₹42 L", invested: 0.42, valueLabel: "₹5.2 Cr", value: 5.2 },
-  { age: 30, investedLabel: "₹36 L", invested: 0.36, valueLabel: "₹3.0 Cr", value: 3.0 },
-  { age: 35, investedLabel: "₹30 L", invested: 0.30, valueLabel: "₹1.6 Cr", value: 1.6 },
-  { age: 40, investedLabel: "₹24 L", invested: 0.24, valueLabel: "₹0.9 Cr", value: 0.9 },
-  { age: 45, investedLabel: "₹18 L", invested: 0.18, valueLabel: "₹0.4 Cr", value: 0.45 },
-  { age: 50, investedLabel: "₹12 L", invested: 0.12, valueLabel: "₹0.2 Cr", value: 0.21 },
+  { label: "50 Yrs", invested: 0.12, value: 0.22 },
+  { label: "45 Yrs", invested: 0.18, value: 0.48 },
+  { label: "40 Yrs", invested: 0.24, value: 0.92 },
+  { label: "35 Yrs", invested: 0.30, value: 1.70 },
+  { label: "30 Yrs", invested: 0.36, value: 3.08 },
+  { label: "25 Yrs", invested: 0.42, value: 5.51 },
 ];
-const CHART_MAX = 5.5;
+const CHART_MAX = 6;
+const CHART_TOP = 46;
+const CHART_BASE = 292;
+const CHART_HEIGHT = CHART_BASE - CHART_TOP;
 
 const FAQS = [
   { q: "Is a SIP a separate product from a mutual fund?", a: "No. A SIP is the way you invest into a mutual fund scheme. You still own units of that scheme. The SIP only sets the amount and the schedule." },
@@ -186,47 +189,63 @@ export default function SystematicInvestmentPlan() {
               The earlier one starts saving and investing regularly, the easier it is to achieve your goals. The graph below shows the impact of beginning to invest Rs. 10,000 monthly at various stages of life till the age of 60 years (assuming a return of 12% p.a.).
             </p>
 
-            <figure className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[24px] p-5 sm:p-8 space-y-5">
-              <figcaption className="text-xs font-bold text-[#091540]">
-                A 10 years&apos; early start results in an additional Rs. 2.1 crore in the final retirement corpus.
-              </figcaption>
-              <div className="flex flex-wrap gap-4 text-[11px] font-bold">
-                <span className="inline-flex items-center gap-2 text-[#6AA32A]">
-                  <span className="h-2.5 w-2.5 rounded-sm bg-[#8DC63F]" aria-hidden="true" />
-                  Value of investment on Retirement
-                </span>
-                <span className="inline-flex items-center gap-2 text-[#1A3B9F]">
-                  <span className="h-2.5 w-2.5 rounded-sm bg-[#1A3B9F]" aria-hidden="true" />
-                  Amount invested via SIP
-                </span>
+            <figure className="bg-white border border-[#E3E8F4] rounded-[24px] p-4 sm:p-6 space-y-3">
+              <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                <div className="flex-1 min-w-0">
+                  <svg
+                    viewBox="0 0 640 380"
+                    role="img"
+                    aria-label="Bar chart. Rs. 10,000 invested per month at 12 percent a year till age 60. Blue bars are the value at retirement. Green bars are the amount invested. Starting at 25 reaches 5.51 crore. Starting at 30 reaches 3.08 crore. Starting at 40 reaches 0.92 crore."
+                    className="w-full h-auto font-[var(--fs)]"
+                  >
+                    <text x="330" y="22" textAnchor="middle" fill="#111827" fontSize="13" fontWeight="700">₹ 10,000 invested per month @ 12% p.a till age 60</text>
+                    <text x="16" y="176" textAnchor="middle" fill="#6B7280" fontSize="11" transform="rotate(-90 16 176)">₹ Crores</text>
+                    {[0, 1, 2, 3, 4, 5, 6].map((tick) => {
+                      const y = CHART_BASE - (tick / CHART_MAX) * CHART_HEIGHT;
+                      return (
+                        <g key={tick}>
+                          <line x1="48" y1={y} x2="620" y2={y} stroke="#E5E7EB" strokeDasharray="4 4" />
+                          <text x="42" y={y + 4} textAnchor="end" fill="#6B7280" fontSize="11">{tick}</text>
+                        </g>
+                      );
+                    })}
+                    {EARLY_START.map((row, index) => {
+                      const groupX = 62 + index * 92;
+                      const investedHeight = Math.max(2, (row.invested / CHART_MAX) * CHART_HEIGHT);
+                      const valueHeight = (row.value / CHART_MAX) * CHART_HEIGHT;
+                      const investedX = groupX;
+                      const valueX = groupX + 24;
+                      return (
+                        <g key={row.label}>
+                          <rect x={investedX} y={CHART_BASE - investedHeight} width="20" height={investedHeight} fill="#5EE0C0" />
+                          <rect x={valueX} y={CHART_BASE - valueHeight} width="20" height={valueHeight} fill="#4EB3EA" />
+                          <text x={investedX + 10} y={CHART_BASE - investedHeight - 6} textAnchor="middle" fill="#374151" fontSize="11">{row.invested.toFixed(2)}</text>
+                          <text x={valueX + 10} y={CHART_BASE - valueHeight - 6} textAnchor="middle" fill="#374151" fontSize="11">{row.value.toFixed(2)}</text>
+                          <text x={groupX + 22} y="314" textAnchor="middle" fill="#111827" fontSize="12">{row.label}</text>
+                        </g>
+                      );
+                    })}
+                    <text x="330" y="346" textAnchor="middle" fill="#2F80ED" fontSize="13" fontWeight="700">Age when SIP is started</text>
+                  </svg>
+                </div>
+                <figcaption className="lg:w-[230px] shrink-0 space-y-4">
+                  <p className="text-sm font-semibold text-[#111827] leading-relaxed">
+                    10 Years&apos; early start result in an additional Rs. 2.1 crore in the final retirement corpus.
+                  </p>
+                  <ul className="space-y-2 text-xs text-[#374151]">
+                    <li className="flex items-center gap-2">
+                      <span className="h-3.5 w-3.5 rounded-full bg-[#4EB3EA] shrink-0" aria-hidden="true" />
+                      Value of investment on Retirement
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="h-3.5 w-3.5 rounded-full bg-[#5EE0C0] shrink-0" aria-hidden="true" />
+                      Amount invested via SIP
+                    </li>
+                  </ul>
+                </figcaption>
               </div>
-              <div className="overflow-x-auto">
-                <svg
-                  viewBox="0 0 720 320"
-                  role="img"
-                  aria-label="Bar chart of a Rs. 10,000 monthly SIP continued until age 60 at 12 percent a year. Starting at 30 grows to about Rs. 3 crore. Starting at 40 grows to about Rs. 0.9 crore."
-                  className="w-full min-w-[560px] h-auto"
-                >
-                  <line x1="28" y1="236" x2="700" y2="236" stroke="#E3E8F4" strokeWidth="1" />
-                  {EARLY_START.map((row, index) => {
-                    const x = 78 + index * 104;
-                    const valueHeight = (row.value / CHART_MAX) * 190;
-                    const investedHeight = Math.max(6, (row.invested / CHART_MAX) * 190);
-                    return (
-                      <g key={row.age}>
-                        <rect x={x} y={236 - valueHeight} width="26" height={valueHeight} rx="4" fill="#8DC63F" />
-                        <rect x={x + 32} y={236 - investedHeight} width="26" height={investedHeight} rx="3" fill="#1A3B9F" />
-                        <text x={x + 13} y={228 - valueHeight} textAnchor="middle" fill="#6AA32A" fontSize="12" fontWeight="700">{row.valueLabel}</text>
-                        <text x={x + 29} y="258" textAnchor="middle" fill="#091540" fontSize="13" fontWeight="700">Age {row.age}</text>
-                        <text x={x + 29} y="276" textAnchor="middle" fill="#1A3B9F" fontSize="11" fontWeight="700">{row.investedLabel}</text>
-                      </g>
-                    );
-                  })}
-                </svg>
-              </div>
-              <p className="text-[11px] text-[#6B7280] leading-relaxed">
-                Static illustration. Rs. 10,000 invested every month until age 60, assuming 12% a year. Returns are not guaranteed.
-              </p>
+              <p className="text-[11px] text-[#6B7280] leading-relaxed">the above graph is for illustrative purpose only.</p>
+              <p className="text-[11px] text-[#6B7280]">Source : internal</p>
             </figure>
 
             <p className="text-sm text-[#374151] leading-relaxed font-light">
