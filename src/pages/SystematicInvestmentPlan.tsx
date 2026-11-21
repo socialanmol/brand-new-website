@@ -134,6 +134,29 @@ const SIP_CONSIDERATIONS = [
   },
 ];
 
+const SIP_GOALS = [
+  {
+    title: "Retirement Planning",
+    text: "Retirement Planning is the process of planning and managing your current income and expenditures, with respect to savings / investments, in order to ensure that your required financial goals for the post retired life are met.",
+  },
+  {
+    title: "Plan For A Dream House",
+    text: "Planning for a dream home starts with regular savings and investments. One needs to determine how much money needs to be set aside in order to buy his/ her dream home in the projected time-frame. Lower the duration, higher the investments should be.",
+  },
+  {
+    title: "Plan For Vacation",
+    text: "If you want to pamper yourself for some memorable holidays, you should consider starting a Vacation Fund. All you need to do is just set aside a fixed sum specifically for your vacation, the potential additional gains which you may earn can be an added bonanza for your splurge.",
+  },
+  {
+    title: "Plan For Child's Education",
+    text: "Do not let money come in between your child's aspirations. Start regular savings or investments, if not early, along with your child's pre-primary education. So, while your child gains knowledge, your investments are likely to turn into wealth with time and the same will take care of the higher costs for professional studies.",
+  },
+  {
+    title: "Plan For Child's Wedding",
+    text: "Marriage expenses can be cumbersome given the changing trends in celebrations and cost inflation. Let not the inflation hole swallow the big wedding plans for your child. A nominal saving started at an early age specially for your child's marriage can go a long way in meeting the future costs.",
+  },
+];
+
 const EMPTY_SIP_INQUIRY = { name: "", email: "", phone: "" };
 
 const FAQS = [
@@ -467,6 +490,30 @@ export default function SystematicInvestmentPlan() {
               </p>
             </li>
           </ol>
+        </section>
+
+        <section className="space-y-6">
+          <div className="space-y-3">
+            <span className="text-xs font-extrabold uppercase tracking-[.14em] text-[#6AA32A]">Goals</span>
+            <h2 className="font-[var(--fd)] text-2xl sm:text-3xl font-bold text-[#091540]">SIP for Goal Based Investing</h2>
+            <p className="text-sm sm:text-base text-[#374151] leading-relaxed font-light">
+              SIP can be your ideal partner in this journey of meeting financial goals as it is an adaptable investment facility. SIP ensures effective planning as you can invest an amount for each goal regularly from your savings. As SIPs can be separated for each goal, it ensures clarity of how much you have achieved so you do not need to sacrifice one goal for another.
+            </p>
+            <p className="text-sm sm:text-base text-[#374151] leading-relaxed font-light">
+              Your investments should also be in line with your changing financial situation, so if your income/salary increases, so should your investments to keep up with the changing lifestyle costs. SIPs can be customized, increased, stopped in case of an emergency or started on any date you need. So, enhance the effectiveness of your financial planning with SIPs and plan right for your financial goals in life. Start SIP today.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {SIP_GOALS.map((goal, index) => (
+              <div key={goal.title} className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-3">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-white px-2.5 py-1 rounded-full">
+                  0{index + 1}
+                </span>
+                <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">{goal.title}</h3>
+                <p className="text-sm text-[#374151] leading-relaxed font-light">{goal.text}</p>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section className="space-y-4">
