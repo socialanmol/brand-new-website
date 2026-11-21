@@ -146,8 +146,9 @@ export default function SystematicInvestmentPlan() {
                 <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">{feature.title}</h3>
                 <ul className="space-y-2">
                   {feature.points.map((point) => (
-                    <li key={point} className="text-xs text-[#6B7280] leading-relaxed font-light pl-3 border-l-2 border-[#8DC63F]">
-                      {point}
+                    <li key={point} className="flex items-start gap-2 text-xs text-[#6B7280] leading-relaxed font-light">
+                      <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#EEF6DE] text-[10px] font-extrabold text-[#6AA32A]" aria-hidden="true">₹</span>
+                      <span>{point}</span>
                     </li>
                   ))}
                 </ul>
