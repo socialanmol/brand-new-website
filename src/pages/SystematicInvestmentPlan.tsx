@@ -68,6 +68,52 @@ const CHART_TOP = 46;
 const CHART_BASE = 292;
 const CHART_HEIGHT = CHART_BASE - CHART_TOP;
 
+const SIP_TYPES = [
+  {
+    title: "Fixed SIP (Regular SIP)",
+    paragraphs: [
+      "A most simple and popular type of SIP. Investors can contribute a fixed amount at specific regular intervals for a desired investment term period. The frequency of SIP can be set either weekly, monthly, quarterly or annually as per the investor's convenience.",
+    ],
+  },
+  {
+    title: "Flexible SIP",
+    paragraphs: [
+      "A Flexible SIP option is similar to a regular SIP option but still has a difference. It allows an investor the opportunity to increase or decrease the investment amount as per his or her financial situation. The regular contribution of the investor can be adjusted according to the cashflow. Sometimes, some fund houses even give an option to change the intervals as per the financial crunch.",
+      "The investor has to intimate the fund house for the change and should be communicated one week prior to the next due date of SIP.",
+    ],
+  },
+  {
+    title: "Perpetual SIP",
+    paragraphs: [
+      "In a perpetual SIP an investor does not set a time period and regularly contributes till he or she decides to stop or modify. Initially one could do it indefinitely but recently from October 2023 National Automated Clearing House (NACH) has introduced a maximum term of 30 years for setting up a SIP from the start date. It is now even mandatory to specify the collection date and will not be allowed perpetuity.",
+    ],
+  },
+  {
+    title: "Trigger SIP",
+    paragraphs: [
+      "A trigger SIP option allows investors to set triggers depending on when a specific event occurs in the market. It can be a pre-defined trigger prompting, when the market suddenly dips or has a favourable condition, a specific index level or even a net asset value of the units. An investor can start a SIP, redeem units or switch to another plan. It is suitable for investors who understand the dynamic nature of the market as it is based on speculations.",
+    ],
+  },
+  {
+    title: "Step-up SIP (Top-up SIP)",
+    paragraphs: [
+      "A Step-up SIP provides investors the facility to gradually increase their SIP instalment amount at a pre-determined rate at intervals. One can begin a SIP with a fixed amount and opt for a regular top-up on it. It is good for people expecting annual increments or receiving bonuses. An investor can gradually increase the recurring contributions to the SIP with increased cash flow and it will help accumulate a wealth corpus by parking more money.",
+    ],
+  },
+  {
+    title: "Value averaging investment plan (VIP)",
+    paragraphs: [
+      "A Value averaging investment plan is similar to a conventional SIP where an investor makes higher investments when the market dips to buy more units. Though it buys more when the market is low, and it may result in higher returns, investors would require a lot of liquid cash with them to enrol for a VIP. This is because investors will have to make extra investments whenever there is a big fall in the market. This lack of predictability is one of the main reasons why many average investors do not opt for VIP and it is usually suitable for HNIs.",
+    ],
+  },
+  {
+    title: "Multiple SIP (Multi Select SIP)",
+    paragraphs: [
+      "It is a unique SIP offering that allows an investor to invest across multiple mutual funds from one fund house with a single SIP facility. With one SIP, an investor can diversify the investment portfolio as the money is automatically distributed into multiple schemes. It also reduces the paperwork for managing multiple SIPs together.",
+    ],
+  },
+];
+
 const FAQS = [
   { q: "Is a SIP a separate product from a mutual fund?", a: "No. A SIP is the way you invest into a mutual fund scheme. You still own units of that scheme. The SIP only sets the amount and the schedule." },
   { q: "What is the smallest SIP I can start?", a: "Many regular schemes start at ₹500 a month. Some schemes allow ₹100. Your advisor confirms the minimum for the scheme you choose." },
@@ -251,6 +297,26 @@ export default function SystematicInvestmentPlan() {
             <p className="text-sm text-[#374151] leading-relaxed font-light">
               If you start SIP at age 30, as per the illustration shown a corpus of approximately Rs. 3 crores can be generated at retirement. If you would have waited 10 years and started SIP at age 40, a corpus of approximately Rs. 0.9 crore would have been available to you at retirement i.e. a difference of Rs. 2.1 crore – which is the &apos;cost of delaying starting SIP&apos;.
             </p>
+          </div>
+        </section>
+
+        <section className="space-y-6">
+          <div className="space-y-2">
+            <span className="text-xs font-extrabold uppercase tracking-[.14em] text-[#1A3B9F]">Types</span>
+            <h2 className="font-[var(--fd)] text-2xl sm:text-3xl font-bold text-[#091540]">What are types of SIP?</h2>
+          </div>
+          <div className="space-y-4">
+            {SIP_TYPES.map((type, index) => (
+              <div key={type.title} className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-3">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-white px-2.5 py-1 rounded-full">
+                  0{index + 1}
+                </span>
+                <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">{type.title}</h3>
+                {type.paragraphs.map((paragraph) => (
+                  <p key={paragraph} className="text-sm text-[#374151] leading-relaxed font-light">{paragraph}</p>
+                ))}
+              </div>
+            ))}
           </div>
         </section>
 
