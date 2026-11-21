@@ -14,10 +14,10 @@ export default function BlogPost() {
         {/* Navigation & Print Action */}
         <div className="flex justify-between items-center flex-wrap gap-4">
           <Link
-            to="/news"
+            to="/insights/articles"
             className="inline-flex items-center gap-2 text-xs font-bold text-[#1A3B9F] bg-[#EEF2FB] px-4 py-2 rounded-[8px] hover:bg-[#dce5f8] transition-colors"
           >
-            &larr; Back to News &amp; Updates
+            &larr; Back to Insights
           </Link>
           <button
             onClick={handleDownloadPDF}
