@@ -114,6 +114,25 @@ const SIP_TYPES = [
   },
 ];
 
+const SIP_CONSIDERATIONS = [
+  {
+    title: "Financial goals",
+    text: "Setting financial goals will provide a brief outline to the investment journey. Buying a car, owning a home, children's higher education, and retirement are the most common financial goals. Based on these an investor gets a starting point to begin financial planning. If one clearly identifies his or her goals, it becomes easy to determine the investment horizon and the amount required to invest through SIPs.",
+  },
+  {
+    title: "Risk appetite",
+    text: "Knowing about one's risk tolerance levels can benefit an investor to make better investment choices. If one is comfortable with extreme ups and downs of the market, then choosing a pure equity fund should be a proper choice. While a risk averse investor will be having a conservative approach and will be comfortable with choosing debt funds. Understanding the risk appetite will help the investor select SIP funds that align with the comfort level.",
+  },
+  {
+    title: "Investment amount",
+    text: "The idea of SIP is to instil a disciplined approach to investment, hence the amount required to do SIP has to be affordable on a regular basis. So, investors should choose an amount conveniently that will help in creating wealth to achieve the goal by being easy on the pocket.",
+  },
+  {
+    title: "Investment duration",
+    text: "The length of time an investor plans to stay invested matters. It directly impacts his/her ability to achieve financial goals. Choose an investment duration that aligns with the specific objectives. Longer durations provide more time to navigate market fluctuations and benefit from compounding.",
+  },
+];
+
 const FAQS = [
   { q: "Is a SIP a separate product from a mutual fund?", a: "No. A SIP is the way you invest into a mutual fund scheme. You still own units of that scheme. The SIP only sets the amount and the schedule." },
   { q: "What is the smallest SIP I can start?", a: "Many regular schemes start at ₹500 a month. Some schemes allow ₹100. Your advisor confirms the minimum for the scheme you choose." },
@@ -315,6 +334,24 @@ export default function SystematicInvestmentPlan() {
                 {type.paragraphs.map((paragraph) => (
                   <p key={paragraph} className="text-sm text-[#374151] leading-relaxed font-light">{paragraph}</p>
                 ))}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="space-y-6">
+          <div className="space-y-2">
+            <span className="text-xs font-extrabold uppercase tracking-[.14em] text-[#6AA32A]">Before you begin</span>
+            <h2 className="font-[var(--fd)] text-2xl sm:text-3xl font-bold text-[#091540]">Things to consider while starting SIP</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {SIP_CONSIDERATIONS.map((item, index) => (
+              <div key={item.title} className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-3">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-white px-2.5 py-1 rounded-full">
+                  0{index + 1}
+                </span>
+                <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">{item.title}</h3>
+                <p className="text-sm text-[#374151] leading-relaxed font-light">{item.text}</p>
               </div>
             ))}
           </div>
