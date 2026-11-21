@@ -516,6 +516,25 @@ export default function SystematicInvestmentPlan() {
           </div>
         </section>
 
+        <section className="space-y-6">
+          <div className="space-y-3">
+            <span className="text-xs font-extrabold uppercase tracking-[.14em] text-[#1A3B9F]">Increase your SIP</span>
+            <h2 className="font-[var(--fd)] text-2xl sm:text-3xl font-bold text-[#091540]">Top Up SIP</h2>
+            <p className="text-sm sm:text-base text-[#374151] leading-relaxed font-light">
+              Top-up SIP is a facility that lets you increase your SIP by a fixed amount or percentage (say 10%) every year or at pre-defined intervals in line with an increase in your income/savings.
+            </p>
+            <p className="text-sm sm:text-base text-[#374151] leading-relaxed font-light">
+              This Top -Up in your SIP allows your investments to be in line with the increase in the cost of living or inflation and helps you plan for your financial goals right. It can also help you reach your financial goals earlier or create a larger corpus for your goal.
+            </p>
+          </div>
+          <div className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-2">
+            <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">Helps save more in tandem with rising income</h3>
+            <p className="text-sm text-[#374151] leading-relaxed font-light">
+              We expect our salaries or business income to rise annually by a certain percentage. If you Top-up your SIPs annually by the expected increase in your income, then it auto adapts to your rising income.
+            </p>
+          </div>
+        </section>
+
         <section className="space-y-4">
           <h2 className="font-[var(--fd)] text-2xl sm:text-3xl font-bold text-[#091540]">Questions about a SIP</h2>
           <div className="space-y-3">
