@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "react-router";
 import AdvisorBookingModal from "../components/AdvisorBookingModal";
+import { saveForm } from "../lib/saveForm";
 
 const STEPS = [
   { title: "Choose the amount and the date", text: "Pick a fixed sum you can set aside, and a date each month or quarter. Many schemes start at ₹500 a month. Some allow ₹100." },
@@ -133,6 +134,8 @@ const SIP_CONSIDERATIONS = [
   },
 ];
 
+const EMPTY_SIP_INQUIRY = { name: "", email: "", phone: "" };
+
 const FAQS = [
   { q: "Is a SIP a separate product from a mutual fund?", a: "No. A SIP is the way you invest into a mutual fund scheme. You still own units of that scheme. The SIP only sets the amount and the schedule." },
   { q: "What is the smallest SIP I can start?", a: "Many regular schemes start at ₹500 a month. Some schemes allow ₹100. Your advisor confirms the minimum for the scheme you choose." },
@@ -143,6 +146,41 @@ const FAQS = [
 export default function SystematicInvestmentPlan() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inquiryOpen, setInquiryOpen] = useState(false);
+  const [inquiry, setInquiry] = useState(EMPTY_SIP_INQUIRY);
+  const [inquirySaving, setInquirySaving] = useState(false);
+  const [inquiryError, setInquiryError] = useState("");
+  const [inquirySaved, setInquirySaved] = useState(false);
+
+  const updateInquiry = (key: keyof typeof EMPTY_SIP_INQUIRY) => (event: ChangeEvent<HTMLInputElement>) => {
+    setInquiry((current) => ({ ...current, [key]: event.target.value }));
+  };
+
+  const closeInquiry = () => {
+    setInquiryOpen(false);
+    setInquiryError("");
+    setInquirySaved(false);
+  };
+
+  const submitInquiry = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (inquirySaving) return;
+    setInquirySaving(true);
+    setInquiryError("");
+    try {
+      await saveForm("sip-inquiry", {
+        name: inquiry.name.trim(),
+        email: inquiry.email.trim(),
+        phone: inquiry.phone.trim(),
+      });
+      setInquirySaved(true);
+      setInquiry(EMPTY_SIP_INQUIRY);
+    } catch (submitError) {
+      setInquiryError(submitError instanceof Error ? submitError.message : "We could not save your details. Please try again.");
+    } finally {
+      setInquirySaving(false);
+    }
+  };
 
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen py-12 px-5 sm:px-8">
@@ -357,6 +395,80 @@ export default function SystematicInvestmentPlan() {
           </div>
         </section>
 
+        <section className="space-y-6">
+          <div className="space-y-2">
+            <span className="text-xs font-extrabold uppercase tracking-[.14em] text-[#1A3B9F]">Get started</span>
+            <h2 className="font-[var(--fd)] text-2xl sm:text-3xl font-bold text-[#091540]">How to Invest in a SIP through MyAnmol Mutual Funds</h2>
+          </div>
+          <ol className="space-y-4">
+            <li className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-white px-2.5 py-1 rounded-full">Step 1</span>
+              <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">Submit Your Details</h3>
+              <p className="text-sm text-[#374151] leading-relaxed font-light">
+                Fill out our quick inquiry form{" "}
+                <button type="button" onClick={() => { setInquiryError(""); setInquirySaved(false); setInquiryOpen(true); }} className="font-extrabold text-[#1A3B9F] underline bg-transparent border-0 cursor-pointer p-0">
+                  Click Here
+                </button>{" "}
+                so our team can reach out to you.
+              </p>
+            </li>
+            <li className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-white px-2.5 py-1 rounded-full">Step 2</span>
+              <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">Personalized Consultation</h3>
+              <p className="text-sm text-[#374151] leading-relaxed font-light">
+                One of our financial advisors will connect with you to understand your financial goals, investment horizon, and risk profile, and design a tailored investment plan for you.
+              </p>
+            </li>
+            <li className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-white px-2.5 py-1 rounded-full">Step 3</span>
+              <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">Customer Relationship Number (CRN) Creation</h3>
+              <p className="text-sm text-[#374151] leading-relaxed font-light">
+                We generate your unique Customer Relationship Number (CRN) to set up your investor profile with MyAnmol.
+              </p>
+            </li>
+            <li className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-white px-2.5 py-1 rounded-full">Step 4</span>
+              <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">Seamless KYC &amp; Onboarding</h3>
+              <ul className="space-y-2 text-sm text-[#374151] leading-relaxed font-light">
+                <li><b className="text-[#091540]">Assisted Option:</b> If you are comfortable sharing your documents with us, we will pre-fill your application and send you a direct KYC link for quick final approval.</li>
+                <li><b className="text-[#091540]">Self-Service Option:</b> Alternatively, you can fill out the details and complete the online KYC process entirely on your own.</li>
+              </ul>
+            </li>
+            <li className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-white px-2.5 py-1 rounded-full">Step 5</span>
+              <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">Select Your SIP Auto-Debit Date</h3>
+              <p className="text-sm text-[#374151] leading-relaxed font-light">
+                Choose a convenient monthly date on which you would like your SIP installment to be automatically debited from your bank account.
+              </p>
+            </li>
+            <li className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-3">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-white px-2.5 py-1 rounded-full">Step 6</span>
+              <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">Proposal Approval, Mandate Registration &amp; SIP Activation</h3>
+              <p className="text-sm text-[#374151] leading-relaxed font-light">
+                We share your customized fund proposals for your approval alongside a one-time Bank Mandate Registration link.
+              </p>
+              <div className="rounded-2xl bg-white border border-[#E3E8F4] p-4 space-y-1">
+                <p className="text-sm font-bold text-[#091540]">Why is a mandate needed?</p>
+                <p className="text-sm text-[#374151] leading-relaxed font-light">
+                  A mandate is a secure, one-time bank authorization that allows your SIP installments to be automatically debited on your chosen date every month. It removes the need to manually transfer funds or approve payments each time, while your investments stay consistent and uninterrupted.
+                </p>
+              </div>
+              <p className="text-sm text-[#374151] leading-relaxed font-light">
+                Once you approve the proposals and complete the mandate registration, your SIP is activated and the chosen amount is automatically debited on your selected date every month.
+              </p>
+            </li>
+            <li className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-white px-2.5 py-1 rounded-full">Step 7</span>
+              <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">Portfolio Tracking &amp; Confirmation</h3>
+              <p className="text-sm text-[#374151] leading-relaxed font-light">
+                Once your mutual fund units are mapped to your CRN, you will receive a confirmation message. You can then track and view all your investments anytime on the{" "}
+                <Link to="/investment-services" className="font-extrabold text-[#1A3B9F] underline">MyAnmol portfolio page</Link>{" "}
+                or in the MyAnmol app.
+              </p>
+            </li>
+          </ol>
+        </section>
+
         <section className="space-y-4">
           <h2 className="font-[var(--fd)] text-2xl sm:text-3xl font-bold text-[#091540]">Questions about a SIP</h2>
           <div className="space-y-3">
@@ -402,6 +514,50 @@ export default function SystematicInvestmentPlan() {
         <p className="text-[11px] text-[#6B7280] leading-relaxed">
           Mutual fund investments are subject to market risks. Read all scheme-related documents carefully. A SIP does not guarantee returns. Anmol Share Broking Pvt. Ltd. is an AMFI-registered mutual fund distributor, ARN: 114893.
         </p>
+
+        {inquiryOpen && (
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+            <button type="button" className="absolute inset-0 bg-[#091540]/75 border-0" aria-label="Close inquiry form" onClick={closeInquiry} />
+            <section
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="sip-inquiry-title"
+              className="relative z-10 w-full max-w-md bg-white rounded-3xl shadow-2xl border border-[#E3E8F4] p-6"
+            >
+              <button type="button" onClick={closeInquiry} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#EEF2FB] text-[#374151] border-0 cursor-pointer font-bold" aria-label="Close">
+                ✕
+              </button>
+              <h2 id="sip-inquiry-title" className="font-[var(--fd)] text-xl font-extrabold text-[#091540] pr-8">Share your details</h2>
+              <p className="text-sm text-[#6B7280] font-light mt-1 mb-4">Our team will reach out to you on WhatsApp.</p>
+              {inquirySaved ? (
+                <div className="rounded-2xl bg-[#EFF8E2] text-[#091540] p-5">
+                  <p className="font-bold">Your details are saved.</p>
+                  <p className="text-sm mt-1">Our team will reach out to you.</p>
+                  <button type="button" onClick={closeInquiry} className="mt-4 h-11 px-5 rounded-xl bg-[#1A3B9F] text-white font-extrabold text-xs border-0 cursor-pointer">Close</button>
+                </div>
+              ) : (
+                <form className="grid gap-3" onSubmit={submitInquiry}>
+                  <label className="grid gap-1 text-xs font-bold text-[#091540]">
+                    Full Name as per PAN Card
+                    <input required minLength={2} name="name" autoComplete="name" value={inquiry.name} onChange={updateInquiry("name")} className="h-11 px-3 rounded-xl border border-[#E3E8F4] font-medium" />
+                  </label>
+                  <label className="grid gap-1 text-xs font-bold text-[#091540]">
+                    Email ID
+                    <input required name="email" type="email" autoComplete="email" value={inquiry.email} onChange={updateInquiry("email")} className="h-11 px-3 rounded-xl border border-[#E3E8F4] font-medium" />
+                  </label>
+                  <label className="grid gap-1 text-xs font-bold text-[#091540]">
+                    WhatsApp number
+                    <input required name="phone" type="tel" autoComplete="tel" inputMode="tel" value={inquiry.phone} onChange={updateInquiry("phone")} className="h-11 px-3 rounded-xl border border-[#E3E8F4] font-medium" />
+                  </label>
+                  {inquiryError && <p className="m-0 text-sm text-rose-700" role="alert">{inquiryError}</p>}
+                  <button type="submit" disabled={inquirySaving} className="h-12 rounded-xl bg-[#8DC63F] text-[#091540] font-extrabold text-xs border-0 cursor-pointer disabled:opacity-60">
+                    {inquirySaving ? "Saving…" : "Submit"}
+                  </button>
+                </form>
+              )}
+            </section>
+          </div>
+        )}
 
         <AdvisorBookingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       </div>

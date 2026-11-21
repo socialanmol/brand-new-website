@@ -163,6 +163,19 @@ async function createFormSubmission(request, response) {
     `INSERT INTO form_submissions (form_key, name, email, phone, fields, source_path) VALUES (?, ?, ?, ?, ?, ?)`,
     [formKey, fields.name || null, fields.email || null, fields.phone || null, JSON.stringify(fields), sourcePath],
   );
+  if (formKey === "sip-inquiry") {
+    await sendStaffCopy({
+      subject: `SIP inquiry: ${fields.name}`,
+      text: [
+        "A SIP inquiry was submitted from How to Invest in a SIP.",
+        "",
+        `Full name as per PAN: ${fields.name}`,
+        `Email: ${fields.email}`,
+        `WhatsApp: ${fields.phone}`,
+        `Page: ${sourcePath || "—"}`,
+      ].join("\n"),
+    });
+  }
   if (formKey === "mutual-fund-advisor") {
     await sendStaffCopy({
       subject: `Mutual Fund Advisor: ${fields.name}`,
@@ -276,6 +289,13 @@ function readFields(formKey, raw) {
       email: requireEmail(raw.email),
       time: text(raw.time, 120),
       notes: text(raw.notes, 2000),
+    };
+  }
+  if (formKey === "sip-inquiry") {
+    return {
+      name: requireName(raw.name),
+      email: requireEmail(raw.email),
+      phone: flexiblePhone(raw.phone),
     };
   }
   throw new HttpError(400, "Choose a form.");
