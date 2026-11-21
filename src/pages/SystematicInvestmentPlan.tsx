@@ -8,11 +8,51 @@ const STEPS = [
   { title: "Each instalment buys units", text: "The instalment buys units at that day's NAV. A lower NAV buys more units. A higher NAV buys fewer. Those units stay invested and can compound." },
 ];
 
-const POINTS = [
-  { title: "Rupee cost averaging", text: "The same rupee amount buys more units when the NAV is low and fewer when it is high. You do not have to guess the right day to invest." },
-  { title: "A habit, not a one-off decision", text: "The debit happens on the date you chose, so investing continues through busy months and through market swings." },
-  { title: "Room to change course", text: "You can raise the amount, pause a SIP, or stop it. Stopping the SIP itself has no penalty. Redeeming units early can still attract the scheme's exit load." },
-  { title: "Sized to a goal", text: "A SIP can be mapped to a home, education, or retirement target. The monthly amount is what you can sustain, not a lump you have to find today." },
+const FEATURES = [
+  {
+    title: "Rupee cost averaging",
+    points: [
+      "A prominent feature that eliminates the need to worry about market fluctuations.",
+      "When market prices are low, more mutual fund units are purchased with fixed SIP instalments.",
+      "Averages out the cost of purchasing over time.",
+    ],
+  },
+  {
+    title: "Disciplined and consistent investing",
+    points: [
+      "The principle of systematic investing is simple as it works on regularity and periodicity.",
+      "SIPs allow investors to contribute small sums regularly over an extended period.",
+      "Payments can be weekly, monthly, or quarterly, promoting disciplined investment.",
+    ],
+  },
+  {
+    title: "Professional fund management",
+    points: [
+      "SIP gives access to professionally managed mutual funds.",
+      "Experienced fund managers make investment decisions based on in-depth research and market analysis.",
+    ],
+  },
+  {
+    title: "Long-term wealth creation through Compounding",
+    points: [
+      "Gradual investment compounded over time.",
+      "Maximizes potential returns for investors.",
+    ],
+  },
+  {
+    title: "Option to temporarily halt investments",
+    points: [
+      "Investors can pause or cancel an existing SIP, or start a new SIP, with minimal restrictions.",
+      "Investors can adjust based on their financial situation.",
+    ],
+  },
+  {
+    title: "Unrestricted investment ceiling",
+    points: [
+      "Investors can start a SIP conveniently with any amount, for there is no upper limit to the SIP amount.",
+      "Gradually increase investments as per their financial situation.",
+    ],
+  },
 ];
 
 const FAQS = [
@@ -90,15 +130,27 @@ export default function SystematicInvestmentPlan() {
         </section>
 
         <section className="space-y-6">
-          <div className="space-y-2">
-            <span className="text-xs font-extrabold uppercase tracking-[.14em] text-[#6AA32A]">Why investors use it</span>
-            <h2 className="font-[var(--fd)] text-2xl sm:text-3xl font-bold text-[#091540]">What a SIP is for</h2>
+          <div className="space-y-3 max-w-[760px]">
+            <span className="text-xs font-extrabold uppercase tracking-[.14em] text-[#6AA32A]">Features</span>
+            <h2 className="font-[var(--fd)] text-2xl sm:text-3xl font-bold text-[#091540]">Features of SIP investment plans</h2>
+            <p className="text-sm text-[#6B7280] leading-relaxed font-light">
+              Systematic Investment Plan (SIP) is a very convenient route of investment in mutual funds for potential long term wealth creation. A systematic investment plan entails investing a fixed amount of money at regular intervals. Besides a simplistic approach, it has several features given below.
+            </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {POINTS.map((point) => (
-              <div key={point.title} className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-2">
-                <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">{point.title}</h3>
-                <p className="text-xs text-[#6B7280] leading-relaxed font-light">{point.text}</p>
+            {FEATURES.map((feature, index) => (
+              <div key={feature.title} className="bg-[#F8FAFE] border border-[#E3E8F4] rounded-[20px] p-6 space-y-3">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A3B9F] bg-white px-2.5 py-1 rounded-full">
+                  0{index + 1}
+                </span>
+                <h3 className="font-[var(--fd)] text-base font-bold text-[#091540]">{feature.title}</h3>
+                <ul className="space-y-2">
+                  {feature.points.map((point) => (
+                    <li key={point} className="text-xs text-[#6B7280] leading-relaxed font-light pl-3 border-l-2 border-[#8DC63F]">
+                      {point}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
@@ -147,7 +199,7 @@ export default function SystematicInvestmentPlan() {
         </section>
 
         <p className="text-[11px] text-[#6B7280] leading-relaxed">
-          Mutual fund investments are subject to market risks. Read all scheme-related documents carefully. A SIP does not guarantee returns, and the unit example above only shows how NAV changes the number of units a fixed amount buys. Anmol Share Broking Pvt. Ltd. is an AMFI-registered mutual fund distributor, ARN: 114893.
+          Mutual fund investments are subject to market risks. Read all scheme-related documents carefully. A SIP does not guarantee returns. Anmol Share Broking Pvt. Ltd. is an AMFI-registered mutual fund distributor, ARN: 114893.
         </p>
 
         <AdvisorBookingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
