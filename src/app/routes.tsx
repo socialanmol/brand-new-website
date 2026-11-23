@@ -75,7 +75,7 @@ import FinancialConfidenceBuilder from '../pages/FinancialConfidenceBuilder';
 import GoalMapping from '../pages/GoalMapping';
 import SpecializedInvestmentFunds from '../pages/SpecializedInvestmentFunds';
 import MutualFundsHub from '../pages/mutual_funds_hub';
-import SipPublicPage from '../pages/SipPublicPage';
+import SystematicInvestmentPlan from '../pages/SystematicInvestmentPlan';
 import InvestmentServices from '../pages/InvestmentServices';
 import Careers from '../pages/Careers';
 import FinancialWellnessThemed from '../pages/FinancialWellnessThemed';
@@ -209,7 +209,7 @@ export const router = createBrowserRouter([
       { path: 'services/other/:slug', Component: ComingSoon },
 
       { path: 'mutual-funds', Component: MutualFundsHub },
-      { path: 'mutual-funds/sip', Component: SipPublicPage },
+      { path: 'mutual-funds/sip', Component: SystematicInvestmentPlan },
       { path: 'mutual-funds/gift-city', Component: GiftCity },
       { path: 'gift-city', Component: GiftCity },
 

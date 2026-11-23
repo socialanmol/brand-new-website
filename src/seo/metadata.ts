@@ -52,7 +52,7 @@ const pages: Record<string, { title: string; description: string }> = {
   },
   "/mutual-funds/sip": {
     title: "Systematic Investment Plan (SIP) | MyAnmol",
-    description: "The MyAnmol SIP page is under construction.",
+    description: "How a SIP works at MyAnmol, including what to consider, how to start, goal-based SIPs, and top-up SIPs.",
   },
   "/mutual-funds/gift-city": {
     title: "GIFT City Investments | MyAnmol",
