@@ -16,6 +16,7 @@ import ForBusinessOwners from '../pages/ForBusinessOwners';
 import SeminarsWorkshops from '../pages/SeminarsWorkshops';
 import PersonalFinanceTopics from '../pages/personal-finance-money-mgt';
 import MutualFundTopics from '../pages/mutual-funds-wealth-creation';
+import FinancialPlanningLifeGoals from '../pages/financial-planning-life-goals';
 import SampleWebinarPage, { seminarPage } from '../pages/SampleWebinarPage';
 import { MUTUAL_FUND_SEMINARS } from '../data/mutualFundSeminars';
 import SeminarRetirementEstate from '../pages/SeminarRetirementEstate';
@@ -135,6 +136,7 @@ export const router = createBrowserRouter([
       { path: 'seminars', Component: SeminarsWorkshops },
       { path: 'insights/seminars/personal-finance-money-management', Component: PersonalFinanceTopics },
       { path: 'insights/seminars/mutual-funds-wealth-creation', Component: MutualFundTopics },
+      { path: 'insights/seminars/financial-planning-life-goals', Component: FinancialPlanningLifeGoals },
       { path: 'insights/seminars/manage-your-salary', Component: SampleWebinarPage },
       { path: 'insights/seminars/2-bank-approach', Component: seminarPage('2-bank-approach') },
       { path: 'insights/seminars/10-money-mistakes', Component: seminarPage('10-money-mistakes') },
