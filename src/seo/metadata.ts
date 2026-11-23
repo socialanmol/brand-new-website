@@ -68,7 +68,7 @@ const pages: Record<string, { title: string; description: string }> = {
   },
   "/insights/seminars": {
     title: "Seminars and Workshops | MyAnmol",
-    description: "MyAnmol webinar pillars, including personal finance, investing, retirement and life planning.",
+    description: "MyAnmol seminars and webinars on personal finance, investing, retirement and life planning.",
   },
   "/insights/seminars/personal-finance-money-management": {
     title: "Personal Finance and Money Management Seminars | MyAnmol",

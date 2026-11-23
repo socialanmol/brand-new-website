@@ -7,7 +7,7 @@ export default function InsuranceFinancialProtection() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[580px] h-[580px] bg-[radial-gradient(circle,rgba(141,198,63,0.18)_0%,transparent_65%)] filter blur-3xl pointer-events-none" />
         <div className="max-w-3xl mx-auto relative z-10">
           <span className="text-[11px] font-extrabold uppercase tracking-[.18em] text-[#8DC63F] block mb-3">
-            Pillar IV Curriculum
+            Webinar Series
           </span>
           <h1 className="font-[var(--fd)] text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">
             Insurance &amp; <span className="text-[#8DC63F] italic">Financial Protection.</span>
