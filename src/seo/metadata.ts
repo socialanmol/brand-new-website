@@ -86,6 +86,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Insurance and Financial Protection Seminars | MyAnmol",
     description: "MyAnmol seminars on life cover, health insurance, medical emergencies, and reviewing an existing policy.",
   },
+  "/insights/seminars/specialised-audiences-niche": {
+    title: "Specialised Audiences and Niche Communities | MyAnmol",
+    description: "MyAnmol seminars for doctors, teachers, women, NRIs, business owners, senior citizens, and young couples.",
+  },
   "/insights/seminars/manage-your-salary": {
     title: "How to Manage Your Salary Better | MyAnmol",
     description: "A MyAnmol masterclass on saving, spending and investing a monthly salary.",
