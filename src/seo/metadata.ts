@@ -82,6 +82,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Financial Planning and Life Goals Seminars | MyAnmol",
     description: "MyAnmol seminars on a child's education, retirement, a home, several goals at once, and estate planning.",
   },
+  "/insights/seminars/insurance-financial-protection": {
+    title: "Insurance and Financial Protection Seminars | MyAnmol",
+    description: "MyAnmol seminars on life cover, health insurance, medical emergencies, and reviewing an existing policy.",
+  },
   "/insights/seminars/manage-your-salary": {
     title: "How to Manage Your Salary Better | MyAnmol",
     description: "A MyAnmol masterclass on saving, spending and investing a monthly salary.",
