@@ -19,6 +19,7 @@ import MutualFundTopics from '../pages/mutual-funds-wealth-creation';
 import FinancialPlanningLifeGoals from '../pages/financial-planning-life-goals';
 import InsuranceFinancialProtection from '../pages/insurance-financial-protection';
 import SpecialisedAudiencesNiche from '../pages/specialised-audiences-niche';
+import BehaviouralFinanceInvestorPsychology from '../pages/behavioural-finance-investor-psychology';
 import SampleWebinarPage, { seminarPage } from '../pages/SampleWebinarPage';
 import { MUTUAL_FUND_SEMINARS } from '../data/mutualFundSeminars';
 import SeminarRetirementEstate from '../pages/SeminarRetirementEstate';
@@ -141,6 +142,7 @@ export const router = createBrowserRouter([
       { path: 'insights/seminars/financial-planning-life-goals', Component: FinancialPlanningLifeGoals },
       { path: 'insights/seminars/insurance-financial-protection', Component: InsuranceFinancialProtection },
       { path: 'insights/seminars/specialised-audiences-niche', Component: SpecialisedAudiencesNiche },
+      { path: 'insights/seminars/behavioural-finance-investor-psychology', Component: BehaviouralFinanceInvestorPsychology },
       { path: 'insights/seminars/manage-your-salary', Component: SampleWebinarPage },
       { path: 'insights/seminars/2-bank-approach', Component: seminarPage('2-bank-approach') },
       { path: 'insights/seminars/10-money-mistakes', Component: seminarPage('10-money-mistakes') },

@@ -37,6 +37,13 @@ export default function SeminarsWorkshops() {
       image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80",
       badge: "Special Editions",
       link: "/insights/seminars/specialised-audiences-niche"
+    },
+    {
+      title: "Behavioural finance and investor psychology",
+      description: "Sessions on fear, greed, buying high, and staying invested when markets move.",
+      image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80",
+      badge: "Investor Behaviour",
+      link: "/insights/seminars/behavioural-finance-investor-psychology"
     }
   ];
 
@@ -53,7 +60,7 @@ export default function SeminarsWorkshops() {
             Seminars &amp; <span className="text-[#8DC63F] italic">Webinars.</span>
           </h1>
           <p className="text-base sm:text-lg text-white/80 font-light leading-relaxed">
-            Explore our seminars and webinars on money, investing, life goals, protection, and the communities we work with.
+            Explore our seminars and webinars on money, investing, life goals, protection, investor behaviour, and the communities we work with.
           </p>
         </div>
       </section>

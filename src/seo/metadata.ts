@@ -90,6 +90,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Specialised Audiences and Niche Communities | MyAnmol",
     description: "MyAnmol seminars for doctors, teachers, women, NRIs, business owners, senior citizens, and young couples.",
   },
+  "/insights/seminars/behavioural-finance-investor-psychology": {
+    title: "Behavioural Finance and Investor Psychology | MyAnmol",
+    description: "MyAnmol seminars on fear, greed, buying high, chasing returns, and staying invested in volatile markets.",
+  },
   "/insights/seminars/manage-your-salary": {
     title: "How to Manage Your Salary Better | MyAnmol",
     description: "A MyAnmol masterclass on saving, spending and investing a monthly salary.",
