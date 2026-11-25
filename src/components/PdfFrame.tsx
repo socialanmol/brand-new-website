@@ -35,7 +35,8 @@ export default function PdfFrame({ src, label }: { src: string; label: string })
       lastWidth = width;
       tasks.forEach((task) => task.cancel());
       tasks = [];
-      host.replaceChildren();
+      const staged: HTMLCanvasElement[] = [];
+      let placed = false;
       try {
         for (let number = 1; number <= doc.numPages; number += 1) {
           if (cancelled) return;
@@ -50,7 +51,7 @@ export default function PdfFrame({ src, label }: { src: string; label: string })
           canvas.style.height = `${viewport.height}px`;
           canvas.className = "block bg-white shadow-sm";
           canvas.setAttribute("aria-label", `${label}, page ${number} of ${doc.numPages}`);
-          host.appendChild(canvas);
+          staged.push(canvas);
           const task = page.render({
             canvas,
             viewport,
@@ -59,8 +60,15 @@ export default function PdfFrame({ src, label }: { src: string; label: string })
           });
           tasks.push(task);
           await task.promise;
+          if (cancelled) return;
+          if (!placed) {
+            host.replaceChildren(...staged);
+            placed = true;
+            setState("ready");
+          } else {
+            host.appendChild(canvas);
+          }
         }
-        if (!cancelled) setState("ready");
       } catch (error) {
         if (!cancelled && (error as { name?: string }).name !== "RenderingCancelledException") {
           setState("error");
@@ -103,7 +111,7 @@ export default function PdfFrame({ src, label }: { src: string; label: string })
     <div ref={frameRef} className="overflow-hidden rounded-2xl border border-[#d5deee] bg-[#e8eef6]">
       <div className={`relative max-h-[78vh] overflow-y-auto ${state === "ready" ? "" : "min-h-[28rem]"}`}>
         {state !== "ready" && (
-          <p className="px-6 py-16 text-center text-sm text-[#4b5563]">
+          <p className="absolute inset-0 z-10 flex items-center justify-center bg-[#e8eef6] px-6 text-center text-sm text-[#4b5563]">
             {state === "error" ? "This edition could not be opened in the viewer." : "Opening the edition…"}
           </p>
         )}

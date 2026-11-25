@@ -5,9 +5,13 @@ const edition = {
   series: "Blue Book",
   pdf: "/blue-book/blue-book.pdf",
   downloadName: "MyAnmol-Blue-Book.pdf",
-  summary:
-    "Blue Book is the MyAnmol series under Insights and Learning. This page is the current edition. Read it above, download the PDF, or share this page link.",
 };
+
+const description = [
+  "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam. Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat. Nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum lorem ipsum dolor.",
+  "Sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut. Aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat. Non proident sunt in culpa qui officia deserunt mollit anim id est laborum lorem ipsum dolor sit amet consectetur adipiscing elit sed do.",
+  "Eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis. Aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui.",
+];
 
 export default function BlueBook() {
   const [pageUrl, setPageUrl] = useState("");
@@ -59,52 +63,60 @@ export default function BlueBook() {
         </div>
       </section>
 
-      <section className="max-w-3xl mx-auto px-5 sm:px-6 py-10 sm:py-12">
-        <PdfFrame src={edition.pdf} label={edition.series} />
+      <section className="max-w-6xl mx-auto px-5 sm:px-6 py-10 sm:py-12">
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+          <div>
+            <PdfFrame src={edition.pdf} label={edition.series} />
+            <a
+              href={edition.pdf}
+              download={edition.downloadName}
+              className="mt-5 inline-flex h-12 items-center justify-center rounded-xl bg-[#8DC63F] px-6 text-xs font-extrabold text-[#091540] hover:bg-[#9ED64A] transition-all"
+            >
+              Download PDF
+            </a>
+          </div>
 
-        <div className="mt-5 flex flex-col sm:flex-row gap-3">
-          <a
-            href={edition.pdf}
-            download={edition.downloadName}
-            className="inline-flex h-12 items-center justify-center rounded-xl bg-[#8DC63F] px-6 text-xs font-extrabold text-[#091540] hover:bg-[#9ED64A] transition-all"
-          >
-            Download PDF
-          </a>
-          <button
-            type="button"
-            onClick={sharePage}
-            className="inline-flex h-12 items-center justify-center rounded-xl border border-[#091540] px-6 text-xs font-extrabold text-[#091540] bg-white cursor-pointer"
-          >
-            Share this page
-          </button>
-        </div>
+          <div>
+            <article>
+              <p className="text-[11px] font-extrabold uppercase tracking-[.16em] text-[#8DC63F]">Blue Book series</p>
+              <h2 className="font-[var(--fd)] mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-[#091540]">
+                About this edition
+              </h2>
+              <div className="mt-4 space-y-4 text-base leading-relaxed text-[#374151]">
+                {description.map((paragraph) => (
+                  <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+                ))}
+              </div>
+            </article>
 
-        <div className="mt-4 rounded-2xl border border-[#d5deee] bg-[#f7f9fc] p-4">
-          <p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#1A3B9F]">Page link</p>
-          <div className="mt-2 flex flex-col sm:flex-row gap-2">
-            <input
-              readOnly
-              value={pageUrl}
-              aria-label="Link to this page"
-              className="h-11 w-full rounded-xl border border-[#d5deee] bg-white px-3 text-sm text-[#111827]"
-            />
             <button
               type="button"
-              onClick={copyLink}
-              className="h-11 shrink-0 rounded-xl bg-[#091540] px-5 text-xs font-extrabold text-white cursor-pointer"
+              onClick={sharePage}
+              className="mt-6 inline-flex h-12 items-center justify-center rounded-xl border border-[#091540] px-6 text-xs font-extrabold text-[#091540] bg-white cursor-pointer"
             >
-              {copied ? "Copied" : "Copy link"}
+              Share this page
             </button>
+
+            <div className="mt-4 rounded-2xl border border-[#d5deee] bg-[#f7f9fc] p-4">
+              <p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#1A3B9F]">Page link</p>
+              <div className="mt-2 flex flex-col gap-2">
+                <input
+                  readOnly
+                  value={pageUrl}
+                  aria-label="Link to this page"
+                  className="h-11 w-full rounded-xl border border-[#d5deee] bg-white px-3 text-sm text-[#111827]"
+                />
+                <button
+                  type="button"
+                  onClick={copyLink}
+                  className="h-11 rounded-xl bg-[#091540] px-5 text-xs font-extrabold text-white cursor-pointer"
+                >
+                  {copied ? "Copied" : "Copy link"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-
-        <article className="mt-10 border-t border-[#e6ebf3] pt-8">
-          <p className="text-[11px] font-extrabold uppercase tracking-[.16em] text-[#8DC63F]">Blue Book series</p>
-          <h2 className="font-[var(--fd)] mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-[#091540]">
-            About this edition
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-[#374151]">{edition.summary}</p>
-        </article>
       </section>
     </div>
   );
