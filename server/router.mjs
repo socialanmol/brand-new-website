@@ -188,6 +188,7 @@ async function createFormSubmission(request, response) {
         `Email: ${fields.email}`,
         `Preferred time: ${fields.time || "—"}`,
         `Notes: ${fields.notes || "—"}`,
+        "Consent: accepted",
         `Page: ${sourcePath || "—"}`,
       ].join("\n"),
     });
@@ -284,12 +285,14 @@ function readFields(formKey, raw) {
     };
   }
   if (formKey === "mutual-fund-advisor") {
+    if (raw.consent !== true) throw new HttpError(400, "Please accept the privacy consent to continue.");
     return {
       name: requireName(raw.name),
       phone: flexiblePhone(raw.phone),
       email: requireEmail(raw.email),
       time: text(raw.time, 120),
       notes: text(raw.notes, 2000),
+      consent: true,
     };
   }
   if (formKey === "sip-inquiry") {
