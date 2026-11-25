@@ -172,7 +172,7 @@ const pages: Record<string, { title: string; description: string }> = {
   },
   "/insights/blue-book": {
     title: "Blue Book | MyAnmol",
-    description: "The MyAnmol Blue Book page.",
+    description: "Blue Book is the MyAnmol series under Insights and Learning. Read the current edition, download the PDF, or share the page.",
   },
   ...Object.fromEntries(MUTUAL_FUND_SEMINARS.map((topic) => [
     `/insights/seminars/${topic.pageId}`,
