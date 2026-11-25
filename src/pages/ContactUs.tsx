@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { DataConsent } from "../components/DataConsent";
 
 export default function ContactUs() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
+  const [consent, setConsent] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -26,6 +28,10 @@ export default function ContactUs() {
       );
       return;
     }
+    if (!consent) {
+      setErrorMsg("Please accept the privacy consent to continue.");
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -39,6 +45,7 @@ export default function ContactUs() {
           phone: phone.trim(),
           message: message.trim(),
           source: "contact-page",
+          consent: true,
         }),
       });
       const body = await response.json().catch(() => ({}));
@@ -216,6 +223,8 @@ export default function ContactUs() {
                       className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#1A3B9F] focus:outline-none resize-vertical"
                     />
                   </div>
+
+                  <DataConsent id="contact-consent" checked={consent} onChange={setConsent} />
 
                   {errorMsg && (
                     <div className="text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-200 p-3 rounded-xl">

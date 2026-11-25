@@ -341,6 +341,7 @@ async function createContact(request, response) {
   const phone = requirePhone(body.phone);
   const message = text(body.message, 4000);
   if (message.length < 2) throw new HttpError(400, "Enter a message.");
+  if (body.consent !== true) throw new HttpError(400, "Please accept the privacy consent to continue.");
   const sourceInput = text(body.source, 64);
   const source = /^[a-z0-9-]{1,64}$/.test(sourceInput) ? sourceInput : "contact-page";
 
@@ -357,6 +358,7 @@ async function createContact(request, response) {
       `Email: ${email}`,
       `Phone: ${phone}`,
       `Message: ${message}`,
+      "Consent: accepted",
       `Source: ${source}`,
     ].join("\n"),
   });
