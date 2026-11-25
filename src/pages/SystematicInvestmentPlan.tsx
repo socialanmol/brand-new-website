@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "react-router";
 import AdvisorBookingModal from "../components/AdvisorBookingModal";
+import { DataConsent } from "../components/DataConsent";
 import { saveForm } from "../lib/saveForm";
 
 const STEPS = [
@@ -174,6 +175,7 @@ export default function SystematicInvestmentPlan() {
   const [inquirySaving, setInquirySaving] = useState(false);
   const [inquiryError, setInquiryError] = useState("");
   const [inquirySaved, setInquirySaved] = useState(false);
+  const [inquiryConsent, setInquiryConsent] = useState(false);
 
   const updateInquiry = (key: keyof typeof EMPTY_SIP_INQUIRY) => (event: ChangeEvent<HTMLInputElement>) => {
     setInquiry((current) => ({ ...current, [key]: event.target.value }));
@@ -183,11 +185,16 @@ export default function SystematicInvestmentPlan() {
     setInquiryOpen(false);
     setInquiryError("");
     setInquirySaved(false);
+    setInquiryConsent(false);
   };
 
   const submitInquiry = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (inquirySaving) return;
+    if (!inquiryConsent) {
+      setInquiryError("Please accept the privacy consent to continue.");
+      return;
+    }
     setInquirySaving(true);
     setInquiryError("");
     try {
@@ -195,9 +202,11 @@ export default function SystematicInvestmentPlan() {
         name: inquiry.name.trim(),
         email: inquiry.email.trim(),
         phone: inquiry.phone.trim(),
+        consent: true,
       });
       setInquirySaved(true);
       setInquiry(EMPTY_SIP_INQUIRY);
+      setInquiryConsent(false);
     } catch (submitError) {
       setInquiryError(submitError instanceof Error ? submitError.message : "We could not save your details. Please try again.");
     } finally {
@@ -615,6 +624,7 @@ export default function SystematicInvestmentPlan() {
                     WhatsApp number
                     <input required name="phone" type="tel" autoComplete="tel" inputMode="tel" value={inquiry.phone} onChange={updateInquiry("phone")} className="h-11 px-3 rounded-xl border border-[#E3E8F4] font-medium" />
                   </label>
+                  <DataConsent id="sip-inquiry-consent" checked={inquiryConsent} onChange={setInquiryConsent} />
                   {inquiryError && <p className="m-0 text-sm text-rose-700" role="alert">{inquiryError}</p>}
                   <button type="submit" disabled={inquirySaving} className="h-12 rounded-xl bg-[#8DC63F] text-[#091540] font-extrabold text-xs border-0 cursor-pointer disabled:opacity-60">
                     {inquirySaving ? "Saving…" : "Submit"}

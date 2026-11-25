@@ -172,6 +172,7 @@ async function createFormSubmission(request, response) {
         `Full name as per PAN: ${fields.name}`,
         `Email: ${fields.email}`,
         `WhatsApp: ${fields.phone}`,
+        "Consent: accepted",
         `Page: ${sourcePath || "—"}`,
       ].join("\n"),
     });
@@ -292,10 +293,12 @@ function readFields(formKey, raw) {
     };
   }
   if (formKey === "sip-inquiry") {
+    if (raw.consent !== true) throw new HttpError(400, "Please accept the privacy consent to continue.");
     return {
       name: requireName(raw.name),
       email: requireEmail(raw.email),
       phone: flexiblePhone(raw.phone),
+      consent: true,
     };
   }
   throw new HttpError(400, "Choose a form.");
