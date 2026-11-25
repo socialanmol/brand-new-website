@@ -1,30 +1,37 @@
+// The API token and URL are not stored in this file.
+// Set them in the server .env, then restart the API:
+//   SANCHAY_API_URL=https://myanmol.sanchaycrm.com/api/v1/
+//   SANCHAY_API_TOKEN=
+// Optional: SANCHAY_LEAD_SOURCE, SANCHAY_LEAD_STATUS, SANCHAY_PRODUCT, SANCHAY_ASSIGNED_USER_ID
+
 const warned = { missing: false };
 
-export function getStartedAlertName(lead) {
-  const interests = String(lead.interest || "").trim() || "Not specified";
-  return `NEW-CLIENT-ALERT: ${lead.name} | ${interests}`;
+function productCategories(lead) {
+  const source = String(lead.interest || process.env.SANCHAY_PRODUCT || "");
+  return source
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .join(",");
 }
 
 export function getStartedSanchayBody(lead) {
-  const note = [
-    `City: ${lead.city || "—"}`,
-    `Page: ${lead.sourcePath || "—"}`,
-    `Interests: ${lead.interest || "—"}`,
-  ].join("\n");
-  const body = {
-    module_name: "Lead",
-    name: getStartedAlertName(lead),
+  const field_name_list = {
+    last_name: lead.name,
     phone: lead.phone,
     email: lead.email,
-    status: process.env.SANCHAY_LEAD_STATUS || "New",
+    city: lead.city || "",
+    product_category_c: productCategories(lead),
     lead_source: process.env.SANCHAY_LEAD_SOURCE || "Website",
-    description: note,
-    comment: note,
+    status: process.env.SANCHAY_LEAD_STATUS || "New",
   };
-  if (lead.city) body.city = lead.city;
-  if (process.env.SANCHAY_PRODUCT) body.product_sub_category = process.env.SANCHAY_PRODUCT;
-  if (process.env.SANCHAY_ASSIGNED_USER_ID) body.assigned_user_id = process.env.SANCHAY_ASSIGNED_USER_ID;
-  return body;
+  if (process.env.SANCHAY_ASSIGNED_USER_ID) {
+    field_name_list.assigned_user_id = process.env.SANCHAY_ASSIGNED_USER_ID;
+  }
+  return {
+    module_name: "Lead",
+    field_name_list,
+  };
 }
 
 export function sanchaySaveUrl() {
@@ -65,14 +72,14 @@ export async function copyGetStartedLead(lead) {
     });
     const body = await response.json().catch(() => ({}));
     const status = Number(body?.status || response.status);
-    const savedName = String(body?.response_data?.name || "").trim();
+    const savedName = String(body?.response_data?.last_name || body?.response_data?.name || "").trim();
     const savedId = String(body?.response_data?.id || "").trim();
     if (!response.ok || status >= 400) {
       console.error("Sanchay lead copy failed:", body?.message || response.status);
       return { ok: false, skipped: false };
     }
-    if (!savedName) {
-      console.error("Sanchay lead copy failed: CRM saved a lead with a blank name");
+    if (!savedId && !savedName) {
+      console.error("Sanchay lead copy failed: CRM did not return a lead id");
       return { ok: false, skipped: false };
     }
     console.log(`Sanchay lead copy saved ${savedId}`);
