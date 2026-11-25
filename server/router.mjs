@@ -113,6 +113,7 @@ async function createLead(request, response) {
   const city = text(body.city, 120) || null;
   const interest = readInterests(body.interests ?? body.interest);
   const sourcePath = safePath(body.sourcePath) || null;
+  if (body.consent !== true) throw new HttpError(400, "Please accept the privacy consent to continue.");
 
   const [result] = await query(
     `INSERT INTO leads (name, phone, email, city, interest, source_path) VALUES (?, ?, ?, ?, ?, ?)`,
@@ -128,6 +129,7 @@ async function createLead(request, response) {
       `Email: ${email}`,
       `City: ${city || "—"}`,
       `Interests: ${interest || "—"}`,
+      "Consent: accepted",
       `Page: ${sourcePath || "—"}`,
     ].join("\n"),
   });
