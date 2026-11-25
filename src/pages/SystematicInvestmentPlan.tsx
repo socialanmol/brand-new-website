@@ -197,13 +197,24 @@ export default function SystematicInvestmentPlan() {
     }
     setInquirySaving(true);
     setInquiryError("");
+    const fields = {
+      name: inquiry.name.trim(),
+      email: inquiry.email.trim(),
+      phone: inquiry.phone.trim(),
+      consent: true,
+    };
     try {
-      await saveForm("sip-inquiry", {
-        name: inquiry.name.trim(),
-        email: inquiry.email.trim(),
-        phone: inquiry.phone.trim(),
-        consent: true,
-      });
+      try {
+        await saveForm("sip-inquiry", fields);
+      } catch (submitError) {
+        const message = submitError instanceof Error ? submitError.message : "";
+        if (message !== "Choose a form.") throw submitError;
+        await saveForm("mutual-fund-advisor", {
+          ...fields,
+          time: "",
+          notes: "SIP inquiry from How to Invest in a SIP.",
+        });
+      }
       setInquirySaved(true);
       setInquiry(EMPTY_SIP_INQUIRY);
       setInquiryConsent(false);
