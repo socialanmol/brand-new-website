@@ -170,6 +170,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Financial Glossary | MyAnmol",
     description: "Plain-language definitions for mutual funds, insurance and tax terms used on MyAnmol.",
   },
+  "/insights/blue-book": {
+    title: "Blue Book | MyAnmol",
+    description: "The MyAnmol Blue Book page.",
+  },
   ...Object.fromEntries(MUTUAL_FUND_SEMINARS.map((topic) => [
     `/insights/seminars/${topic.pageId}`,
     { title: `${topic.title} | MyAnmol`, description: topic.description },

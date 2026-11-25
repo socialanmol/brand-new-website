@@ -96,6 +96,7 @@ const NAV: NavEntry[] = [
       { label: 'Our Insights',             to: '/insights/articles',  icon: '✍️' },
       { label: 'Learn, Unlearn & Relearn', to: '/insights/learn',     icon: '🔄' },
       { label: 'Seminars & Workshops',     to: '/insights/seminars',  icon: '🎤' },
+      { label: 'Blue Book',                to: '/insights/blue-book', icon: '📘' },
     ],
   },
   {

@@ -86,6 +86,7 @@ import FixedDeposits from '../pages/FixedDeposits';
 import EquityTrading from '../pages/EquityTrading';
 import TaxFiling from '../pages/TaxFiling';
 import Glossary from '../pages/Glossary';
+import BlueBook from '../pages/BlueBook';
 import GiftCity from '../pages/Giftcity';
 import ContactUs from '../pages/ContactUs';
 import ComingSoon from '../pages/ComingSoon';
@@ -166,6 +167,7 @@ export const router = createBrowserRouter([
 
       { path: 'insights/learn/:slug', Component: BookSummary },
       { path: 'insights/glossary', Component: Glossary },
+      { path: 'insights/blue-book', Component: BlueBook },
       { path: 'glossary', Component: Glossary },
       { path: 'resources', Component: Resources },
       { path: 'resources/books/:slug', Component: BookSummary },
