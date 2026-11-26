@@ -174,6 +174,15 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     downloadName: "Spotting-Pension-Scams-and-Protecting-Your-Retirement.pdf",
     noteBelow: true,
   },
+  {
+    slug: "capital-gains-account-scheme",
+    title: "Understanding the Capital Gains Account Scheme (CGAS)",
+    pdfWidth: 1080,
+    pdfHeight: 1080,
+    pdf: "/blue-book/capital-gains-account-scheme.pdf",
+    downloadName: "Understanding-the-Capital-Gains-Account-Scheme.pdf",
+    noteBelow: true,
+  },
 ];
 
 export function blueBookBySlug(slug: string) {

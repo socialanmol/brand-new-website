@@ -174,6 +174,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Blue Book | MyAnmol",
     description: "The MyAnmol Blue Book series. Choose an edition from the shelf.",
   },
+  "/insights/blue-book/capital-gains-account-scheme": {
+    title: "Understanding the Capital Gains Account Scheme | MyAnmol",
+    description: "Read Understanding the Capital Gains Account Scheme, a Blue Book edition from MyAnmol.",
+  },
   "/insights/blue-book/spotting-pension-scams": {
     title: "Spotting Pension Scams and Protecting Your Retirement | MyAnmol",
     description: "Read Spotting Pension Scams and Protecting Your Retirement, a Blue Book edition from MyAnmol.",
