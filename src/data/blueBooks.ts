@@ -66,7 +66,6 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
   {
     slug: "navigating-personal-finance-digital-safety",
     title: "Navigating Personal Finance & Digital Safety",
-    subtitle: "A Comprehensive Guide to Hidden Financial Costs, Investment Mindsets, and Digital Security for Families",
     pdfWidth: 1080,
     pdfHeight: 1080,
     pdf: "/blue-book/navigating-personal-finance-digital-safety.pdf",
