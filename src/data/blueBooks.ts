@@ -46,7 +46,14 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/financial-wellness-the-anmol-way.pdf",
     downloadName: "Financial-Wellness-The-Anmol-Way.pdf",
   },
-  { slug: "kindness-in-finance", title: "Kindness in Finance", pdfWidth: 1080, pdfHeight: 1350 },
+  {
+    slug: "kindness-in-finance",
+    title: "Kindness in Finance",
+    pdfWidth: 1080,
+    pdfHeight: 1350,
+    pdf: "/blue-book/kindness-in-finance.pdf",
+    downloadName: "Kindness-in-Finance.pdf",
+  },
   { slug: "unlisted-stocks-indulgence-sovereign-safety", title: "Unlisted Stocks, Indulgence & Sovereign Safety", pdfWidth: 1080, pdfHeight: 1080 },
   {
     slug: "navigating-personal-finance-digital-safety",
