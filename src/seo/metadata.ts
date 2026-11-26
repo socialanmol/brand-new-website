@@ -174,6 +174,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Blue Book | MyAnmol",
     description: "The MyAnmol Blue Book series. Choose an edition from the shelf.",
   },
+  "/insights/blue-book/systematic-withdrawal-plan": {
+    title: "The Power of a Systematic Withdrawal Plan | MyAnmol",
+    description: "Read The Power of a Systematic Withdrawal Plan, a Blue Book edition from MyAnmol.",
+  },
   "/insights/blue-book/timing-your-legacy": {
     title: "A Guide to Timing Your Legacy | MyAnmol",
     description: "Read A Guide to Timing Your Legacy, a Blue Book edition from MyAnmol.",
