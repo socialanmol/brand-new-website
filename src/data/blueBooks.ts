@@ -9,7 +9,14 @@ export type BlueBookEdition = {
 };
 
 export const BLUE_BOOKS: BlueBookEdition[] = [
-  { slug: "importance-of-balance", title: "Importance of Balance", pdfWidth: 1920, pdfHeight: 1080 },
+  {
+    slug: "importance-of-balance",
+    title: "Importance of Balance",
+    pdfWidth: 1920,
+    pdfHeight: 1080,
+    pdf: "/blue-book/importance-of-balance.pdf",
+    downloadName: "Importance-of-Balance.pdf",
+  },
   { slug: "old-tax-regime-tax-savings-checklist", title: "2025-26 - OLD TAX REGIME TAX SAVINGS CHECKLIST", pdfWidth: 1080, pdfHeight: 1080 },
   { slug: "festive-season-financial-wellness-guide", title: "Festive Season Financial Wellness Guide", pdfWidth: 1080, pdfHeight: 1080 },
   {

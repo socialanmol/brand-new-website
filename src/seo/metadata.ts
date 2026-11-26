@@ -174,6 +174,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Blue Book | MyAnmol",
     description: "The MyAnmol Blue Book series. Choose an edition from the shelf.",
   },
+  "/insights/blue-book/importance-of-balance": {
+    title: "Importance of Balance | MyAnmol",
+    description: "Read Importance of Balance, a Blue Book edition from MyAnmol.",
+  },
   "/insights/blue-book/financial-freedom": {
     title: "FINANCIAL FREEDOM: The Passive Investing Way | MyAnmol",
     description: "Read Financial Freedom: The Passive Investing Way, a Blue Book edition from MyAnmol.",
