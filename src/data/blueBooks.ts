@@ -1,10 +1,7 @@
-export const BLUE_BOOK_AUTHOR = "MyAnmol";
-
 export type BlueBookEdition = {
   slug: string;
   title: string;
   subtitle?: string;
-  author?: string;
   pdfWidth: number;
   pdfHeight: number;
   pdf?: string;
@@ -22,7 +19,15 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     downloadName: "Importance-of-Balance.pdf",
     noteBelow: true,
   },
-  { slug: "old-tax-regime-tax-savings-checklist", title: "2025-26 - OLD TAX REGIME TAX SAVINGS CHECKLIST", pdfWidth: 1080, pdfHeight: 1080 },
+  {
+    slug: "old-tax-regime-tax-savings-checklist",
+    title: "2025-26 - OLD TAX REGIME TAX SAVINGS CHECKLIST",
+    pdfWidth: 1080,
+    pdfHeight: 1080,
+    pdf: "/blue-book/old-tax-regime-tax-savings-checklist.pdf",
+    downloadName: "2025-26-Old-Tax-Regime-Tax-Savings-Checklist.pdf",
+    noteBelow: true,
+  },
   { slug: "festive-season-financial-wellness-guide", title: "Festive Season Financial Wellness Guide", pdfWidth: 1080, pdfHeight: 1080 },
   {
     slug: "financial-wellness-the-anmol-way",
@@ -48,7 +53,6 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
   {
     slug: "new-rules-of-money-and-life",
     title: "The new rules of Money and Life",
-    author: "Ms. Ramya Molangiri",
     pdfWidth: 1080,
     pdfHeight: 1350,
     pdf: "/blue-book/new-rules-of-money-and-life.pdf",
@@ -58,7 +62,6 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
   {
     slug: "financial-freedom",
     title: "FINANCIAL FREEDOM: The Passive Investing Way",
-    author: "Ms. Ramya Molangiri",
     pdfWidth: 1080,
     pdfHeight: 1350,
     pdf: "/blue-book/financial-freedom.pdf",
