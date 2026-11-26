@@ -21,7 +21,7 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
   },
   {
     slug: "old-tax-regime-tax-savings-checklist",
-    title: "2025-26 - OLD TAX REGIME TAX SAVINGS CHECKLIST",
+    title: "2025-26 - Old Tax Regime Tax Savings Checklist",
     pdfWidth: 1080,
     pdfHeight: 1080,
     pdf: "/blue-book/old-tax-regime-tax-savings-checklist.pdf",
