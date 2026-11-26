@@ -147,6 +147,15 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/take-charge-of-your-finances.pdf",
     downloadName: "Take-Charge-of-your-Finances.pdf",
   },
+  {
+    slug: "essential-lessons-ipo-cyber-security-spending",
+    title: "Essential Lessons in IPO Investing, Cyber Security, and Spending Habits",
+    pdfWidth: 1080,
+    pdfHeight: 1080,
+    pdf: "/blue-book/essential-lessons-ipo-cyber-security-spending.pdf",
+    downloadName: "Essential-Lessons-in-IPO-Investing-Cyber-Security-and-Spending-Habits.pdf",
+    noteBelow: true,
+  },
 ];
 
 export function blueBookBySlug(slug: string) {
