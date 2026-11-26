@@ -82,7 +82,15 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/new-rules-of-money-and-life.pdf",
     downloadName: "The-new-rules-of-Money-and-Life.pdf",
   },
-  { slug: "from-plate-to-portfolio", title: "From Plate to Portfolio", subtitle: "Financial Nutrition", pdfWidth: 1080, pdfHeight: 1350 },
+  {
+    slug: "from-plate-to-portfolio",
+    title: "From Plate to Portfolio",
+    subtitle: "Financial Nutrition",
+    pdfWidth: 1080,
+    pdfHeight: 1350,
+    pdf: "/blue-book/from-plate-to-portfolio.pdf",
+    downloadName: "From-Plate-to-Portfolio.pdf",
+  },
   {
     slug: "financial-freedom",
     title: "FINANCIAL FREEDOM: The Passive Investing Way",
