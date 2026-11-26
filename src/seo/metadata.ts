@@ -172,7 +172,11 @@ const pages: Record<string, { title: string; description: string }> = {
   },
   "/insights/blue-book": {
     title: "Blue Book | MyAnmol",
-    description: "Blue Book is the MyAnmol series under Insights and Learning. Read the current edition, download the PDF, or share the page.",
+    description: "The MyAnmol Blue Book series. Choose an edition from the shelf.",
+  },
+  "/insights/blue-book/financial-freedom": {
+    title: "FINANCIAL FREEDOM: The Passive Investing Way | MyAnmol",
+    description: "Read Financial Freedom: The Passive Investing Way, a Blue Book edition from MyAnmol.",
   },
   ...Object.fromEntries(MUTUAL_FUND_SEMINARS.map((topic) => [
     `/insights/seminars/${topic.pageId}`,
