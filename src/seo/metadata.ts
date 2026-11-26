@@ -174,6 +174,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Blue Book | MyAnmol",
     description: "The MyAnmol Blue Book series. Choose an edition from the shelf.",
   },
+  "/insights/blue-book/everyday-safety-security-checklist": {
+    title: "Everyday Safety and Security Checklist | MyAnmol",
+    description: "Read the Everyday Safety and Security Checklist, a Blue Book edition from MyAnmol.",
+  },
   "/insights/blue-book/essential-lessons-ipo-cyber-security-spending": {
     title: "Essential Lessons in IPO Investing, Cyber Security, and Spending Habits | MyAnmol",
     description: "Read Essential Lessons in IPO Investing, Cyber Security, and Spending Habits, a Blue Book edition from MyAnmol.",

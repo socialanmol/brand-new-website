@@ -156,6 +156,15 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     downloadName: "Essential-Lessons-in-IPO-Investing-Cyber-Security-and-Spending-Habits.pdf",
     noteBelow: true,
   },
+  {
+    slug: "everyday-safety-security-checklist",
+    title: "Everyday Safety & Security Checklist",
+    pdfWidth: 1080,
+    pdfHeight: 1080,
+    pdf: "/blue-book/everyday-safety-security-checklist.pdf",
+    downloadName: "Everyday-Safety-and-Security-Checklist.pdf",
+    noteBelow: true,
+  },
 ];
 
 export function blueBookBySlug(slug: string) {
