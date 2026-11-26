@@ -66,7 +66,14 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
   { slug: "ai-deepfakes-financial-scams", title: "How AI-Generated Deepfakes Are Reshaping Financial Scams", pdfWidth: 1080, pdfHeight: 1350 },
   { slug: "systematic-withdrawal-plan", title: "The Power of a Systematic Withdrawal Plan (SWP)", pdfWidth: 1080, pdfHeight: 1350 },
   { slug: "timing-your-legacy", title: "A Guide to Timing Your Legacy", pdfWidth: 1080, pdfHeight: 1350 },
-  { slug: "financial-lessons-for-gen-z", title: "3 Real Financial Lessons for Gen Z", pdfWidth: 1080, pdfHeight: 1080 },
+  {
+    slug: "financial-lessons-for-gen-z",
+    title: "3 Real Financial Lessons for Gen Z",
+    pdfWidth: 1080,
+    pdfHeight: 1080,
+    pdf: "/blue-book/financial-lessons-for-gen-z.pdf",
+    downloadName: "3-Real-Financial-Lessons-for-Gen-Z.pdf",
+  },
   {
     slug: "new-rules-of-money-and-life",
     title: "The new rules of Money and Life",
