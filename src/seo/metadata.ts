@@ -174,6 +174,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Blue Book | MyAnmol",
     description: "The MyAnmol Blue Book series. Choose an edition from the shelf.",
   },
+  "/insights/blue-book/take-charge-of-your-finances": {
+    title: "Take Charge of your Finances | MyAnmol",
+    description: "Read Take Charge of your Finances, a Blue Book edition from MyAnmol.",
+  },
   "/insights/blue-book/ai-deepfakes-financial-scams": {
     title: "How AI-Generated Deepfakes Are Reshaping Financial Scams | MyAnmol",
     description: "Read How AI-Generated Deepfakes Are Reshaping Financial Scams, a Blue Book edition from MyAnmol.",

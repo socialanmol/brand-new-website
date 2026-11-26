@@ -139,6 +139,14 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/financial-freedom.pdf",
     downloadName: "Financial-Freedom-The-Passive-Investing-Way.pdf",
   },
+  {
+    slug: "take-charge-of-your-finances",
+    title: "Take Charge of your Finances",
+    pdfWidth: 1080,
+    pdfHeight: 1350,
+    pdf: "/blue-book/take-charge-of-your-finances.pdf",
+    downloadName: "Take-Charge-of-your-Finances.pdf",
+  },
 ];
 
 export function blueBookBySlug(slug: string) {
