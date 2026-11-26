@@ -43,6 +43,8 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     subtitle: "Money Matters 2026",
     pdfWidth: 1080,
     pdfHeight: 1350,
+    pdf: "/blue-book/financial-wellness-the-anmol-way.pdf",
+    downloadName: "Financial-Wellness-The-Anmol-Way.pdf",
   },
   { slug: "kindness-in-finance", title: "Kindness in Finance", pdfWidth: 1080, pdfHeight: 1350 },
   { slug: "unlisted-stocks-indulgence-sovereign-safety", title: "Unlisted Stocks, Indulgence & Sovereign Safety", pdfWidth: 1080, pdfHeight: 1080 },
