@@ -69,6 +69,8 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     subtitle: "A Comprehensive Guide to Hidden Financial Costs, Investment Mindsets, and Digital Security for Families",
     pdfWidth: 1080,
     pdfHeight: 1080,
+    pdf: "/blue-book/navigating-personal-finance-digital-safety.pdf",
+    downloadName: "Navigating-Personal-Finance-and-Digital-Safety.pdf",
     noteBelow: true,
   },
   { slug: "money-matters-3-things", title: "MONEY MATTERS: 3 things worth knowing this month", pdfWidth: 1080, pdfHeight: 1350 },
