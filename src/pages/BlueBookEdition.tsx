@@ -74,7 +74,7 @@ export default function BlueBookEdition() {
       <section className="max-w-6xl mx-auto px-5 sm:px-6 py-10 sm:py-12">
         <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
           <div>
-            <PdfFrame src={book.pdf} label={book.title} frameWidth={book.frameWidth} frameHeight={book.frameHeight} />
+            <PdfFrame src={book.pdf} label={book.title} frameWidth={book.pdfWidth} frameHeight={book.pdfHeight} />
             <a
               href={book.pdf}
               download={book.downloadName}
