@@ -81,7 +81,14 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/money-matters-3-things.pdf",
     downloadName: "Money-Matters-3-things-worth-knowing-this-month.pdf",
   },
-  { slug: "ai-deepfakes-financial-scams", title: "How AI-Generated Deepfakes Are Reshaping Financial Scams", pdfWidth: 1080, pdfHeight: 1350 },
+  {
+    slug: "ai-deepfakes-financial-scams",
+    title: "How AI-Generated Deepfakes Are Reshaping Financial Scams",
+    pdfWidth: 1080,
+    pdfHeight: 1350,
+    pdf: "/blue-book/ai-deepfakes-financial-scams.pdf",
+    downloadName: "How-AI-Generated-Deepfakes-Are-Reshaping-Financial-Scams.pdf",
+  },
   {
     slug: "systematic-withdrawal-plan",
     title: "The Power of a Systematic Withdrawal Plan (SWP)",
