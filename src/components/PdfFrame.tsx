@@ -6,7 +6,7 @@ GlobalWorkerOptions.workerSrc = workerUrl;
 
 type ViewState = "loading" | "ready" | "error";
 
-export default function PdfFrame({ src, label }: { src: string; label: string }) {
+export default function PdfFrame({ src, label, frameWidth, frameHeight }: { src: string; label: string; frameWidth: number; frameHeight: number }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<ViewState>("loading");
@@ -108,14 +108,18 @@ export default function PdfFrame({ src, label }: { src: string; label: string })
   }, [label, src]);
 
   return (
-    <div ref={frameRef} className="overflow-hidden rounded-2xl border border-[#d5deee] bg-[#e8eef6]">
-      <div className={`relative max-h-[78vh] overflow-y-auto ${state === "ready" ? "" : "min-h-[28rem]"}`}>
+    <div
+      ref={frameRef}
+      className="overflow-hidden rounded-2xl border border-[#d5deee] bg-[#e8eef6]"
+      style={{ aspectRatio: `${frameWidth} / ${frameHeight}` }}
+    >
+      <div className="relative h-full overflow-y-auto">
         {state !== "ready" && (
           <p className="absolute inset-0 z-10 flex items-center justify-center bg-[#e8eef6] px-6 text-center text-sm text-[#4b5563]">
             {state === "error" ? "This edition could not be opened in the viewer." : "Opening the edition…"}
           </p>
         )}
-        <div ref={hostRef} className="flex flex-col items-center gap-4 px-3 py-4 sm:px-5" />
+        <div ref={hostRef} className="flex flex-col items-center" />
       </div>
     </div>
   );

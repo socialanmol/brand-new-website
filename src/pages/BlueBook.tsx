@@ -11,19 +11,23 @@ const COVERS = [
 ];
 
 function BookCover({ book, index }: { book: BlueBookEdition; index: number }) {
+  const wide = book.frameWidth > book.frameHeight;
   return (
-    <div className={`relative flex h-full min-h-[280px] overflow-hidden rounded-r-2xl rounded-l-md bg-gradient-to-br ${COVERS[index % COVERS.length]} text-white shadow-[0_16px_30px_rgba(9,21,64,0.18)]`}>
-      <div className="w-3 shrink-0 bg-black/30" aria-hidden="true" />
-      <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
+    <div
+      className={`relative flex overflow-hidden rounded-r-2xl rounded-l-md bg-gradient-to-br ${COVERS[index % COVERS.length]} text-white shadow-[0_16px_30px_rgba(9,21,64,0.18)]`}
+      style={{ aspectRatio: `${book.frameWidth} / ${book.frameHeight}` }}
+    >
+      <div className="w-2.5 shrink-0 bg-black/30 sm:w-3" aria-hidden="true" />
+      <div className={`flex min-w-0 flex-1 flex-col ${wide ? "p-3 sm:p-4" : "p-4 sm:p-5"}`}>
         <span className="text-[10px] font-extrabold uppercase tracking-[.16em] text-[#8DC63F]">Blue Book</span>
-        <h2 className="font-[var(--fd)] mt-auto text-lg sm:text-xl font-extrabold leading-tight tracking-tight">
+        <h2 className={`font-[var(--fd)] mt-auto font-extrabold leading-tight tracking-tight ${wide ? "text-base sm:text-2xl" : "text-base sm:text-lg"}`}>
           {book.title}
         </h2>
         {book.subtitle && (
-          <p className="mt-2 text-sm leading-snug text-white/75">{book.subtitle}</p>
+          <p className="mt-2 text-xs sm:text-sm leading-snug text-white/75">{book.subtitle}</p>
         )}
         {book.pdf && (
-          <span className="mt-4 inline-flex w-fit rounded-full bg-[#8DC63F] px-3 py-1 text-[11px] font-extrabold text-[#091540]">
+          <span className="mt-3 inline-flex w-fit rounded-full bg-[#8DC63F] px-3 py-1 text-[11px] font-extrabold text-[#091540]">
             Read
           </span>
         )}
@@ -51,21 +55,20 @@ export default function BlueBook() {
       </section>
 
       <section className="max-w-6xl mx-auto px-5 sm:px-6 py-10 sm:py-14">
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
-          {BLUE_BOOKS.map((book, index) => (
-            <li key={book.slug} className="min-w-0">
-              {book.pdf ? (
-                <Link
-                  to={`/insights/blue-book/${book.slug}`}
-                  className="block h-full transition-transform hover:-translate-y-1"
-                >
-                  <BookCover book={book} index={index} />
-                </Link>
-              ) : (
-                <BookCover book={book} index={index} />
-              )}
-            </li>
-          ))}
+        <ul className="grid grid-cols-2 items-start gap-4 sm:grid-cols-6 sm:gap-6 lg:grid-cols-12">
+          {BLUE_BOOKS.map((book, index) => {
+            const wide = book.frameWidth > book.frameHeight;
+            const cover = <BookCover book={book} index={index} />;
+            return (
+              <li key={book.slug} className={wide ? "col-span-2 sm:col-span-6 lg:col-span-5" : "col-span-1 sm:col-span-2 lg:col-span-3"}>
+                {book.pdf ? (
+                  <Link to={`/insights/blue-book/${book.slug}`} className="block transition-transform hover:-translate-y-1">
+                    {cover}
+                  </Link>
+                ) : cover}
+              </li>
+            );
+          })}
         </ul>
       </section>
     </div>
