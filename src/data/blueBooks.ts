@@ -48,6 +48,7 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
   {
     slug: "new-rules-of-money-and-life",
     title: "The new rules of Money and Life",
+    author: "Ms. Ramya Molangiri",
     pdfWidth: 1080,
     pdfHeight: 1350,
     pdf: "/blue-book/new-rules-of-money-and-life.pdf",
@@ -57,6 +58,7 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
   {
     slug: "financial-freedom",
     title: "FINANCIAL FREEDOM: The Passive Investing Way",
+    author: "Ms. Ramya Molangiri",
     pdfWidth: 1080,
     pdfHeight: 1350,
     pdf: "/blue-book/financial-freedom.pdf",
