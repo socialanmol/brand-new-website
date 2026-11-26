@@ -174,6 +174,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Blue Book | MyAnmol",
     description: "The MyAnmol Blue Book series. Choose an edition from the shelf.",
   },
+  "/insights/blue-book/festive-season-financial-wellness-guide": {
+    title: "Festive Season Financial Wellness Guide | MyAnmol",
+    description: "Read the Festive Season Financial Wellness Guide, a Blue Book edition from MyAnmol.",
+  },
   "/insights/blue-book/old-tax-regime-tax-savings-checklist": {
     title: "2025-26 Old Tax Regime Tax Savings Checklist | MyAnmol",
     description: "Read the 2025-26 old tax regime tax savings checklist, a Blue Book edition from MyAnmol.",

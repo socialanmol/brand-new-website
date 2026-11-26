@@ -28,7 +28,15 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     downloadName: "2025-26-Old-Tax-Regime-Tax-Savings-Checklist.pdf",
     noteBelow: true,
   },
-  { slug: "festive-season-financial-wellness-guide", title: "Festive Season Financial Wellness Guide", pdfWidth: 1080, pdfHeight: 1080 },
+  {
+    slug: "festive-season-financial-wellness-guide",
+    title: "Festive Season Financial Wellness Guide",
+    pdfWidth: 1080,
+    pdfHeight: 1080,
+    pdf: "/blue-book/festive-season-financial-wellness-guide.pdf",
+    downloadName: "Festive-Season-Financial-Wellness-Guide.pdf",
+    noteBelow: true,
+  },
   {
     slug: "financial-wellness-the-anmol-way",
     title: "Financial Wellness The Anmol Way",
