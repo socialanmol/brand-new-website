@@ -61,6 +61,7 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdfHeight: 1080,
     pdf: "/blue-book/unlisted-stocks-indulgence-sovereign-safety.pdf",
     downloadName: "Unlisted-Stocks-Indulgence-and-Sovereign-Safety.pdf",
+    noteBelow: true,
   },
   {
     slug: "navigating-personal-finance-digital-safety",
@@ -68,6 +69,7 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     subtitle: "A Comprehensive Guide to Hidden Financial Costs, Investment Mindsets, and Digital Security for Families",
     pdfWidth: 1080,
     pdfHeight: 1080,
+    noteBelow: true,
   },
   { slug: "money-matters-3-things", title: "MONEY MATTERS: 3 things worth knowing this month", pdfWidth: 1080, pdfHeight: 1350 },
   { slug: "ai-deepfakes-financial-scams", title: "How AI-Generated Deepfakes Are Reshaping Financial Scams", pdfWidth: 1080, pdfHeight: 1350 },
@@ -80,6 +82,7 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdfHeight: 1080,
     pdf: "/blue-book/financial-lessons-for-gen-z.pdf",
     downloadName: "3-Real-Financial-Lessons-for-Gen-Z.pdf",
+    noteBelow: true,
   },
   {
     slug: "new-rules-of-money-and-life",
