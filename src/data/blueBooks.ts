@@ -54,7 +54,14 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/kindness-in-finance.pdf",
     downloadName: "Kindness-in-Finance.pdf",
   },
-  { slug: "unlisted-stocks-indulgence-sovereign-safety", title: "Unlisted Stocks, Indulgence & Sovereign Safety", pdfWidth: 1080, pdfHeight: 1080 },
+  {
+    slug: "unlisted-stocks-indulgence-sovereign-safety",
+    title: "Unlisted Stocks, Indulgence & Sovereign Safety",
+    pdfWidth: 1080,
+    pdfHeight: 1080,
+    pdf: "/blue-book/unlisted-stocks-indulgence-sovereign-safety.pdf",
+    downloadName: "Unlisted-Stocks-Indulgence-and-Sovereign-Safety.pdf",
+  },
   {
     slug: "navigating-personal-finance-digital-safety",
     title: "Navigating Personal Finance & Digital Safety",

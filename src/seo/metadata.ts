@@ -174,6 +174,10 @@ const pages: Record<string, { title: string; description: string }> = {
     title: "Blue Book | MyAnmol",
     description: "The MyAnmol Blue Book series. Choose an edition from the shelf.",
   },
+  "/insights/blue-book/unlisted-stocks-indulgence-sovereign-safety": {
+    title: "Unlisted Stocks, Indulgence and Sovereign Safety | MyAnmol",
+    description: "Read Unlisted Stocks, Indulgence and Sovereign Safety, a Blue Book edition from MyAnmol.",
+  },
   "/insights/blue-book/from-plate-to-portfolio": {
     title: "From Plate to Portfolio | MyAnmol",
     description: "Read From Plate to Portfolio, Financial Nutrition, a Blue Book edition from MyAnmol.",
