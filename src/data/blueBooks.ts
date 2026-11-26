@@ -42,7 +42,14 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
   { slug: "systematic-withdrawal-plan", title: "The Power of a Systematic Withdrawal Plan (SWP)", pdfWidth: 1080, pdfHeight: 1350 },
   { slug: "timing-your-legacy", title: "A Guide to Timing Your Legacy", pdfWidth: 1080, pdfHeight: 1350 },
   { slug: "financial-lessons-for-gen-z", title: "3 Real Financial Lessons for Gen Z", pdfWidth: 1080, pdfHeight: 1080 },
-  { slug: "new-rules-of-money-and-life", title: "The new rules of Money and Life", pdfWidth: 1080, pdfHeight: 1350 },
+  {
+    slug: "new-rules-of-money-and-life",
+    title: "The new rules of Money and Life",
+    pdfWidth: 1080,
+    pdfHeight: 1350,
+    pdf: "/blue-book/new-rules-of-money-and-life.pdf",
+    downloadName: "The-new-rules-of-Money-and-Life.pdf",
+  },
   { slug: "from-plate-to-portfolio", title: "From Plate to Portfolio", subtitle: "Financial Nutrition", pdfWidth: 1080, pdfHeight: 1350 },
   {
     slug: "financial-freedom",
