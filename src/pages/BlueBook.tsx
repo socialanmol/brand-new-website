@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { BLUE_BOOKS, type BlueBookEdition } from "../data/blueBooks";
+import { BLUE_BOOKS, BLUE_BOOK_AUTHOR, type BlueBookEdition } from "../data/blueBooks";
 
 const COVERS = [
   "from-[#091540] to-[#1A3B9F]",
@@ -28,6 +28,7 @@ function BookCover({ book, index }: { book: BlueBookEdition; index: number }) {
         {book.subtitle && (
           <p className="mt-2 text-xs sm:text-sm leading-snug text-white/75">{book.subtitle}</p>
         )}
+        <p className="mt-2 text-[11px] sm:text-xs font-semibold text-white/70">{book.author ?? BLUE_BOOK_AUTHOR}</p>
         {book.pdf && (
           <span className="mt-3 inline-flex w-fit rounded-full bg-[#8DC63F] px-3 py-1 text-[11px] font-extrabold text-[#091540]">
             Read

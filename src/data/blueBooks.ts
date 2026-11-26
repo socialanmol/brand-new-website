@@ -1,7 +1,10 @@
+export const BLUE_BOOK_AUTHOR = "MyAnmol";
+
 export type BlueBookEdition = {
   slug: string;
   title: string;
   subtitle?: string;
+  author?: string;
   pdfWidth: number;
   pdfHeight: number;
   pdf?: string;

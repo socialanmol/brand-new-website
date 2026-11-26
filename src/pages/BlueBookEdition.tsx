@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import PdfFrame from "../components/PdfFrame";
-import { blueBookBySlug } from "../data/blueBooks";
+import { BLUE_BOOK_AUTHOR, blueBookBySlug } from "../data/blueBooks";
 
 const description = [
   "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam. Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat. Nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum lorem ipsum dolor.",
@@ -68,6 +68,7 @@ export default function BlueBookEdition() {
           <h1 className="font-[var(--fd)] mt-2 max-w-3xl text-3xl sm:text-5xl font-extrabold tracking-tight">
             {book.title}
           </h1>
+          <p className="mt-3 text-sm sm:text-base text-white/80">{book.author ?? BLUE_BOOK_AUTHOR}</p>
         </div>
       </section>
 
