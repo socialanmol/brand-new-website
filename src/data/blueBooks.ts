@@ -165,6 +165,15 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     downloadName: "Everyday-Safety-and-Security-Checklist.pdf",
     noteBelow: true,
   },
+  {
+    slug: "spotting-pension-scams",
+    title: "Spotting Pension Scams & Protecting Your Retirement",
+    pdfWidth: 1080,
+    pdfHeight: 1080,
+    pdf: "/blue-book/spotting-pension-scams.pdf",
+    downloadName: "Spotting-Pension-Scams-and-Protecting-Your-Retirement.pdf",
+    noteBelow: true,
+  },
 ];
 
 export function blueBookBySlug(slug: string) {
