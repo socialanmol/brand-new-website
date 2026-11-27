@@ -128,6 +128,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdfHeight: 1350,
     pdf: "/blue-book/systematic-withdrawal-plan.pdf",
     downloadName: "The-Power-of-a-Systematic-Withdrawal-Plan.pdf",
+    description: [
+      "The document titled \"The Power of a Systematic Withdrawal Plan (SWP)\", published by Anmol Share Broking Pvt. Ltd., provides an overview of Systematic Withdrawal Plans (SWPs) in mutual funds. It explains how an SWP allows investors to redeem a fixed amount from their mutual fund investments at regular monthly or quarterly intervals while keeping the remaining corpus invested to continue compounding. Compared to lumpsum withdrawals, SWPs offer predictable and automated payouts, tax efficiency since only the gains portion of each installment is taxed, and flexible terms that let investors adjust or stop payouts as needed.",
+      "The PDF outlines key target audiences for SWPs—including retirees seeking a pension-like stream, freelancers, entrepreneurs, and parents covering periodic educational fees—and provides practical management tips. Recommendations include maintaining a sustainable annual withdrawal rate of 4–5%, aligning withdrawal dates with major expenses, stepping up withdrawals gradually, and pausing payouts during market downturns to extend portfolio longevity. An illustrative scenario demonstrates that a ₹1 crore corpus with a ₹40,000 monthly withdrawal at an assumed 6% CAGR can still grow to over ₹1.16 crore after 11 years, highlighting how portfolio compounding can potentially outpace regular payouts.",
+    ],
   },
   {
     slug: "timing-your-legacy",
