@@ -58,6 +58,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdfHeight: 1350,
     pdf: "/blue-book/financial-wellness-the-anmol-way.pdf",
     downloadName: "Financial-Wellness-The-Anmol-Way.pdf",
+    description: [
+      "This PDF, titled \"Financial Wellness The Anmol Way - Money Matters 2026\", is an educational carousel document created by Anmol Share Broking Pvt. Ltd. It focuses on promoting financial literacy and responsible money management across three core pillars: investing for the future, building a steady foundation through informed borrowing, and protecting assets from fraud. The document highlights key concepts like compounding growth via systematic investment plans (SIPs), compares returns for starting early versus late, and presents credit trends relevant to young borrowers.",
+      "Additionally, the presentation serves as a practical guide to cyber safety and smart financial habits. It features a dedicated fraud alert section warning against common scams, such as fake TRAI phone calls threatening SIM disconnection, while outlining red flags and actionable steps to handle such threats. The document concludes by summarizing the company's core philosophy—\"Save, Insure, Invest\"—and encouraging readers to make informed financial decisions while maintaining vigilance over their personal and banking information.",
+    ],
   },
   {
     slug: "kindness-in-finance",
