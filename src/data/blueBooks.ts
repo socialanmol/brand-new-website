@@ -116,11 +116,15 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
   },
   {
     slug: "new-rules-of-money-and-life",
-    title: "The new rules of Money and Life",
+    title: "The New Rules of Money and Life",
     pdfWidth: 1080,
     pdfHeight: 1350,
     pdf: "/blue-book/new-rules-of-money-and-life.pdf",
-    downloadName: "The-new-rules-of-Money-and-Life.pdf",
+    downloadName: "The-New-Rules-of-Money-and-Life.pdf",
+    description: [
+      "The PDF, titled \"The New Rules of Money & Life\" by MyAnmol Share Broking Pvt. Ltd., is an educational carousel guide that explores modern financial management across three core topics: Digital Banking, Health, Wealth & Passion, and Succession Planning. It highlights how digital tools such as UPI, biometric authentication, and AI chatbots are transforming everyday banking by delivering faster, safer, and more convenient financial control. The document emphasizes that staying informed about these technological advances allows individuals to manage their finances efficiently from anywhere.",
+      "Beyond digital innovations, the guide stresses the importance of personal well-being and long-term legacy planning. It frames health, wealth, and passion as mutually reinforcing pillars necessary for a balanced life, offering practical strategies like automating wealth building and setting aside dedicated time and resources for personal pursuits. Additionally, it underscores the necessity of succession planning—such as drafting a will, updating account nominees, and reviewing plans periodically—to avoid family disputes and ensure financial security for future generations.",
+    ],
   },
   {
     slug: "from-plate-to-portfolio",
