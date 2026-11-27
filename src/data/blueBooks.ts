@@ -113,6 +113,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/financial-lessons-for-gen-z.pdf",
     downloadName: "3-Real-Financial-Lessons-for-Gen-Z.pdf",
     noteBelow: true,
+    description: [
+      "This PDF document, titled \"3 Real Financial Lessons for Gen Z\" and published by Anmol Share Broking Pvt. Ltd., serves as a 10-slide financial awareness guide tailored for young investors. It focuses on three core themes: practical investing strategies, avoiding common job scams, and managing personal debt responsibly. The overarching message emphasizes building wealth gradually, highlighting that slow, consistent financial habits are key to avoiding common traps and securing long-term growth.",
+      "The content provides actionable advice for each theme, urging readers to start small with SIPs and index funds, automate investments, and prioritize diversification over chasing high-risk returns. It warns against task-based job scams that ask for upfront deposits or task recharges, recommending immediate blocking and reporting. Lastly, it addresses the risks of instant loan apps and \"buy now, pay later\" services, advising individuals to understand true interest costs, avoid borrowing for depreciating assets, and build an emergency fund first.",
+    ],
   },
   {
     slug: "new-rules-of-money-and-life",
