@@ -138,6 +138,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdfHeight: 1350,
     pdf: "/blue-book/financial-freedom.pdf",
     downloadName: "Financial-Freedom-The-Passive-Investing-Way.pdf",
+    description: [
+      "This PDF, titled Financial Freedom: The Passive Investing Way, is an educational carousel presentation created by MyAnmol Share Broking that outlines the fundamentals of achieving financial independence through passive investing. It defines financial freedom as having passive investment income cover one's living expenses, suggesting a general rule of thumb that individuals should aim to accumulate approximately 25 times their annual expenses. The document breaks down the process into three distinct levels—Security, Independence, and Abundance—and emphasizes the distinction between active income and passive investment income, highlighting how passive strategies allow wealth to grow without continuous active effort.",
+      "The second half of the presentation focuses on the mechanics and benefits of passive investing, specifically advocating for diversified options such as Index Funds, Mutual Funds, and automated Systematic Investment Plans (SIPs). It compares active and passive management, underscoring that passive investing offers lower costs, reduced emotional bias, and time savings while aiming to match market returns. Through an example detailing the power of compounding, a practical 4-step execution guide, and a readiness checklist, the carousel encourages readers to start small, automate their investments, stay disciplined through market cycles, and begin building long-term financial freedom.",
+    ],
   },
   {
     slug: "take-charge-of-your-finances",
