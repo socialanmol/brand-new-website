@@ -120,6 +120,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdfHeight: 1350,
     pdf: "/blue-book/ai-deepfakes-financial-scams.pdf",
     downloadName: "How-AI-Generated-Deepfakes-Are-Reshaping-Financial-Scams.pdf",
+    description: [
+      "This PDF, titled \"The New Face of Fraud\" by Anmol Share Broking Pvt. Ltd., examines how AI-generated deepfakes are actively reshaping financial fraud in India. It defines deepfakes as audio, image, or video media altered by artificial intelligence to clone voices, faces, or expressions with high accuracy—often in under 30 seconds. The document highlights common avenues where these techniques are misused, including banking and payments impersonation, fake celebrity investment endorsements on social media, voice scams targeting trusted contacts, and potential threats to biometric security systems.",
+      "To protect readers, the guide provides clear red flags and actionable steps for handling potential deepfake scams. Key warning signs include unnatural blinking, mismatched lip-syncing or lighting in videos, and familiar voices making rushed requests for OTPs, PINs, or urgent financial transfers. In the event of a scam, the document outlines immediate recovery measures: remaining calm, freezing transactions with financial institutions, preserving evidence, updating security credentials, informing close contacts, and calling India’s National Cybercrime Helpline at 1930.",
+    ],
   },
   {
     slug: "systematic-withdrawal-plan",
