@@ -146,6 +146,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdfHeight: 1350,
     pdf: "/blue-book/take-charge-of-your-finances.pdf",
     downloadName: "Take-Charge-of-your-Finances.pdf",
+    description: [
+      "\"TAKE CHARGE OF YOUR FINANCES\" is a practical financial literacy guide created by MyAnmol Share Broking Pvt. Ltd. It covers three major areas of personal finance: evaluating individual financial health, navigating specialized banking services for senior citizens, and understanding the factors that influence a credit score. The document highlights key habits for maintaining financial wellness, such as establishing an emergency fund covering three to six months of expenses, maintaining debt levels below 40% of income, securing appropriate insurance coverage, and establishing explicit investment goals.",
+      "Additionally, the guide details essential banking perks available to senior citizens—including higher fixed deposit rates, doorstep banking services, priority branch service, and enhanced security features—noting that these options generally require an active request. It also breaks down credit score calculations by attributing specific weights to payment history (35%), credit utilization (30%), length of credit history (15%), credit mix (10%), and new inquiries (10%). Readers are encouraged to take manageable, step-by-step actions—such as starting an emergency fund, calling their bank, or reviewing their annual credit report—to improve their overall financial standing.",
+    ],
   },
   {
     slug: "essential-lessons-ipo-cyber-security-spending",
