@@ -7,6 +7,7 @@ export type BlueBookEdition = {
   pdf?: string;
   downloadName?: string;
   noteBelow?: boolean;
+  description?: string[];
 };
 
 export const BLUE_BOOKS: BlueBookEdition[] = [
@@ -154,6 +155,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/essential-lessons-ipo-cyber-security-spending.pdf",
     downloadName: "Essential-Lessons-in-IPO-Investing-Cyber-Security-and-Spending-Habits.pdf",
     noteBelow: true,
+    description: [
+      "The document, titled \"Essential Lessons in IPO Investing, Cyber Security, and Spending Habits\" and published by Anmol Share Broking Pvt Ltd, serves as a financial awareness guide designed to help individuals navigate modern money management and avoid common financial traps. It breaks down key topics such as evaluating initial public offerings (IPOs) objectively using a 6-point checklist rather than relying on market hype, identifying fake delivery notification cyber frauds that trick victims into revealing sensitive banking information, and managing impulse spending driven by lifestyle inflation.",
+      "Throughout the PDF, practical strategies and actionable safety measures are presented to foster long-term wealth building. These include verifying courier links on official portals, reporting fraud via national helplines like 1930, automating investments on salary day, and employing a 24-hour delay tactic before non-essential purchases. The overall message emphasizes slowing down, avoiding manufactured urgency across investments, cyber alerts, and spending habits, and making informed decisions grounded in financial literacy.",
+    ],
   },
   {
     slug: "everyday-safety-security-checklist",
