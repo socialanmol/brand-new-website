@@ -108,6 +108,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdfHeight: 1350,
     pdf: "/blue-book/money-matters-3-things.pdf",
     downloadName: "Money-Matters-3-things-worth-knowing-this-month.pdf",
+    description: [
+      "This monthly financial educational newsletter from Anmol Share Broking (MyAnmol Group), titled \"Money Matters\", highlights three key topics: silver as an investment asset, online shopping safety, and Employee Stock Option Plans (ESOPs). The issue begins with a detailed overview of silver, highlighting its unique physical properties, rich history spanning ancient Egypt to modern India, industrial and cultural applications, and available investment avenues like physical silver, ETFs, and mining stocks. It also covers practical advice on online shopping safety by detailing five common e-commerce scams—such as fake ads, phishing links, and advance payment fraud—alongside red flags to spot and safety habits to adopt.",
+      "Additionally, the newsletter demystifies ESOP terms like grant price, vesting schedules, cliff periods, and fair market value (FMV), explaining how options are taxed both at exercise and at sale. It offers strategic guidance on timing exercises, managing cash flows during post-exit windows, planning for tax liabilities, and utilizing ESOP funding when costs are high. Overall, the document serves as an informative guide designed to help readers make informed financial decisions regarding portfolio diversification, cyber safety, and employee stock options.",
+    ],
   },
   {
     slug: "ai-deepfakes-financial-scams",
