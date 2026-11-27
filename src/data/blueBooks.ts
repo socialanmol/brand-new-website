@@ -198,6 +198,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/capital-gains-account-scheme.pdf",
     downloadName: "Understanding-the-Capital-Gains-Account-Scheme.pdf",
     noteBelow: true,
+    description: [
+      "The Capital Gains Account Scheme (CGAS) is a tax mechanism designed for individuals who have sold a capital asset—such as property—and intend to reinvest the gains to claim a tax exemption, but have not yet done so before filing their Income Tax Return (ITR). Under Sections 54, 54B, 54D, 54F, and 54G of the Income Tax Act, taxpayers can temporarily park their unutilized capital gains into an authorized CGAS account at public sector banks prior to the ITR filing deadline under Section 139. Depositing funds into CGAS ensures that the amount is legally treated as \"utilized\" for the exemption, giving the taxpayer the necessary time to identify, purchase, or construct a new asset without losing their tax benefit.",
+      "The scheme offers two primary types of accounts: Type A, which functions like a liquid savings account for immediate funds needed during reinvestment, and Type B, which acts as a term deposit offering higher interest rates for longer-term planning. However, the exemption is conditional and subject to strict timelines, requiring full utilization of the funds within two to three years depending on the specific exemption section. If the deposited money remains unutilized past the statutory deadline, it loses its exempt status and is taxed as capital gains in the year the deadline expires. Proper compliance, including using designated forms (such as Form C for withdrawals and Form D for reporting utilization), is crucial to retaining the tax exemption.",
+    ],
   },
 ];
 
