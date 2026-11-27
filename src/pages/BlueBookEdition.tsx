@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import PdfFrame from "../components/PdfFrame";
-import { blueBookBySlug } from "../data/blueBooks";
+import { EDITION_SERIES_NAME, blueBookBySlug } from "../data/blueBooks";
 
 const placeholderDescription = [
   "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam. Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat. Nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum lorem ipsum dolor.",
@@ -35,7 +35,7 @@ export default function BlueBookEdition() {
     setPageUrl(url);
     if (navigator.share) {
       try {
-        await navigator.share({ title: book?.title ?? "Blue Book", url });
+        await navigator.share({ title: book?.title ?? EDITION_SERIES_NAME, url });
       } catch {
         /* The visitor dismissed the share sheet. The page link stays on screen. */
       }
@@ -49,7 +49,7 @@ export default function BlueBookEdition() {
       <div className="font-[var(--fs)] bg-white text-[#111827] min-h-screen px-6 py-16">
         <div className="max-w-xl mx-auto">
           <Link to="/insights/blue-book" className="text-sm font-bold text-[#1A3B9F]">
-            All Blue Books
+            {EDITION_SERIES_NAME}
           </Link>
           <h1 className="font-[var(--fd)] mt-6 text-3xl font-extrabold text-[#091540]">This edition is not on the shelf.</h1>
         </div>
@@ -62,9 +62,9 @@ export default function BlueBookEdition() {
       <section className="relative overflow-hidden bg-gradient-to-br from-[#091540] via-[#0D1E52] to-[#1A3B9F] py-12 sm:py-14 text-white px-6">
         <div className="max-w-6xl mx-auto relative z-10">
           <Link to="/insights/blue-book" className="text-xs font-bold text-white/70 hover:text-white">
-            All Blue Books
+            {EDITION_SERIES_NAME}
           </Link>
-          <p className="mt-5 text-[11px] font-extrabold uppercase tracking-[.18em] text-[#8DC63F]">Blue Book</p>
+          <p className="mt-5 text-[11px] font-extrabold uppercase tracking-[.18em] text-[#8DC63F]">{EDITION_SERIES_NAME}</p>
           <h1 className="font-[var(--fd)] mt-2 max-w-3xl text-3xl sm:text-5xl font-extrabold tracking-tight">
             {book.title}
           </h1>
@@ -86,7 +86,7 @@ export default function BlueBookEdition() {
 
           <div>
             <article>
-              <p className="text-[11px] font-extrabold uppercase tracking-[.16em] text-[#8DC63F]">Blue Book series</p>
+              <p className="text-[11px] font-extrabold uppercase tracking-[.16em] text-[#8DC63F]">{EDITION_SERIES_NAME}</p>
               <h2 className="font-[var(--fd)] mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-[#091540]">
                 About this edition
               </h2>

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react
 import { Link, useLocation } from 'react-router';
 import logoSrc from '@/imports/myanmolylogo.png';
 import { DataConsent } from './DataConsent';
+import { EDITION_SERIES_NAME } from '../data/blueBooks';
 
 /* ─── TYPES ─────────────────────────────────────────────────────────────────── */
 
@@ -96,7 +97,7 @@ const NAV: NavEntry[] = [
       { label: 'Our Insights',             to: '/insights/articles',  icon: '✍️' },
       { label: 'Learn, Unlearn & Relearn', to: '/insights/learn',     icon: '🔄' },
       { label: 'Seminars & Workshops',     to: '/insights/seminars',  icon: '🎤' },
-      { label: 'Blue Book',                to: '/insights/blue-book', icon: '📘' },
+      { label: EDITION_SERIES_NAME,        to: '/insights/blue-book', icon: '📘' },
     ],
   },
   {

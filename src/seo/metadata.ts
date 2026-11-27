@@ -1,4 +1,5 @@
 import { homeFaqs } from "./homeFaqs";
+import { EDITION_SERIES_NAME } from "../data/blueBooks";
 import { MUTUAL_FUND_SEMINARS } from "../data/mutualFundSeminars";
 
 const ORIGIN = "https://www.myanmol.com";
@@ -171,88 +172,88 @@ const pages: Record<string, { title: string; description: string }> = {
     description: "Plain-language definitions for mutual funds, insurance and tax terms used on MyAnmol.",
   },
   "/insights/blue-book": {
-    title: "Blue Book | MyAnmol",
-    description: "The MyAnmol Blue Book series. Choose an edition from the shelf.",
+    title: `${EDITION_SERIES_NAME} | MyAnmol`,
+    description: `${EDITION_SERIES_NAME}. Choose an edition from the shelf.`,
   },
   "/insights/blue-book/capital-gains-account-scheme": {
     title: "Understanding the Capital Gains Account Scheme | MyAnmol",
-    description: "Read Understanding the Capital Gains Account Scheme, a Blue Book edition from MyAnmol.",
+    description: "Read Understanding the Capital Gains Account Scheme, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/spotting-pension-scams": {
     title: "Spotting Pension Scams and Protecting Your Retirement | MyAnmol",
-    description: "Read Spotting Pension Scams and Protecting Your Retirement, a Blue Book edition from MyAnmol.",
+    description: "Read Spotting Pension Scams and Protecting Your Retirement, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/everyday-safety-security-checklist": {
     title: "Everyday Safety and Security Checklist | MyAnmol",
-    description: "Read the Everyday Safety and Security Checklist, a Blue Book edition from MyAnmol.",
+    description: "Read the Everyday Safety and Security Checklist, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/essential-lessons-ipo-cyber-security-spending": {
     title: "Essential Lessons in IPO Investing, Cyber Security, and Spending Habits | MyAnmol",
-    description: "Read Essential Lessons in IPO Investing, Cyber Security, and Spending Habits, a Blue Book edition from MyAnmol.",
+    description: "Read Essential Lessons in IPO Investing, Cyber Security, and Spending Habits, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/take-charge-of-your-finances": {
     title: "Take Charge of your Finances | MyAnmol",
-    description: "Read Take Charge of your Finances, a Blue Book edition from MyAnmol.",
+    description: "Read Take Charge of your Finances, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/ai-deepfakes-financial-scams": {
     title: "How AI-Generated Deepfakes Are Reshaping Financial Scams | MyAnmol",
-    description: "Read How AI-Generated Deepfakes Are Reshaping Financial Scams, a Blue Book edition from MyAnmol.",
+    description: "Read How AI-Generated Deepfakes Are Reshaping Financial Scams, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/systematic-withdrawal-plan": {
     title: "The Power of a Systematic Withdrawal Plan | MyAnmol",
-    description: "Read The Power of a Systematic Withdrawal Plan, a Blue Book edition from MyAnmol.",
+    description: "Read The Power of a Systematic Withdrawal Plan, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/timing-your-legacy": {
     title: "A Guide to Timing Your Legacy | MyAnmol",
-    description: "Read A Guide to Timing Your Legacy, a Blue Book edition from MyAnmol.",
+    description: "Read A Guide to Timing Your Legacy, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/money-matters-3-things": {
     title: "Money Matters: 3 things worth knowing this month | MyAnmol",
-    description: "Read Money Matters: 3 things worth knowing this month, a Blue Book edition from MyAnmol.",
+    description: "Read Money Matters: 3 things worth knowing this month, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/navigating-personal-finance-digital-safety": {
     title: "Navigating Personal Finance and Digital Safety | MyAnmol",
-    description: "Read Navigating Personal Finance and Digital Safety, a Blue Book edition from MyAnmol.",
+    description: "Read Navigating Personal Finance and Digital Safety, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/unlisted-stocks-indulgence-sovereign-safety": {
     title: "Unlisted Stocks, Indulgence and Sovereign Safety | MyAnmol",
-    description: "Read Unlisted Stocks, Indulgence and Sovereign Safety, a Blue Book edition from MyAnmol.",
+    description: "Read Unlisted Stocks, Indulgence and Sovereign Safety, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/from-plate-to-portfolio": {
     title: "From Plate to Portfolio | MyAnmol",
-    description: "Read From Plate to Portfolio, Financial Nutrition, a Blue Book edition from MyAnmol.",
+    description: "Read From Plate to Portfolio, Financial Nutrition, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/financial-lessons-for-gen-z": {
     title: "3 Real Financial Lessons for Gen Z | MyAnmol",
-    description: "Read 3 Real Financial Lessons for Gen Z, a Blue Book edition from MyAnmol.",
+    description: "Read 3 Real Financial Lessons for Gen Z, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/kindness-in-finance": {
     title: "Kindness in Finance | MyAnmol",
-    description: "Read Kindness in Finance, a Blue Book edition from MyAnmol.",
+    description: "Read Kindness in Finance, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/financial-wellness-the-anmol-way": {
     title: "Financial Wellness The Anmol Way | MyAnmol",
-    description: "Read Financial Wellness The Anmol Way, Money Matters 2026, a Blue Book edition from MyAnmol.",
+    description: "Read Financial Wellness The Anmol Way, Money Matters 2026, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/festive-season-financial-wellness-guide": {
     title: "Festive Season Financial Wellness Guide | MyAnmol",
-    description: "Read the Festive Season Financial Wellness Guide, a Blue Book edition from MyAnmol.",
+    description: "Read the Festive Season Financial Wellness Guide, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/old-tax-regime-tax-savings-checklist": {
     title: "2025-26 - Old Tax Regime Tax Savings Checklist | MyAnmol",
-    description: "Read the 2025-26 old tax regime tax savings checklist, a Blue Book edition from MyAnmol.",
+    description: "Read the 2025-26 old tax regime tax savings checklist, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/new-rules-of-money-and-life": {
     title: "The New Rules of Money and Life | MyAnmol",
-    description: "Read The New Rules of Money and Life, a Blue Book edition from MyAnmol.",
+    description: "Read The New Rules of Money and Life, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/importance-of-balance": {
     title: "Importance of Balance | MyAnmol",
-    description: "Read Importance of Balance, a Blue Book edition from MyAnmol.",
+    description: "Read Importance of Balance, an Economics by MyAnmol edition from MyAnmol.",
   },
   "/insights/blue-book/financial-freedom": {
     title: "Financial Freedom: The Passive Investing Way | MyAnmol",
-    description: "Read Financial Freedom: The Passive Investing Way, a Blue Book edition from MyAnmol.",
+    description: "Read Financial Freedom: The Passive Investing Way, an Economics by MyAnmol edition from MyAnmol.",
   },
   ...Object.fromEntries(MUTUAL_FUND_SEMINARS.map((topic) => [
     `/insights/seminars/${topic.pageId}`,

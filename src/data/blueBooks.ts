@@ -1,3 +1,5 @@
+export const EDITION_SERIES_NAME = "Economics by MyAnmol";
+
 export type BlueBookEdition = {
   slug: string;
   title: string;

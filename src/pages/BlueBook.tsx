@@ -1,5 +1,6 @@
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
-import { BLUE_BOOKS, type BlueBookEdition } from "../data/blueBooks";
+import { BLUE_BOOKS, EDITION_SERIES_NAME, type BlueBookEdition } from "../data/blueBooks";
 
 const COVERS = [
   "from-[#091540] to-[#1A3B9F]",
@@ -21,7 +22,9 @@ function BookCover({ book, index }: { book: BlueBookEdition; index: number }) {
     >
       <div className="w-2.5 shrink-0 bg-black/30 sm:w-3" aria-hidden="true" />
       <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
-        <span className="text-[10px] font-extrabold uppercase tracking-[.16em] text-[#8DC63F]">Blue Book</span>
+        <span className="text-[10px] font-extrabold uppercase leading-snug tracking-[.12em] text-[#8DC63F]">
+          {EDITION_SERIES_NAME}
+        </span>
         <h2 className="font-[var(--fd)] mt-auto text-base sm:text-lg font-extrabold leading-tight tracking-tight">
           {book.title}
         </h2>
@@ -38,7 +41,19 @@ function BookCover({ book, index }: { book: BlueBookEdition; index: number }) {
   );
 }
 
+function matchesQuery(book: BlueBookEdition, query: string) {
+  const haystack = [book.title, book.subtitle ?? "", ...(book.description ?? [])].join(" ").toLowerCase();
+  return haystack.includes(query);
+}
+
 export default function BlueBook() {
+  const [query, setQuery] = useState("");
+  const needle = query.trim().toLowerCase();
+  const editions = useMemo(
+    () => BLUE_BOOKS.map((book, index) => ({ book, index })).filter(({ book }) => !needle || matchesQuery(book, needle)),
+    [needle],
+  );
+
   return (
     <div className="font-[var(--fs)] bg-white text-[#111827] antialiased min-h-screen">
       <section className="relative overflow-hidden bg-gradient-to-br from-[#091540] via-[#0D1E52] to-[#1A3B9F] py-14 sm:py-16 text-center text-white px-6">
@@ -48,7 +63,7 @@ export default function BlueBook() {
             Insights &amp; Learning
           </span>
           <h1 className="font-[var(--fd)] text-4xl sm:text-5xl font-extrabold tracking-tight mb-3">
-            Blue <span className="text-[#8DC63F] italic">Book.</span>
+            Economics <span className="text-[#8DC63F] italic">by MyAnmol</span>
           </h1>
           <p className="text-base sm:text-lg text-white/80 font-light leading-relaxed">
             Choose an edition from the shelf.
@@ -57,20 +72,45 @@ export default function BlueBook() {
       </section>
 
       <section className="max-w-6xl mx-auto px-5 sm:px-6 py-10 sm:py-14">
-        <ul className="grid grid-cols-2 items-stretch gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
-          {BLUE_BOOKS.map((book, index) => {
-            const cover = <BookCover book={book} index={index} />;
-            return (
-              <li key={book.slug} className="min-w-0">
-                {book.pdf ? (
-                  <Link to={`/insights/blue-book/${book.slug}`} className="block h-full transition-transform hover:-translate-y-1">
-                    {cover}
-                  </Link>
-                ) : cover}
-              </li>
-            );
-          })}
-        </ul>
+        <form role="search" className="mb-8" onSubmit={(event) => event.preventDefault()}>
+          <label htmlFor="edition-search" className="mb-2 block text-sm font-bold text-[#091540]">
+            Search editions
+          </label>
+          <input
+            id="edition-search"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search by title or topic"
+            className="h-12 w-full rounded-xl border border-[#d5deee] bg-white px-4 text-base text-[#091540] outline-none placeholder:text-[#6b7280] focus:border-[#1A3B9F]"
+          />
+          {needle && (
+            <p className="mt-3 text-sm text-[#374151]" aria-live="polite">
+              {editions.length === 1 ? "1 edition" : `${editions.length} editions`}
+            </p>
+          )}
+        </form>
+
+        {editions.length === 0 ? (
+          <p className="rounded-2xl border border-[#d5deee] bg-[#f7f9fc] px-5 py-8 text-base text-[#374151]">
+            No editions match that search.
+          </p>
+        ) : (
+          <ul className="grid grid-cols-2 items-stretch gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
+            {editions.map(({ book, index }) => {
+              const cover = <BookCover book={book} index={index} />;
+              return (
+                <li key={book.slug} className="min-w-0">
+                  {book.pdf ? (
+                    <Link to={`/insights/blue-book/${book.slug}`} className="block h-full transition-transform hover:-translate-y-1">
+                      {cover}
+                    </Link>
+                  ) : cover}
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
     </div>
   );
