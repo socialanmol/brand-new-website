@@ -172,6 +172,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/everyday-safety-security-checklist.pdf",
     downloadName: "Everyday-Safety-and-Security-Checklist.pdf",
     noteBelow: true,
+    description: [
+      "It delivers practical, everyday security advice structured around three main areas: workplace safety, digital security, and home/personal awareness. The presentation emphasizes proactive habits, asserting that most risks stem from shortcuts and simple oversights rather than unpredictable accidents.",
+      "The content outlines actionable recommendations across each domain, such as maintaining clear workplace exits, wearing proper protective equipment, and inspecting tools. In the digital sphere, it warns against urgent phishing attempts and advises using multi-factor authentication, strong unique passwords, and prompt device updates. For personal and home safety, it highlights best practices like verifying visitors, keeping valuables out of plain view, and knowing emergency exits. The guide concludes with motivational safety quotes highlighting that prevention is priceless.",
+    ],
   },
   {
     slug: "spotting-pension-scams",
