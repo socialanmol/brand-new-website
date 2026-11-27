@@ -32,6 +32,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/old-tax-regime-tax-savings-checklist.pdf",
     downloadName: "2025-26-Old-Tax-Regime-Tax-Savings-Checklist.pdf",
     noteBelow: true,
+    description: [
+      "\"2025-26 - Old Tax Regime Tax Savings Checklist\" is a guidance document published by Anmol Financial Services (AMFI Registered ARN No: 114893) for Financial Year 2025-26. It details ten smart financial moves to make before filing tax returns, highlighting key differences between the Old and New Tax Regimes. The checklist details various tax-saving avenues, including Section 80C investments up to ₹1,50,000 (such as ELSS mutual funds, PPF/EPF, life insurance premiums, home loan principal repayments, and tuition fees), extra NPS contributions up to ₹50,000 under Section 80CCD(1B), and Section 80D health insurance deductions.",
+      "Additionally, the document outlines eligibility rules for home loan interest deductions under Section 24(b) and HRA exemptions, providing audit-readiness guidelines like retaining rent receipts and obtaining a landlord's PAN. It further lists supplementary deductions under Section 80E for education loans, 80G for charitable donations, 80TTA/80TTB for savings interest, and 80U/80DD for disability-related expenses. The document concludes with a quick checklist, advisory contact details for Anmol Wealth, and a standard regulatory disclaimer regarding mutual fund investments and tax laws.",
+    ],
   },
   {
     slug: "festive-season-financial-wellness-guide",
