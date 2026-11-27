@@ -133,7 +133,7 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
   },
   {
     slug: "financial-freedom",
-    title: "FINANCIAL FREEDOM: The Passive Investing Way",
+    title: "Financial Freedom: The Passive Investing Way",
     pdfWidth: 1080,
     pdfHeight: 1350,
     pdf: "/blue-book/financial-freedom.pdf",

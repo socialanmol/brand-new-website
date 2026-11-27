@@ -251,7 +251,7 @@ const pages: Record<string, { title: string; description: string }> = {
     description: "Read Importance of Balance, a Blue Book edition from MyAnmol.",
   },
   "/insights/blue-book/financial-freedom": {
-    title: "FINANCIAL FREEDOM: The Passive Investing Way | MyAnmol",
+    title: "Financial Freedom: The Passive Investing Way | MyAnmol",
     description: "Read Financial Freedom: The Passive Investing Way, a Blue Book edition from MyAnmol.",
   },
   ...Object.fromEntries(MUTUAL_FUND_SEMINARS.map((topic) => [
