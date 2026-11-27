@@ -158,6 +158,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdfHeight: 1350,
     pdf: "/blue-book/from-plate-to-portfolio.pdf",
     downloadName: "From-Plate-to-Portfolio.pdf",
+    description: [
+      "\"From Plate to Portfolio\" is a special edition financial guide by MyAnmol that uses the metaphor of an everyday Indian Thali to illustrate the core principles of building a balanced, disciplined, and resilient financial life. The document breaks down modern wealth management into seven essential food groups, comparing basic savings to staples like rice and roti for immediate energy, growth investments in equities and mutual funds to protein-rich dal and paneer for building long-term strength, and long-term assets such as PPF and NPS to pure ghee for enduring stability. It further emphasizes protection and liquidity by equating insurance to essential vitamins and minerals, an emergency fund to cooling buttermilk, goal-based savings to celebratory desserts, and cash reserves to vital hydration.",
+      "In addition to mapping out financial components, the publication outlines four golden rules connecting kitchen discipline with effective wealth compounding. It advocates for non-negotiable consistency by comparing regular meals to non-skipped Systematic Investment Plans (SIPs), promoting portion control to curb lifestyle inflation and maintain proper budget allocation. The guide stresses periodic portfolio check-ups for ongoing asset rebalancing and highlights the necessity of personalized financial roadmaps tailored to individual life stages and risk profiles. Concluding with actionable next steps, the document invites readers to review their overall asset mix and reach out to MyAnmol for a complimentary Portfolio Nutrition Audit.",
+    ],
   },
   {
     slug: "financial-freedom",
