@@ -19,6 +19,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/importance-of-balance.pdf",
     downloadName: "Importance-of-Balance.pdf",
     noteBelow: true,
+    description: [
+      "This PDF document, titled \"Importance of Balance\" by Anmol Financial Services, serves as a financial education newsletter designed to guide investors on wealth management, portfolio rebalancing, and financial literacy. Using the concept of the March Equinox as a metaphor for equilibrium, the guide outlines target asset allocations across various risk profiles (Conservative, Balanced Growth, and Aggressive) and highlights tailored financial products suitable for different life stages—ranging from early child savings to active career wealth creation and post-retirement income strategies.",
+      "In addition to core portfolio management principles, the document incorporates engaging, practical, and security-focused topics to boost overall financial quotient. It draws mathematical analogies using Pi (π) to explain investor behavior, market rules, and systematic investment planning (SIP). It also features a critical 4-step safety protocol to protect investors against parcel scams and digital arrest fraud, and concludes with an interactive personal finance crossword complete with solutions and key financial takeaways.",
+    ],
   },
   {
     slug: "old-tax-regime-tax-savings-checklist",
