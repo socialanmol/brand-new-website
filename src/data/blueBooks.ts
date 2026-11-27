@@ -136,6 +136,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdfHeight: 1350,
     pdf: "/blue-book/timing-your-legacy.pdf",
     downloadName: "A-Guide-to-Timing-Your-Legacy.pdf",
+    description: [
+      "This PDF document, titled \"Estate Planning 2026 Edition: Timing Your Legacy,\" is a short guide published by Anmol Share Broking Pvt. Ltd. focusing on how individuals can effectively transfer assets to their heirs. It outlines the dilemma between executing a lifetime transfer versus an after-death inheritance, highlighting the trade-offs of both approaches. Lifetime transfers offer immediate support but carry risks such as loss of control, tax implications, and financial security concerns for the owner. Conversely, after-death transfers avoid early loss of ownership but may result in probate delays, legal costs, and family disputes if governed by outdated wills or missing nominations.",
+      "To address these challenges, the document advocates for a hybrid estate planning strategy rather than relying on a single method. This balanced approach involves keeping core assets under personal control while making thoughtful, small lifetime gifts when appropriate. It emphasizes the necessity of maintaining an updated, clear Will, keeping account nominations current across all financial products, and utilizing simple trusts for complex needs like staggered payouts for minor beneficiaries. Ultimately, the guide stresses that proactive planning provides clarity and prevents administrative chaos for loved ones.",
+    ],
   },
   {
     slug: "financial-lessons-for-gen-z",
