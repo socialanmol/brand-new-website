@@ -70,6 +70,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdfHeight: 1350,
     pdf: "/blue-book/kindness-in-finance.pdf",
     downloadName: "Kindness-in-Finance.pdf",
+    description: [
+      "This PDF, titled \"Kindness in Finance\" and published by MyAnmol (Anmol Share Broking Pvt. Ltd.), explores how integrating empathy, compassion, and mindfulness into money management fosters both individual financial security and collective prosperity. Structured as a six-page guide, it highlights that money builds wealth, but compassion creates lasting legacies and stronger communities. The document emphasizes core principles such as building unshakable trust through financial transparency, fostering multi-generational goodwill by guiding others toward healthy saving habits, and prioritizing shared growth over solitary gain.",
+      "The document provides practical, actionable steps divided into individual self-compassion and community-driven actions. Key recommendations include maintaining patience with one's personal financial journey, helping friends and family set up emergency funds or SIPs, supporting local neighborhood businesses, and sharing financial literacy with domestic helpers or younger colleagues. Ultimately, it frames financial kindness not merely as charity, but as an intangible asset that compounds in trust, peace of mind, and long-term security, concluding with a call to align wealth planning with personal purpose and long-term life goals.",
+    ],
   },
   {
     slug: "unlisted-stocks-indulgence-sovereign-safety",
