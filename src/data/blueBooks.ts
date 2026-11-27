@@ -45,6 +45,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/festive-season-financial-wellness-guide.pdf",
     downloadName: "Festive-Season-Financial-Wellness-Guide.pdf",
     noteBelow: true,
+    description: [
+      "This Financial Wellness Guide from Anmol Share Broking Pvt Ltd provides actionable insights on protecting and growing your savings during the festive season and beyond. It highlights how inflation steadily reduces purchasing power over time, using tools like the Rule of 70 to illustrate how price increases erode real value. To counter this, the guide outlines various growth-oriented asset classes—including equities, mutual funds, real estate, fixed deposits, and inflation-indexed bonds—to help investors build a balanced portfolio that outpaces rising costs.",
+      "In addition to investment strategies, the guide emphasizes the importance of financial security and smart asset management. It alerts readers to common instant loan and KYC fraud schemes, providing clear \"Do's and Don'ts\" to safeguard sensitive personal and banking information. Finally, it details methods for leveraging gold—a traditional store of wealth in India—comparing physical gold, Gold ETFs, and Sovereign Gold Bonds (SGBs) so individuals can choose the optimal route for liquidity, tax efficiency, and long-term wealth creation.",
+    ],
   },
   {
     slug: "financial-wellness-the-anmol-way",
