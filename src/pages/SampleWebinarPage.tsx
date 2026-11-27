@@ -1,9 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import { Clock, Users, CheckCircle, ArrowRight, ShieldCheck, Share2, Award, ChevronLeft, ChevronRight, MessageSquare } from 'lucide-react';
+import { Clock, CheckCircle, ArrowRight, ShieldCheck, Share2, Award, ChevronLeft, ChevronRight, MessageSquare } from 'lucide-react';
 import { saveForm } from '../lib/saveForm';
+import { DataConsent } from '../components/DataConsent';
+import { findTeamMember } from '../data/teamDirectory';
+import { relatedSeminarTopics, seminarTopic } from '../data/personalFinanceSeminars';
 
-export default function WebinarPage() {
+type SeminarSlot = { label: string; startsAt: string | null; endsAt: string | null; format?: string; instructor?: string };
+type LiveSeminar = { pageId?: string; title: string; format: string; instructor: string; slots: SeminarSlot[] };
+
+function sameTitle(left: string, right: string) {
+  return left.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim() === right.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function matchSeminar(seminars: LiveSeminar[], pageId: string, title: string) {
+  return seminars.find((item) => item.pageId && item.pageId.toLowerCase() === pageId.toLowerCase())
+    || seminars.find((item) => item.title && sameTitle(item.title, title))
+    || null;
+}
+
+function upcomingSlots(slots: SeminarSlot[], now: number) {
+  return slots.filter((slot) => !slot.endsAt || Date.parse(slot.endsAt) > now);
+}
+
+function countdown(startsAt: string | null, now: number) {
+  if (!startsAt) return null;
+  const diff = Date.parse(startsAt) - now;
+  if (diff <= 0) return null;
+  const total = Math.floor(diff / 1000);
+  return {
+    days: Math.floor(total / 86400),
+    hours: Math.floor((total % 86400) / 3600),
+    minutes: Math.floor((total % 3600) / 60),
+    seconds: total % 60,
+  };
+}
+
+export function seminarPage(pageId: string) {
+  return function SeminarPage() {
+    return <WebinarPage pageId={pageId} />;
+  };
+}
+
+export default function WebinarPage({ pageId = "manage-your-salary" }: { pageId?: string }) {
+  const topic = seminarTopic(pageId);
   // State for Registration Flow & Poll
   const [step, setStep] = useState<'form' | 'poll' | 'success'>('form');
   const [formData, setFormData] = useState({
@@ -11,49 +51,79 @@ export default function WebinarPage() {
     email: '',
     phone: '',
     location: '',
-    slot: 'November 12 | 6:30 PM – 7:30 PM IST'
+    slot: ''
   });
   const [pollAnswer, setPollAnswer] = useState('');
+  const [seminar, setSeminar] = useState<LiveSeminar | null>(null);
+  const [scheduleReady, setScheduleReady] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
   const [saving, setSaving] = useState(false);
+  const [consent, setConsent] = useState(false);
   const [error, setError] = useState('');
 
-  // Image Slider State
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const images = [
-    "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?auto=format&fit=crop&w=1200&q=80"
-  ];
-
-  // Testimonial Carousel State (5 testimonials)
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const testimonials = [
-    { quote: "Mohit's budgeting framework completely transformed how I handle my monthly salary. Highly practical!", name: "Rahul Sharma", role: "Software Engineer" },
-    { quote: "The 2-bank approach was an eye-opener. I finally have control over my savings vs spending.", name: "Ananya Deshmukh", role: "Marketing Specialist" },
-    { quote: "Clear, jargon-free, and extremely actionable. Every young earner should attend this masterclass.", name: "Karan Mehta", role: "Financial Analyst" },
-    { quote: "The session gave me a structured roadmap to build my first 10 lakh without stressing over every rupee.", name: "Priya Nair", role: "HR Professional" },
-    { quote: "Engaging presentation style and incredible insights into smart cash flow habits.", name: "Vikram Malhotra", role: "Operations Manager" }
-  ];
-
-  // Countdown Timer State
-  const [timeLeft, setTimeLeft] = useState({ days: 12, hours: 8, minutes: 45, seconds: 30 });
+  const images = topic?.images || [];
+  const testimonials = topic?.testimonials || [];
+  const related = relatedSeminarTopics(pageId);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-        if (prev.minutes > 0) return { ...prev, minutes: 59, seconds: 59 };
-        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        if (prev.days > 0) return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 };
-        return prev;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+    let cancelled = false;
+    setSeminar(null);
+    setScheduleReady(false);
+    setStep('form');
+    setPollAnswer('');
+    setCurrentImageIndex(0);
+    setCurrentTestimonial(0);
+    const load = () => {
+      fetch("/api/seminars", { cache: "no-store" })
+        .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+        .then((body: { seminars?: LiveSeminar[] }) => {
+          if (cancelled || !topic) return;
+          setSeminar(matchSeminar(body.seminars || [], pageId, topic.title));
+        })
+        .catch(() => {
+          if (!cancelled) setSeminar(null);
+        })
+        .finally(() => {
+          if (!cancelled) setScheduleReady(true);
+        });
+    };
+    load();
+    const refresh = window.setInterval(load, 60_000);
+    const clock = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(refresh);
+      window.clearInterval(clock);
+    };
+  }, [pageId, topic]);
+
+  const slots = upcomingSlots(seminar?.slots || [], now);
+  const nextSlot = slots[0] || null;
+  const title = seminar?.title || topic?.title || "";
+  const format = nextSlot?.format || seminar?.format || (scheduleReady ? "Announced with the next batch" : "Loading format…");
+  const instructorSource = nextSlot?.instructor || seminar?.instructor || "";
+  const instructor = instructorSource ? findTeamMember(instructorSource) : null;
+  const instructorName = instructor?.name || instructorSource || (scheduleReady ? "The instructor will be announced." : "Loading instructor…");
+  const timeLeft = countdown(nextSlot?.startsAt || null, now);
+  const sessionUnderway = Boolean(nextSlot?.startsAt && Date.parse(nextSlot.startsAt) <= now);
+
+  useEffect(() => {
+    if (!nextSlot) return;
+    setFormData((current) => current.slot && slots.some((slot) => slot.label === current.slot)
+      ? current
+      : { ...current, slot: nextSlot.label });
+  }, [nextSlot?.label]);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name && formData.email && formData.phone && formData.location) {
+    if (!consent) {
+      setError('Please accept the privacy consent to continue.');
+      return;
+    }
+    if (formData.name && formData.email && formData.phone && formData.location && formData.slot) {
+      setError('');
       setStep('poll');
     }
   };
@@ -70,6 +140,8 @@ export default function WebinarPage() {
         location: formData.location.trim(),
         slot: formData.slot.trim(),
         poll: pollAnswer,
+        title,
+        consent: true,
       });
       setStep('success');
     } catch (submitError) {
@@ -82,7 +154,7 @@ export default function WebinarPage() {
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: 'How to manage your salary better: Save, Spend & Invest',
+        title,
         text: 'Join this incredible masterclass with MyAnmol!',
         url: window.location.href,
       }).catch(() => {});
@@ -90,6 +162,8 @@ export default function WebinarPage() {
       alert('Webinar link copied to clipboard!');
     }
   };
+
+  if (!topic) return null;
 
   return (
     <div className="font-['Montserrat',sans-serif] bg-white text-[#111827] antialiased min-h-screen">
@@ -108,10 +182,10 @@ export default function WebinarPage() {
                 MyAnmol Money Matters Masterclass
               </span>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                How to manage your salary better: Save, Spend &amp; Invest
+                {title}
               </h1>
               <p className="text-xs sm:text-sm text-white/80 mt-2 font-light">
-                Next Batch Date: <span className="text-white font-bold">November 12; November 16</span>
+                Next Batch Date: <span className="text-white font-bold">{nextSlot?.label || (scheduleReady ? "The next batch will be announced." : "Loading the next batch…")}</span>
               </p>
             </div>
             
@@ -160,8 +234,10 @@ export default function WebinarPage() {
       {/* Countdown Timer Bar */}
       <div className="bg-[#1A3B9F] text-white py-4 px-5 sm:px-8 shadow-sm">
         <div className="max-w-[1000px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs sm:text-sm font-semibold text-white/90">Registration closes soon. Time remaining until event:</p>
-          <div className="flex gap-3 text-center">
+          <p className="text-xs sm:text-sm font-semibold text-white/90">
+            {sessionUnderway ? "This session is underway." : "Time remaining until the next batch:"}
+          </p>
+          {timeLeft && <div className="flex gap-3 text-center">
             <div className="bg-white/10 px-3 py-1.5 rounded-[8px] border border-white/20">
               <span className="text-base font-extrabold">{timeLeft.days}</span> <span className="text-[10px] uppercase text-white/80">Days</span>
             </div>
@@ -174,7 +250,7 @@ export default function WebinarPage() {
             <div className="bg-white/10 px-3 py-1.5 rounded-[8px] border border-white/20">
               <span className="text-base font-extrabold">{timeLeft.seconds}</span> <span className="text-[10px] uppercase text-white/80">Secs</span>
             </div>
-          </div>
+          </div>}
         </div>
       </div>
 
@@ -185,21 +261,16 @@ export default function WebinarPage() {
         <div className="lg:col-span-2 space-y-8">
           
           {/* Quick Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-[#F8FAFE] p-6 rounded-[20px] border border-[#E3E8F4] text-center">
-            <div className="space-y-1">
-              <Users className="w-5 h-5 text-[#1A3B9F] mx-auto mb-1" />
-              <p className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Users Enrolled</p>
-              <p className="text-base font-extrabold text-[#091540]">145 participants</p>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#F8FAFE] p-6 rounded-[20px] border border-[#E3E8F4] text-center">
             <div className="space-y-1">
               <Clock className="w-5 h-5 text-[#1A3B9F] mx-auto mb-1" />
               <p className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Time Slot</p>
-              <p className="text-sm font-extrabold text-[#091540]">6:30 PM – 7:30 PM IST</p>
+              <p className="text-sm font-extrabold text-[#091540]">{nextSlot ? nextSlot.label.split("|").pop()?.trim() : "Announced with the next batch"}</p>
             </div>
             <div className="space-y-1">
               <ShieldCheck className="w-5 h-5 text-[#6AA32A] mx-auto mb-1" />
               <p className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Format</p>
-              <p className="text-xs font-bold text-[#091540]">Pre-recorded sessions / Live Q&amp;A / Live MasterClass</p>
+              <p className="text-xs font-bold text-[#091540]">{format}</p>
             </div>
           </div>
 
@@ -207,7 +278,7 @@ export default function WebinarPage() {
           <section className="bg-white p-8 rounded-[20px] border border-[#E3E8F4] shadow-sm space-y-3">
             <h2 className="text-2xl font-bold text-[#091540]">Description</h2>
             <p className="text-sm sm:text-base text-[#374151] font-light leading-relaxed">
-              A practical entry-level masterclass for young earners on optimizing take-home pay, smart budgeting, and building healthy cash flow habits.
+              {topic.description}
             </p>
           </section>
 
@@ -215,21 +286,31 @@ export default function WebinarPage() {
           <section className="bg-white p-8 rounded-[20px] border border-[#E3E8F4] shadow-sm space-y-3">
             <h2 className="text-2xl font-bold text-[#091540]">Benefits Seen After Enrolling</h2>
             <p className="text-sm sm:text-base text-[#374151] font-light leading-relaxed">
-              Clear understanding of monthly cash allocation, reduced impulse spending, and a structured approach to initial savings.
+              {topic.benefits}
             </p>
           </section>
 
           {/* Instructor Bio */}
           <section className="bg-white p-8 rounded-[20px] border border-[#E3E8F4] shadow-sm flex flex-col sm:flex-row items-center gap-6">
-            <div className="w-20 h-20 bg-[#EEF2FB] text-[#1A3B9F] rounded-full flex items-center justify-center font-extrabold text-2xl shrink-0 border border-[#C5D3F2]">
-              M
+            <div className="w-24 h-24 bg-[#EEF2FB] text-[#1A3B9F] rounded-full overflow-hidden flex items-center justify-center font-extrabold text-2xl shrink-0 border border-[#C5D3F2]">
+              {instructor?.image ? (
+                <img
+                  src={instructor.image}
+                  alt={instructor.name}
+                  className={`w-full h-full object-cover ${instructor.cropPortrait ? "object-top" : "object-center"}`}
+                />
+              ) : (
+                instructorName.charAt(0)
+              )}
             </div>
             <div className="space-y-1 text-center sm:text-left">
-              <h3 className="text-lg font-bold text-[#091540]">Instructor Name: Mohit</h3>
-              <p className="text-xs font-bold text-[#6AA32A] uppercase tracking-wider">Lead Wealth Strategist, MyAnmol</p>
-              <p className="text-xs sm:text-sm text-[#6B7280] font-light leading-relaxed pt-1">
-                Founder &amp; Lead Wealth Strategist at MyAnmol, specializing in personal finance, financial independence frameworks, and client advisory with over a decade of industry expertise.
-              </p>
+              <h3 className="text-lg font-bold text-[#091540]">{instructorName}</h3>
+              <p className="text-xs font-bold text-[#6AA32A] uppercase tracking-wider">{instructor?.department || "MyAnmol"}</p>
+              {instructor?.bio && (
+                <p className="text-xs sm:text-sm text-[#6B7280] font-light leading-relaxed pt-1">
+                  {instructor.bio}
+                </p>
+              )}
             </div>
           </section>
 
@@ -237,18 +318,14 @@ export default function WebinarPage() {
           <section className="bg-white p-8 rounded-[20px] border border-[#E3E8F4] shadow-sm space-y-4">
             <h2 className="text-2xl font-bold text-[#091540]">Check Out Other Topics Related to This Topic</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[
-                "The 2-bank approach to better budgeting",
-                "10 money mistakes that can cost you lakhs",
-                "How much should you save from your monthly income?"
-              ].map((topic, i) => (
-                <div key={i} className="p-4 rounded-[16px] border border-[#E3E8F4] bg-[#F8FAFE] hover:border-[#1A3B9F] transition flex flex-col justify-between cursor-pointer">
-                  <span className="text-xs font-bold text-[#091540] mb-3 leading-snug">{topic}</span>
+              {related.map((item) => (
+                <Link key={item.pageId} to={`/insights/seminars/${item.pageId}`} className="p-4 rounded-[16px] border border-[#E3E8F4] bg-[#F8FAFE] hover:border-[#1A3B9F] transition flex flex-col justify-between">
+                  <span className="text-xs font-bold text-[#091540] mb-3 leading-snug">{item.title}</span>
                   <div className="flex items-center gap-1 text-[11px] font-extrabold uppercase text-[#1A3B9F]">
                     <span>Explore</span>
                     <ArrowRight className="w-3 h-3" />
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </section>
@@ -347,12 +424,19 @@ export default function WebinarPage() {
                     <select 
                       value={formData.slot}
                       onChange={(e) => setFormData({...formData, slot: e.target.value})}
-                      className="w-full h-11 px-4 text-xs font-mono bg-[#EEF2FB] border border-[#C5D3F2] rounded-[8px] focus:outline-none focus:ring-2 focus:ring-[#1A3B9F] text-[#091540]"
+                      required
+                      disabled={slots.length === 0}
+                      className="w-full h-11 px-4 text-xs font-mono bg-[#EEF2FB] border border-[#C5D3F2] rounded-[8px] focus:outline-none focus:ring-2 focus:ring-[#1A3B9F] text-[#091540] disabled:text-[#6B7280]"
                     >
-                      <option value="November 12 | 6:30 PM – 7:30 PM IST">November 12 | 6:30 PM – 7:30 PM IST</option>
-                      <option value="November 16 | 6:30 PM – 7:30 PM IST">November 16 | 6:30 PM – 7:30 PM IST</option>
+                      {slots.length === 0 ? (
+                        <option value="">No upcoming slot</option>
+                      ) : slots.map((slot) => (
+                        <option key={slot.label} value={slot.label}>{slot.label}</option>
+                      ))}
                     </select>
                   </div>
+                  <DataConsent id="webinar-consent" checked={consent} onChange={setConsent} />
+                  {error && step === 'form' && <p className="text-xs font-semibold text-rose-600">{error}</p>}
                   <button 
                     type="submit" 
                     className="w-full h-11 bg-[#1A3B9F] hover:bg-[#132d7c] text-white font-extrabold text-xs uppercase tracking-wider rounded-[8px] transition cursor-pointer shadow-sm mt-2"
@@ -375,15 +459,10 @@ export default function WebinarPage() {
                 <div className="bg-[#EEF2FB] p-4 rounded-[16px] border border-[#C5D3F2] space-y-3">
                   <div className="flex items-start gap-2 text-[#091540] font-bold text-xs">
                     <MessageSquare className="w-4 h-4 text-[#1A3B9F] shrink-0 mt-0.5" />
-                    <span>What is your primary financial goal for the next 12 months?</span>
+                    <span>{topic.pollQuestion}</span>
                   </div>
                   <div className="space-y-2 pt-1">
-                    {[
-                      "Building an emergency fund & better budgeting",
-                      "Starting my first mutual fund SIP",
-                      "Clearing existing debt / loans",
-                      "Planning for retirement / long-term wealth"
-                    ].map((option, idx) => (
+                    {topic.pollOptions.map((option, idx) => (
                       <label key={idx} className={`flex items-center gap-3 p-3 rounded-[8px] border cursor-pointer transition text-xs ${pollAnswer === option ? 'border-[#1A3B9F] bg-white text-[#091540] font-bold shadow-sm' : 'border-[#C5D3F2]/60 bg-white/50 text-[#374151] hover:bg-white'}`}>
                         <input 
                           type="radio" 

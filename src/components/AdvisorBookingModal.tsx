@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { DataConsent } from "./DataConsent";
 import { saveForm } from "../lib/saveForm";
 
 interface AdvisorBookingModalProps {
@@ -10,6 +11,7 @@ const emptyForm = { name: "", phone: "", email: "", time: "", notes: "" };
 
 export default function AdvisorBookingModal({ isOpen, onClose }: AdvisorBookingModalProps) {
   const [form, setForm] = useState(emptyForm);
+  const [consent, setConsent] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
@@ -23,11 +25,17 @@ export default function AdvisorBookingModal({ isOpen, onClose }: AdvisorBookingM
   const close = () => {
     setError("");
     setSaved(false);
+    setConsent(false);
     onClose();
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (saving) return;
+    if (!consent) {
+      setError("Please accept the privacy consent to continue.");
+      return;
+    }
     setSaving(true);
     setError("");
     try {
@@ -37,9 +45,11 @@ export default function AdvisorBookingModal({ isOpen, onClose }: AdvisorBookingM
         email: form.email.trim(),
         time: form.time.trim(),
         notes: form.notes.trim(),
+        consent: true,
       });
       setSaved(true);
       setForm(emptyForm);
+      setConsent(false);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "We could not save your details. Please try again.");
     } finally {
@@ -54,7 +64,7 @@ export default function AdvisorBookingModal({ isOpen, onClose }: AdvisorBookingM
         role="dialog"
         aria-modal="true"
         aria-labelledby="advisor-booking-title"
-        className="relative z-10 w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-[#E3E8F4] p-6 sm:p-8 font-[var(--fs)]"
+        className="relative z-10 w-full max-w-lg max-h-[calc(100vh-2rem)] overflow-y-auto bg-white rounded-3xl shadow-2xl border border-[#E3E8F4] p-6 sm:p-8 font-[var(--fs)]"
       >
         <button type="button" onClick={close} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#EEF2FB] text-[#374151] border-0 cursor-pointer font-bold" aria-label="Close">
           ✕
@@ -90,6 +100,7 @@ export default function AdvisorBookingModal({ isOpen, onClose }: AdvisorBookingM
               What would you like to plan?
               <textarea name="notes" value={form.notes} onChange={update("notes")} rows={3} className="px-3 py-2 rounded-xl border border-[#E3E8F4] font-medium" />
             </label>
+            <DataConsent id="advisor-booking-consent" checked={consent} onChange={setConsent} />
             {error && <p className="m-0 text-sm text-rose-700" role="alert">{error}</p>}
             <button type="submit" disabled={saving} className="h-12 rounded-xl bg-[#8DC63F] text-[#091540] font-extrabold text-xs border-0 cursor-pointer disabled:opacity-60">
               {saving ? "Saving…" : "Submit"}

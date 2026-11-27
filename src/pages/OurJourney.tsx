@@ -107,6 +107,17 @@ const OFFICES = [
     ],
     mapQuery: "Chowkidinghi+CR+Building+Dibrugarh+786003",
   },
+  {
+    city: "Ranchi",
+    state: "JHARKHAND",
+    address: [
+      "Auto x Change",
+      "Near aadivasi boys hostel,",
+      "karamtoli,",
+      "Ranchi 834001",
+    ],
+    mapQuery: "Auto+x+Change+Near+aadivasi+boys+hostel+karamtoli+Ranchi+834001",
+  },
 
 ];
 
@@ -304,11 +315,12 @@ export default function OurJourney() {
             Our Offices
           </span>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="overflow-x-auto pb-3 snap-x snap-mandatory">
+            <div className="flex items-stretch gap-4 w-max">
             {OFFICES.map((off, idx) => (
               <div
                 key={idx}
-                className="bg-[#2D3A54]/60 border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:bg-[#2D3A54] transition-colors"
+                className="snap-start w-[250px] shrink-0 bg-[#2D3A54]/60 border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:bg-[#2D3A54] transition-colors"
               >
                 <div>
                   <h3 className="font-[var(--fd)] text-lg font-bold text-white mb-0.5">
@@ -318,9 +330,9 @@ export default function OurJourney() {
                     {off.state}
                   </span>
 
-                  <div className="text-xs text-white/75 font-light leading-relaxed mb-6 space-y-0.5">
-                    {off.address.map((line, i) => (
-                      <p key={i}>{line}</p>
+                  <div className="text-xs text-white/75 font-light leading-relaxed space-y-0.5">
+                    {off.address.map((line) => (
+                      <p key={line}>{line}</p>
                     ))}
                   </div>
                 </div>
@@ -329,12 +341,13 @@ export default function OurJourney() {
                   href={`https://www.google.com/maps/search/?api=1&query=${off.mapQuery}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs font-bold text-white/90 hover:text-[#8DC63F] inline-flex items-center gap-1 transition-colors"
+                  className="mt-6 text-xs font-bold text-white/90 hover:text-[#8DC63F] inline-flex items-center gap-1 transition-colors"
                 >
                   Get Directions →
                 </a>
               </div>
             ))}
+            </div>
           </div>
         </div>
       </section>

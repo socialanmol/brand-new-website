@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import Root from './Root';
 import Home from '../pages/Home';
 import GeneralInsurance from '../pages/GeneralInsurance';
@@ -11,12 +11,17 @@ import LifeInsurance from '../pages/LifeInsurance';
 import Resources from '../pages/Resources';
 import ArticlesInsights from '../pages/ArticlesInsights';
 import FinancialFoundationBlog from '../pages/financial_foundation_blog_component';
-import NewsAndMarketingHub from '../pages/news_and_marketing_hub';
 import ForArmedForces from '../pages/ForArmedForces';
 import ForBusinessOwners from '../pages/ForBusinessOwners';
 import SeminarsWorkshops from '../pages/SeminarsWorkshops';
 import PersonalFinanceTopics from '../pages/personal-finance-money-mgt';
-import SampleWebinarPage from '../pages/SampleWebinarPage';
+import MutualFundTopics from '../pages/mutual-funds-wealth-creation';
+import FinancialPlanningLifeGoals from '../pages/financial-planning-life-goals';
+import InsuranceFinancialProtection from '../pages/insurance-financial-protection';
+import SpecialisedAudiencesNiche from '../pages/specialised-audiences-niche';
+import BehaviouralFinanceInvestorPsychology from '../pages/behavioural-finance-investor-psychology';
+import SampleWebinarPage, { seminarPage } from '../pages/SampleWebinarPage';
+import { MUTUAL_FUND_SEMINARS } from '../data/mutualFundSeminars';
 import SeminarRetirementEstate from '../pages/SeminarRetirementEstate';
 import SeminarInvestingPlanning from '../pages/SeminarInvestingPlanning';
 import SeminarLifeStress from '../pages/SeminarLifeStress';
@@ -70,6 +75,7 @@ import FinancialConfidenceBuilder from '../pages/FinancialConfidenceBuilder';
 import GoalMapping from '../pages/GoalMapping';
 import SpecializedInvestmentFunds from '../pages/SpecializedInvestmentFunds';
 import MutualFundsHub from '../pages/mutual_funds_hub';
+import SystematicInvestmentPlan from '../pages/SystematicInvestmentPlan';
 import InvestmentServices from '../pages/InvestmentServices';
 import Careers from '../pages/Careers';
 import FinancialWellnessThemed from '../pages/FinancialWellnessThemed';
@@ -80,6 +86,8 @@ import FixedDeposits from '../pages/FixedDeposits';
 import EquityTrading from '../pages/EquityTrading';
 import TaxFiling from '../pages/TaxFiling';
 import Glossary from '../pages/Glossary';
+import BlueBook from '../pages/BlueBook';
+import BlueBookEdition from '../pages/BlueBookEdition';
 import GiftCity from '../pages/Giftcity';
 import ContactUs from '../pages/ContactUs';
 import ComingSoon from '../pages/ComingSoon';
@@ -110,7 +118,8 @@ export const router = createBrowserRouter([
       { path: 'insights/articles', Component: ArticlesInsights },
       { path: 'articles', Component: ArticlesInsights },
       { path: 'insights/articles/financial-foundation', Component: FinancialFoundationBlog },
-      { path: 'insights/news-and-marketing', Component: NewsAndMarketingHub },
+      { path: 'insights/myanmol-headlines', element: <Navigate to="/" replace /> },
+      { path: 'insights/news-and-marketing', element: <Navigate to="/" replace /> },
 
       { path: 'financial-wellbeing', Component: FinancialWellnessThemed },
       { path: 'solutions/financial-wellbeing', Component: FinancialWellnessThemed },
@@ -131,8 +140,25 @@ export const router = createBrowserRouter([
       { path: 'insights/seminars', Component: SeminarsWorkshops },
       { path: 'seminars', Component: SeminarsWorkshops },
       { path: 'insights/seminars/personal-finance-money-management', Component: PersonalFinanceTopics },
+      { path: 'insights/seminars/mutual-funds-wealth-creation', Component: MutualFundTopics },
+      { path: 'insights/seminars/financial-planning-life-goals', Component: FinancialPlanningLifeGoals },
+      { path: 'insights/seminars/insurance-financial-protection', Component: InsuranceFinancialProtection },
+      { path: 'insights/seminars/specialised-audiences-niche', Component: SpecialisedAudiencesNiche },
+      { path: 'insights/seminars/behavioural-finance-investor-psychology', Component: BehaviouralFinanceInvestorPsychology },
       { path: 'insights/seminars/manage-your-salary', Component: SampleWebinarPage },
-      { path: 'insights/seminars/mutual-funds-101', Component: SampleWebinarPage },
+      { path: 'insights/seminars/2-bank-approach', Component: seminarPage('2-bank-approach') },
+      { path: 'insights/seminars/10-money-mistakes', Component: seminarPage('10-money-mistakes') },
+      { path: 'insights/seminars/how-much-to-save', Component: seminarPage('how-much-to-save') },
+      { path: 'insights/seminars/build-first-10-lakh', Component: seminarPage('build-first-10-lakh') },
+      { path: 'insights/seminars/credit-cards-emis-loans', Component: seminarPage('credit-cards-emis-loans') },
+      { path: 'insights/seminars/financial-independence-45', Component: seminarPage('financial-independence-45') },
+      { path: 'insights/seminars/financial-planning-couples', Component: seminarPage('financial-planning-couples') },
+      { path: 'insights/seminars/planning-after-marriage', Component: seminarPage('planning-after-marriage') },
+      { path: 'insights/seminars/major-life-events', Component: seminarPage('major-life-events') },
+      ...MUTUAL_FUND_SEMINARS.map((topic) => ({
+        path: `insights/seminars/${topic.pageId}`,
+        Component: seminarPage(topic.pageId),
+      })),
       { path: 'insights/seminars/retirement-estate-planning', Component: SeminarRetirementEstate },
       { path: 'insights/seminars/investing-financial-planning', Component: SeminarInvestingPlanning },
       { path: 'insights/seminars/life-stress-management', Component: SeminarLifeStress },
@@ -142,6 +168,8 @@ export const router = createBrowserRouter([
 
       { path: 'insights/learn/:slug', Component: BookSummary },
       { path: 'insights/glossary', Component: Glossary },
+      { path: 'insights/blue-book', Component: BlueBook },
+      { path: 'insights/blue-book/:slug', Component: BlueBookEdition },
       { path: 'glossary', Component: Glossary },
       { path: 'resources', Component: Resources },
       { path: 'resources/books/:slug', Component: BookSummary },
@@ -185,6 +213,7 @@ export const router = createBrowserRouter([
       { path: 'services/other/:slug', Component: ComingSoon },
 
       { path: 'mutual-funds', Component: MutualFundsHub },
+      { path: 'mutual-funds/sip', Component: SystematicInvestmentPlan },
       { path: 'mutual-funds/gift-city', Component: GiftCity },
       { path: 'gift-city', Component: GiftCity },
 

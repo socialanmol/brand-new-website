@@ -37,6 +37,13 @@ export default function SeminarsWorkshops() {
       image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80",
       badge: "Special Editions",
       link: "/insights/seminars/specialised-audiences-niche"
+    },
+    {
+      title: "Behavioural finance and investor psychology",
+      description: "Sessions on fear, greed, buying high, and staying invested when markets move.",
+      image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80",
+      badge: "Investor Behaviour",
+      link: "/insights/seminars/behavioural-finance-investor-psychology"
     }
   ];
 
@@ -50,10 +57,10 @@ export default function SeminarsWorkshops() {
             MyAnmol Webinar Academy
           </span>
           <h1 className="font-[var(--fd)] text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
-            Seminars &amp; <span className="text-[#8DC63F] italic">Pillars.</span>
+            Seminars &amp; <span className="text-[#8DC63F] italic">Webinars.</span>
           </h1>
           <p className="text-base sm:text-lg text-white/80 font-light leading-relaxed">
-            Explore our five core educational pillars designed to attract, build trust, and guide your wealth creation journey.
+            Explore our seminars and webinars on money, investing, life goals, protection, investor behaviour, and the communities we work with.
           </p>
         </div>
       </section>
@@ -65,7 +72,7 @@ export default function SeminarsWorkshops() {
             Core Curriculum
           </span>
           <h2 className="font-[var(--fd)] text-3xl sm:text-4xl font-bold text-[#091540]">
-            The Five Webinar Pillars
+            Seminars &amp; Webinars
           </h2>
         </div>
 
@@ -95,7 +102,7 @@ export default function SeminarsWorkshops() {
                     to={pillar.link}
                     className="inline-flex items-center gap-2 bg-[#8DC63F] hover:bg-[#9ED64A] text-[#091540] font-extrabold text-xs px-6 py-3 rounded-full transition-all shadow-sm w-fit"
                   >
-                    Explore Pillar Topics →
+                    Explore Webinars →
                   </Link>
                 </div>
               </div>

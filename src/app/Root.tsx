@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router';
 import Header, { GetStartedModal } from '../components/Header';
 import Footer from '../components/Footer';
 import PageAnalytics from '../components/PageAnalytics';
+import DocumentMeta from '../components/DocumentMeta';
 import WhatsAppFloat from '../pages/whatsappfloat';
 
 export default function Root() {
@@ -20,6 +21,7 @@ export default function Root() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <DocumentMeta />
       <Header onGetStarted={() => setShowModal(true)} />
       <PageAnalytics />
       <main style={{ flex: 1 }}>
