@@ -92,6 +92,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/navigating-personal-finance-digital-safety.pdf",
     downloadName: "Navigating-Personal-Finance-and-Digital-Safety.pdf",
     noteBelow: true,
+    description: [
+      "\"Navigating Personal Finance & Digital Safety,\" published by Anmol Share Broking Pvt Ltd, is a comprehensive guide as it addresses key concepts in personal money management, highlighting the hidden financial costs that erode wealth over time. The document explores critical blind spots such as the impact of inflation, tax mismatches between nominal and post-tax returns, and the importance of maintaining an emergency buffer. Through real-world case studies and market psychology insights, it stresses the value of long-term compounding, patient investing, and avoiding daily market noise.",
+      "In addition to financial guidance, the document provides actionable advice on digital security, with a specific focus on protecting children online. It outlines hidden digital hazards, including unauthorized in-app purchases, malicious file downloads, and unvetted online interactions. To mitigate these risks, the guide presents a practical playbook for parents, advocating for measures like establishing separate user profiles, securing financial applications with biometric locks, and educating children on digital safety.",
+    ],
   },
   {
     slug: "money-matters-3-things",
