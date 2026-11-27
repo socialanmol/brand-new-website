@@ -83,6 +83,10 @@ export const BLUE_BOOKS: BlueBookEdition[] = [
     pdf: "/blue-book/unlisted-stocks-indulgence-sovereign-safety.pdf",
     downloadName: "Unlisted-Stocks-Indulgence-and-Sovereign-Safety.pdf",
     noteBelow: true,
+    description: [
+      "This PDF presented by Anmol Share Broking Pvt Ltd, provides a comprehensive overview of private equity, mindful personal finance, and government-backed investment options. It details the critical risks associated with unlisted stocks—such as limited disclosures, high liquidity risk, and valuation uncertainties—and highlights SEBI's regulatory stance, advising everyday investors to stick to listed markets. The document also explores behavioral finance, explaining the psychological triggers behind impulse spending and offering practical rules to break the cycle, such as automating investments and adopting a 24-hour delay rule.",
+      "Additionally, the guide emphasizes the importance of anchoring market-linked portfolios with risk-free, sovereign-backed government schemes to ensure capital preservation. Key compounding instruments highlighted include the Public Provident Fund (PPF) offering 7.1% tax-free returns and the Sukanya Samriddhi Yojana (SSY) yielding 8.2% interest for girl children. It also covers essential, cost-effective safety nets backed by the Government of India, including life cover via PMJJBY and accident insurance through PMSBY, to help investors build long-term wealth securely.",
+    ],
   },
   {
     slug: "navigating-personal-finance-digital-safety",
